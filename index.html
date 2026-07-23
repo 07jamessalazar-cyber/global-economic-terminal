@@ -299,7 +299,7 @@ body{
    ATLAS — Global Market Intelligence Terminal
    Live tickers via FMP (paste key below); country data is demo.
    ============================================================ */
-const FMP_KEY = "PASTE_YOUR_FMP_API_KEY_HERE";
+const FMP_KEY = "RJkai4EjUWOvAxF10W9P4jqIehIzxrZn";
 const hasKey = FMP_KEY && !/^PASTE/.test(FMP_KEY);
 
 /* ---------- helpers ---------- */
@@ -474,9 +474,9 @@ const TLC={data:"#3fe0ff",cb:"#8b6dff",earn:"#18e08a",geo:"#ff5468"};
 const TICKERS=[
   {k:"VIX",sym:"^VIX",v:18.70,c:12.38,inv:true},
   {k:"DOLLAR IDX",sym:"^DXY",v:104.2,c:0.38},
-  {k:"GOLD",sym:"GCUSD",v:2412.5,c:0.62,pfx:"$"},
-  {k:"WTI CRUDE",sym:"CLUSD",v:78.9,c:1.15,pfx:"$"},
-  {k:"BITCOIN",sym:"BTCUSD",v:64250,c:-2.1,pfx:"$"},
+  {k:"GOLD",sym:"GCUSD",v:4051,c:0.02,pfx:"$"},
+  {k:"BRENT CRUDE",sym:"BZUSD",v:100.5,c:-0.17,pfx:"$"},
+  {k:"BITCOIN",sym:"BTCUSD",v:65132,c:-1.44,pfx:"$"},
   {k:"S&P 500",sym:"^GSPC",v:7408.9,c:-1.20},
   {k:"NASDAQ",sym:"^IXIC",v:25137.7,c:-2.15},
   {k:"DOW",sym:"^DJI",v:51711.6,c:-0.97}
@@ -748,7 +748,7 @@ async function fetchLive(){
   if(!hasKey) return;
   await Promise.all(TICKERS.map(async t=>{
     try{
-      const r=await fetch(`https://financialmodelingprep.com/api/v3/quote/${encodeURIComponent(t.sym)}?apikey=${FMP_KEY}`);
+      const r=await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(t.sym)}&apikey=${FMP_KEY}`);
       const d=await r.json(); const row=Array.isArray(d)?d[0]:d;
       if(row&&typeof row.price==="number"){t.v=row.price;t.c=row.changePercentage??t.c;}
     }catch(e){}
