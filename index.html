@@ -93,7 +93,11 @@ body{
   animation:scrollfeed 46s linear infinite}
 .feedwrap:hover .feed{animation-play-state:paused}
 @keyframes scrollfeed{0%{transform:translateY(0)}100%{transform:translateY(-50%)}}
-.ev{border:1px solid var(--stroke);border-radius:11px;padding:10px 11px;background:var(--panel2)}
+.ev{border:1px solid var(--stroke);border-radius:11px;padding:10px 11px;background:var(--panel2);cursor:pointer;transition:.15s;position:relative}
+.ev:hover{border-color:var(--stroke2);background:rgba(30,42,70,0.78);transform:translateX(-2px)}
+.ev .aihint{position:absolute;right:9px;bottom:8px;font-size:8px;font-weight:800;letter-spacing:.5px;color:#b7a6ff;opacity:.65}
+#newsmodal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(3,5,10,.6);backdrop-filter:blur(6px)}
+#newsmodal.open{display:flex}
 .ev .top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
 .ev .fl{font-size:14px}
 .ev .tm{font-family:var(--mono);font-size:9.5px;color:var(--dim);margin-left:auto}
@@ -293,6 +297,18 @@ body{
   </div>
 </div>
 
+<!-- NEWS INSIGHT MODAL -->
+<div id="newsmodal">
+  <div class="aicard glass" style="width:580px;max-width:94vw">
+    <div class="ah" style="background:linear-gradient(135deg,rgba(63,224,255,.14),rgba(77,123,255,.05))">
+      <span class="orb" style="background:radial-gradient(circle at 35% 30%,#fff,#a9e8ff 40%,#3f8fff)"></span>
+      <div><h2 id="nmTitle" style="font-size:15px;line-height:1.3">—</h2><small id="nmMeta">—</small></div>
+      <button class="x" onclick="closeNews()">✕</button>
+    </div>
+    <div class="ab" id="nmBody"></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.32.0/dist/globe.gl.min.js"></script>
 <script>
 /* ============================================================
@@ -322,7 +338,7 @@ US:{n:"United States",cc:"US",lat:39,lng:-98,s:0.55,idx:{n:"S&P 500",c:-1.2},cur
   ai:"The US sets the global risk tone. With the Fed holding at 4.50% and inflation sticky near 3%, markets are caught between resilient growth and delayed cuts. Any upside CPI surprise revives 'higher-for-longer' fears that ripple into every risk asset worldwide.",
   news:{Economic:[["CPI holds at 2.9% y/y, core firmer than expected","2h ago"],["Jobless claims tick up to 211K","5h ago"]],
     Political:[["Debt-ceiling rhetoric resurfaces ahead of session","1d ago"]],
-    "Central Bank":[["Fed keeps rates at 4.50%, signals patience","3d ago"],["Powell: 'need more confidence on disinflation'","3d ago"]],
+    "Central Bank":[["Fed keeps rates at 4.50%, signals patience","3d ago"],["Fed emphasizes need for more disinflation confidence","3d ago"]],
     Company:[["Mega-cap tech earnings drag Nasdaq lower","4h ago"],["Treasury yields climb, 10Y at 4.3%","6h ago"]]}},
 CN:{n:"China",cc:"CN",lat:35,lng:104,s:-0.35,idx:{n:"CSI 300",c:0.6},cur:{n:"CNY",c:-0.3},infl:0.3,rate:3.10,gdp:4.7,sent:"Cautious",
   ev:"Property drag persists; PBOC easing to defend growth target.",
@@ -440,18 +456,36 @@ CH:{n:"Switzerland",cc:"CH",lat:47,lng:8,s:0.3,idx:{n:"SMI",c:0.1},cur:{n:"CHF",
 
 /* ---------- LIVE FEED (demo) ---------- */
 const FEED=[
-  {cc:"EU",t:"08:15",h:"ECB holds refi rate at 2.40%, Lagarde presser awaited",imp:"high",as:["EUR","DAX","STOXX"]},
-  {cc:"US",t:"08:30",h:"US jobless claims edge up to 211K",imp:"med",as:["USD","SPX","UST"]},
-  {cc:"CN",t:"07:00",h:"PBOC injects liquidity, yuan fixing stronger",imp:"high",as:["CNY","HSI","COPPER"]},
-  {cc:"JP",t:"06:30",h:"Nikkei nears record as yen weakens past key level",imp:"med",as:["JPY","N225"]},
-  {cc:"US",t:"05:45",h:"Mega-cap tech leads Nasdaq futures lower pre-open",imp:"high",as:["NDX","QQQ"]},
-  {cc:"SA",t:"05:10",h:"OPEC+ signals output discipline, crude firms",imp:"med",as:["OIL","BRENT","CAD"]},
-  {cc:"DE",t:"04:30",h:"German flash PMI stays in contraction",imp:"med",as:["EUR","DAX"]},
-  {cc:"GB",t:"02:00",h:"UK CPI cools to 2.7%, services still elevated",imp:"med",as:["GBP","FTSE","GILT"]},
-  {cc:"IN",t:"01:20",h:"Nifty hits fresh high on IT & financials",imp:"low",as:["INR","NIFTY"]},
-  {cc:"AU",t:"21:30",h:"Australia jobs beat, jobless rate steady 4.4%",imp:"med",as:["AUD","ASX"]},
-  {cc:"US",t:"20:00",h:"10Y Treasury yield climbs to 4.3%",imp:"high",as:["UST","USD","GOLD"]},
-  {cc:"KR",t:"19:15",h:"Korea chip exports surge on AI demand",imp:"med",as:["KRW","KOSPI","SOX"]}
+  {cc:"EU",t:"08:15",h:"ECB holds refi rate at 2.40%, Lagarde press conference awaited",imp:"high",bias:"MIXED",as:["EUR","DAX","STOXX"],
+   ai:"A hold was fully expected, so the real market-mover is the tone of the press conference. Any acknowledgement of weak growth (dovish) would pressure the euro and lift European equities; insisting inflation isn't beaten (hawkish) does the reverse. Watch EUR/USD and bank stocks for the first read."},
+  {cc:"US",t:"08:30",h:"US jobless claims edge up to 211K",imp:"med",bias:"MIXED",as:["USD","SPX","UST"],
+   ai:"A modest uptick hints the labor market is cooling — mildly supportive for rate-cut hopes and slightly negative for the dollar. Not decisive alone, but another data point in the 'is the economy slowing enough for the Fed to ease?' debate driving yields."},
+  {cc:"US",t:"07:40",h:"Washington signals tougher stance in US-China trade talks",imp:"high",bias:"BEARISH",as:["USD","SOX","HSI","COPPER"],
+   ai:"Trade-friction headlines raise the risk premium on global supply chains. Semiconductors are most exposed given chip-export controls, and a harder line pressures Chinese equities and industrial metals. Escalation typically strengthens the dollar as a haven while denting risk appetite worldwide."},
+  {cc:"CN",t:"07:00",h:"Beijing leadership pledges further stimulus to defend growth target",imp:"high",bias:"BULLISH",as:["CNY","HSI","COPPER","AUD"],
+   ai:"Stimulus signals are a near-term positive for China-exposed assets — Hong Kong equities, copper, and the Aussie dollar often rally on hopes of stronger demand. The caveat: markets have been burned by under-delivered promises before, so follow-through matters more than the headline."},
+  {cc:"RU",t:"06:40",h:"Energy-infrastructure strikes in the Russia-Ukraine war lift European gas",imp:"high",bias:"BEARISH",as:["TTF","EUR","OIL"],
+   ai:"Conflict disruptions to energy flows feed straight into European gas prices — a direct tax on the region's industry and a headwind for the euro. Higher energy costs also complicate the ECB's inflation fight, and oil carries a sympathetic risk premium whenever supply routes look threatened."},
+  {cc:"JP",t:"06:30",h:"Nikkei nears record as yen weakens past a key level",imp:"med",bias:"BULLISH",as:["JPY","N225"],
+   ai:"A weaker yen flatters Japanese exporter earnings, powering the Nikkei — but it's double-edged. Push the yen too far and authorities may intervene, and a sudden reversal can trigger a global 'carry-trade unwind' that ripples across risk assets. Bullish now, a tail risk later."},
+  {cc:"SA",t:"05:10",h:"Middle East tensions and OPEC+ discipline add risk premium to crude",imp:"med",bias:"BULLISH",as:["OIL","BRENT","CAD","XLE"],
+   ai:"Geopolitical risk plus supply restraint supports oil, lifting energy equities and commodity currencies like the Canadian dollar. Higher crude is a mixed blessing globally: good for producers, but a renewed inflation worry for central banks trying to cut rates."},
+  {cc:"US",t:"05:45",h:"Mega-cap tech leads Nasdaq futures lower pre-open",imp:"high",bias:"BEARISH",as:["NDX","QQQ","SOX"],
+   ai:"Because a handful of mega-caps dominate the index, weakness there drags the whole Nasdaq. On days when yields are rising, these long-duration growth names are sold first. A soft tech open often sets a risk-off tone for the broader session."},
+  {cc:"TW",t:"05:00",h:"Taiwan Strait tensions revive chip-supply concerns",imp:"med",bias:"BEARISH",as:["SOX","TSM","NDX"],
+   ai:"Taiwan sits at the heart of the global semiconductor supply chain, so any geopolitical flare-up there is an outsized risk for tech. Even without actual disruption, headlines spark volatility in chip stocks and the broader Nasdaq given how concentrated advanced-chip production is."},
+  {cc:"DE",t:"04:30",h:"German flash PMI stays in contraction",imp:"med",bias:"BEARISH",as:["EUR","DAX"],
+   ai:"Germany is the euro area's industrial engine, so a sub-50 PMI signals the bloc's largest economy is still shrinking. That caps how restrictive the ECB can stay and weighs on the euro, even as it keeps hopes of eventual rate cuts alive."},
+  {cc:"GB",t:"02:00",h:"UK CPI cools to 2.7%, services inflation still elevated",imp:"med",bias:"MIXED",as:["GBP","FTSE","GILT"],
+   ai:"Headline progress is encouraging, but sticky services inflation keeps the Bank of England cautious on cuts. That rate-differential support tends to firm sterling, while the FTSE's commodity and defensive tilt makes it less rate-sensitive than peers."},
+  {cc:"IN",t:"01:20",h:"Nifty hits fresh high on IT and financials",imp:"low",bias:"BULLISH",as:["INR","NIFTY"],
+   ai:"India's rally reflects its standout growth story and heavy domestic participation. The main risks for global investors are rich valuations and oil-import sensitivity — but structurally it remains the premier emerging-market growth allocation."},
+  {cc:"AU",t:"21:30",h:"Australia jobs beat, jobless rate steady at 4.4%",imp:"med",bias:"MIXED",as:["AUD","ASX"],
+   ai:"A resilient labor market lets the RBA stay 'higher for longer,' supporting the Aussie via rate differentials. But because Australia is a leveraged China-demand play through iron ore, Chinese growth ultimately matters more for the resources-heavy ASX."},
+  {cc:"US",t:"20:00",h:"10Y Treasury yield climbs to 4.3%",imp:"high",bias:"BEARISH",as:["UST","USD","GOLD","NDX"],
+   ai:"The 10-year is the world's benchmark risk-free rate. Rising yields raise the discount rate on future earnings — bad for long-duration growth stocks — and strengthen the dollar, pressuring commodities and emerging markets. The single most important cross-asset driver to watch."},
+  {cc:"KR",t:"19:15",h:"Korea chip exports surge on AI demand",imp:"med",bias:"BULLISH",as:["KRW","KOSPI","SOX"],
+   ai:"Korean export data is a real-time gauge of the global tech cycle. Surging chip shipments confirm the AI-driven memory upcycle — bullish for Korean equities and a positive read-through for the entire semiconductor complex worldwide."}
 ];
 
 /* ---------- TIMELINE (demo) ---------- */
@@ -520,14 +554,45 @@ function renderHeat(){
 }
 
 function renderFeed(){
-  const one=FEED.map(f=>`<div class="ev">
+  const card=(f,i)=>`<div class="ev" onclick="openNews(${i})">
     <div class="top"><span class="fl">${flag(f.cc)}</span>
       <span class="imp imp-${f.imp}">${f.imp.toUpperCase()}</span>
       <span class="tm">${f.t}</span></div>
     <h4>${f.h}</h4>
-    <div class="assets">${f.as.map(a=>`<span class="as">${a}</span>`).join("")}</div></div>`).join("");
+    <div class="assets">${f.as.map(a=>`<span class="as">${a}</span>`).join("")}</div>
+    <span class="aihint">✦ AI INSIGHT</span></div>`;
+  const one=FEED.map(card).join("");
   $("#feed").innerHTML=one+one; // duplicate for seamless loop
 }
+
+function openNews(i){
+  const f=FEED[i]; if(!f) return;
+  const impColor=f.imp==="high"?"var(--red)":f.imp==="med"?"var(--amber)":"var(--cyan)";
+  const bias=f.bias||"MIXED";
+  const biasColor=bias==="BULLISH"?"var(--green)":bias==="BEARISH"?"var(--red)":"var(--amber)";
+  const biasBg=bias==="BULLISH"?"rgba(24,224,138,.15)":bias==="BEARISH"?"rgba(255,84,104,.15)":"rgba(255,191,60,.15)";
+  $("#nmTitle").textContent=f.h;
+  $("#nmMeta").innerHTML=`${flag(f.cc)} ${f.cc} · ${f.t} · <span style="color:${impColor};font-weight:700">${f.imp.toUpperCase()} IMPACT</span>`;
+  $("#nmBody").innerHTML=`
+    <div class="impactrow" style="margin-top:2px">
+      <div class="badge" style="background:${f.imp==='high'?'rgba(255,84,104,.15)':f.imp==='med'?'rgba(255,191,60,.15)':'rgba(63,224,255,.12)'};color:${impColor};border:1px solid ${impColor}">MARKET IMPACT · ${f.imp.toUpperCase()}</div>
+      <div class="badge" style="background:${biasBg};color:${biasColor};border:1px solid ${biasColor}">${bias}</div>
+    </div>
+    <div class="aibox"><div class="t">✦ AI INSIGHT — WHY IT MATTERS</div><p id="nmAI"></p></div>
+    <div class="newsgrp"><div class="gt">AFFECTED ASSETS<span class="ln"></span></div>
+      <div class="assets" style="gap:6px">${f.as.map(a=>`<span class="as" style="font-size:11px;padding:3px 8px">${a}</span>`).join("")}</div></div>
+    <div class="disc">Built-in analysis · representative insight · not investment advice</div>`;
+  $("#newsmodal").classList.add("open");
+  // typewriter reveal of the insight
+  const p=$("#nmAI"), full=f.ai||"";
+  clearInterval(window.__nt); let idx=0;
+  window.__nt=setInterval(()=>{
+    p.innerHTML=full.slice(0,idx)+'<span class="cursor"></span>';
+    idx+=3;
+    if(idx>=full.length){p.textContent=full;clearInterval(window.__nt);}
+  },10);
+}
+function closeNews(){$("#newsmodal").classList.remove("open");clearInterval(window.__nt);}
 
 function renderTimeline(){
   const now=new Date();
@@ -658,6 +723,7 @@ function askAI(i,el){
   },14);
 }
 $("#aimodal").addEventListener("click",e=>{if(e.target.id==="aimodal")closeAI();});
+$("#newsmodal").addEventListener("click",e=>{if(e.target.id==="newsmodal")closeNews();});
 
 /* ============================================================
    GLOBE
