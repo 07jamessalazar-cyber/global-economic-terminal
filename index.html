@@ -1934,6 +1934,8 @@ function setView(v){
   const on=v==="earn";
   $("#earningsView").classList.toggle("show",on);
   document.querySelectorAll(".vbtn").forEach(b=>b.classList.toggle("active",b.getAttribute("data-v")===v));
+  $("#aibtn").style.display=on?"none":"";
+  if(on){closeSpace();closeDetail();closeMarket();}
   if(on&&!earnLoaded){earnLoaded=true;loadEarnings();}
 }
 function setEarnView(v){estate.view=v;document.querySelectorAll(".ev-vtoggle button").forEach(b=>b.classList.toggle("active",b.getAttribute("data-vt")===v));renderEarnAll();}
