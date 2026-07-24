@@ -448,6 +448,97 @@ body{
 .spnews .sn h5{font-size:11.5px;font-weight:650;line-height:1.35;margin:0}
 .spnews .sn .snt{font-size:8.5px;color:var(--dim);font-family:var(--mono);margin-top:3px}
 .spnews .sn .snl{font-size:7.5px;font-weight:800;padding:1px 5px;border-radius:4px;margin-left:6px}
+/* ===== view switcher + earnings calendar ===== */
+.viewsw{display:flex;align-items:center;gap:4px;padding:0 14px;border-left:1px solid var(--stroke)}
+.vbtn{font-size:10px;font-weight:800;letter-spacing:.5px;padding:7px 12px;border-radius:8px;cursor:pointer;
+  border:1px solid var(--stroke);background:transparent;color:var(--muted);transition:.15s;font-family:var(--sans)}
+.vbtn:hover{color:var(--text);border-color:var(--stroke2)}
+.vbtn.active{background:rgba(63,224,255,.14);color:var(--cyan);border-color:rgba(63,224,255,.4)}
+#earningsView{position:fixed;top:64px;left:0;right:0;bottom:0;z-index:30;display:none;flex-direction:column;
+  background:radial-gradient(1000px 600px at 70% 0%,rgba(40,70,160,.14),transparent 60%),linear-gradient(180deg,#05070d,#04060b)}
+#earningsView.show{display:flex}
+.ev-top{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid var(--stroke);flex-wrap:wrap;background:rgba(8,12,22,.6)}
+.ev-title{display:flex;align-items:baseline;gap:10px;margin-right:4px}
+.ev-title b{font-size:16px;letter-spacing:.3px}
+.ev-title span{font-size:10px;color:var(--muted);font-family:var(--mono)}
+.ev-tabs{display:flex;gap:3px;background:var(--panel2);border:1px solid var(--stroke);border-radius:9px;padding:3px}
+.ev-tab{font-size:11px;font-weight:600;padding:6px 11px;border-radius:7px;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:.15s;font-family:var(--sans)}
+.ev-tab:hover{color:var(--text)}
+.ev-tab.active{background:rgba(63,224,255,.16);color:var(--cyan)}
+.ev-search{background:var(--panel2);border:1px solid var(--stroke);border-radius:9px;padding:7px 12px;color:var(--text);font-size:12px;width:200px;font-family:var(--sans)}
+.ev-search:focus{outline:none;border-color:var(--cyan)}
+.ev-sel{background:var(--panel2);border:1px solid var(--stroke);border-radius:9px;padding:7px 10px;color:var(--text);font-size:11px;font-family:var(--sans);cursor:pointer}
+.ev-toggle{font-size:11px;font-weight:700;padding:7px 12px;border-radius:9px;cursor:pointer;border:1px solid var(--stroke);background:var(--panel2);color:var(--muted);transition:.15s;font-family:var(--sans)}
+.ev-toggle.active{background:rgba(255,191,60,.16);color:var(--amber);border-color:rgba(255,191,60,.4)}
+.ev-vtoggle{display:flex;margin-left:auto;background:var(--panel2);border:1px solid var(--stroke);border-radius:9px;padding:3px}
+.ev-vtoggle button{font-size:11px;font-weight:600;padding:6px 12px;border-radius:7px;cursor:pointer;border:none;background:transparent;color:var(--muted);font-family:var(--sans)}
+.ev-vtoggle button.active{background:rgba(63,224,255,.16);color:var(--cyan)}
+.ev-body{flex:1;display:grid;grid-template-columns:290px 1fr;gap:0;overflow:hidden}
+.ev-side{border-right:1px solid var(--stroke);overflow-y:auto;padding:14px}
+.ev-side::-webkit-scrollbar,.ev-main::-webkit-scrollbar{width:7px}
+.ev-side::-webkit-scrollbar-thumb,.ev-main::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:6px}
+.ev-side h3{font-size:9.5px;letter-spacing:1.5px;color:var(--cyan);font-weight:800;margin:4px 0 10px;display:flex;align-items:center;gap:7px}
+.ev-side h3:not(:first-child){margin-top:20px}
+.ev-main{overflow-y:auto;padding:16px 20px 30px}
+.ewidgets{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px;margin-bottom:20px}
+.ewidget{background:var(--panel);border:1px solid var(--stroke);border-radius:13px;padding:13px 15px;backdrop-filter:blur(12px)}
+.ewidget h4{font-size:9px;letter-spacing:1.2px;font-weight:800;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ewrow{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:11.5px;cursor:pointer;border-radius:6px}
+.ewrow:hover{background:rgba(63,224,255,.06)}
+.ewrow img{width:18px;height:18px;border-radius:4px;background:#fff;object-fit:contain;flex-shrink:0}
+.ewrow .et{font-family:var(--mono);font-weight:700;flex-shrink:0;width:46px}
+.ewrow .en{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.ewrow .es{font-family:var(--mono);font-weight:800;font-size:11px}
+.heatgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.heatcell{border-radius:7px;padding:7px 8px;font-size:9.5px;font-weight:700}
+.heatcell small{display:block;font-family:var(--mono);font-size:11px;font-weight:800;margin-top:2px}
+/* earnings cards */
+.eday{margin-bottom:20px}
+.eday-h{font-size:10px;letter-spacing:1px;font-weight:800;color:#c9d3ee;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid var(--stroke);display:flex;align-items:center;gap:8px}
+.eday-h .cnt{color:var(--dim);font-family:var(--mono);font-weight:600}
+.ecard{display:grid;grid-template-columns:44px 1.6fr 1fr 1fr 1fr 90px;gap:12px;align-items:center;
+  background:var(--panel);border:1px solid var(--stroke);border-radius:12px;padding:11px 14px;margin-bottom:8px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+.ecard:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(0,0,0,.35);border-color:rgba(63,224,255,.3)}
+.ecard .elogo{width:40px;height:40px;border-radius:9px;background:#fff;object-fit:contain;padding:3px}
+.ecard .eco .cn{font-size:13px;font-weight:700}
+.ecard .eco .cm{font-size:9.5px;color:var(--muted);font-family:var(--mono);margin-top:2px}
+.ecard .eco .cm .tm{padding:1px 5px;border-radius:4px;margin-left:5px;font-weight:800;font-size:8px}
+.tm-BMO{background:rgba(255,191,60,.16);color:var(--amber)} .tm-AMC{background:rgba(139,109,255,.18);color:#b7a6ff} .tm-DMH{background:rgba(63,224,255,.14);color:var(--cyan)}
+.emetric{text-align:right}
+.emetric .k{font-size:8px;letter-spacing:.5px;color:var(--dim);font-weight:700;text-transform:uppercase}
+.emetric .v{font-family:var(--mono);font-size:12.5px;font-weight:700;margin-top:2px}
+.emetric .sp{font-family:var(--mono);font-size:10px;font-weight:800}
+.ecap{text-align:right;font-family:var(--mono)}
+.ecap .mc{font-size:12px;font-weight:700}
+.ecap .sec{font-size:8.5px;color:var(--muted);font-family:var(--sans);margin-top:2px}
+.epend{font-family:var(--mono);font-size:11px;color:var(--dim)}
+/* calendar grid */
+.ecalgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.ecalcol{background:var(--panel2);border:1px solid var(--stroke);border-radius:11px;padding:10px;min-height:120px}
+.ecalcol .ch{font-size:10px;font-weight:800;letter-spacing:.5px;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--stroke)}
+.ecalcol .ch small{display:block;color:var(--dim);font-family:var(--mono);font-weight:600;font-size:9px}
+.ecalcol.today .ch{color:var(--cyan)}
+.ecItem{display:flex;align-items:center;gap:7px;padding:5px 0;cursor:pointer;border-radius:6px;font-size:11px}
+.ecItem:hover{background:rgba(63,224,255,.06)}
+.ecItem img{width:16px;height:16px;border-radius:3px;background:#fff;object-fit:contain;flex-shrink:0}
+.ecItem .et{font-family:var(--mono);font-weight:700}
+.ecItem .es{margin-left:auto;font-family:var(--mono);font-weight:800;font-size:10px}
+/* earnings detail slide-in */
+#earnDetail{position:fixed;z-index:44;top:0;right:0;height:100%;width:460px;max-width:94vw;transform:translateX(106%);
+  transition:transform .45s cubic-bezier(.22,.9,.3,1);display:flex;flex-direction:column;border-left:1px solid var(--stroke2);
+  background:linear-gradient(180deg,rgba(9,11,22,.97),rgba(6,8,15,.98));backdrop-filter:blur(20px)}
+#earnDetail.open{transform:translateX(0)}
+#earnDetail .edh{padding:18px 20px 15px;border-bottom:1px solid var(--stroke);position:relative;display:flex;align-items:center;gap:13px}
+#earnDetail .edh img{width:44px;height:44px;border-radius:10px;background:#fff;object-fit:contain;padding:3px;flex-shrink:0}
+#earnDetail .edh h2{font-size:18px}
+#earnDetail .edh .sub{font-size:10px;color:var(--muted);font-family:var(--mono);letter-spacing:1px;margin-top:2px}
+#earnDetail .edh .close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:8px;border:1px solid var(--stroke2);background:var(--panel2);color:var(--text);cursor:pointer}
+#earnDetail .edb{flex:1;overflow-y:auto;padding:16px 20px 30px}
+#earnDetail .edb::-webkit-scrollbar{width:7px}#earnDetail .edb::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:6px}
+.hq{display:flex;align-items:flex-end;gap:4px;height:60px;margin-top:4px}
+.hq .hqb{flex:1;border-radius:3px 3px 0 0;min-height:3px;position:relative}
+.hq .hqb span{position:absolute;bottom:-15px;left:0;right:0;text-align:center;font-size:7px;color:var(--dim);font-family:var(--mono)}
+@media(max-width:900px){.ev-body{grid-template-columns:1fr}.ev-side{display:none}.ecard{grid-template-columns:40px 1fr 1fr 70px}.ecard .emetric.rev{display:none}}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -531,6 +622,29 @@ body{
 <div id="moonTip" class="glass"></div>
 <div id="spacepanel"></div>
 
+<!-- EARNINGS CALENDAR VIEW -->
+<div id="earningsView">
+  <div class="ev-top">
+    <div class="ev-title"><b>Earnings Calendar</b><span id="evCount">Loading…</span></div>
+    <div class="ev-tabs" id="evRange">
+      <button class="ev-tab" data-r="today">Today</button>
+      <button class="ev-tab" data-r="tomorrow">Tomorrow</button>
+      <button class="ev-tab active" data-r="week">This Week</button>
+      <button class="ev-tab" data-r="next">Next Week</button>
+    </div>
+    <input class="ev-search" id="evSearch" placeholder="Search company or ticker…">
+    <select class="ev-sel" id="evSector"><option value="all">All Sectors</option></select>
+    <select class="ev-sel" id="evTime"><option value="all">All Times</option><option value="BMO">Before Open</option><option value="AMC">After Close</option></select>
+    <button class="ev-toggle" id="evWatchBtn" onclick="toggleWatchOnly()">★ Watchlist</button>
+    <div class="ev-vtoggle"><button class="active" data-vt="list" onclick="setEarnView('list')">List</button><button data-vt="cal" onclick="setEarnView('cal')">Calendar</button></div>
+  </div>
+  <div class="ev-body">
+    <aside class="ev-side" id="evSide"></aside>
+    <main class="ev-main"><div class="ewidgets" id="evWidgets"></div><div id="evList"></div></main>
+  </div>
+</div>
+<div id="earnDetail"></div>
+
 <div class="loadscreen" id="load"><div class="lg"></div><p>INITIALIZING GLOBAL FEED…</p></div>
 
 <!-- TOP BAR -->
@@ -538,6 +652,10 @@ body{
   <div class="brand">
     <div class="logo"></div>
     <div><h1>ATLAS</h1><span>GLOBAL MARKET INTELLIGENCE</span></div>
+  </div>
+  <div class="viewsw">
+    <button class="vbtn active" data-v="globe" onclick="setView('globe')">◍ GLOBE</button>
+    <button class="vbtn" data-v="earn" onclick="setView('earn')">▦ EARNINGS</button>
   </div>
   <div class="tickers"><div class="track" id="tickerTrack"></div></div>
   <div class="sentiment">
@@ -1764,10 +1882,237 @@ async function fetchLive(){
   renderTickers();
 }
 
+/* ================= EARNINGS CALENDAR ================= */
+const U={
+ AAPL:{n:"Apple",s:"Technology",t:"AMC"},MSFT:{n:"Microsoft",s:"Technology",t:"AMC"},GOOGL:{n:"Alphabet",s:"Communication",t:"AMC"},
+ AMZN:{n:"Amazon",s:"Consumer",t:"AMC"},META:{n:"Meta Platforms",s:"Communication",t:"AMC"},NVDA:{n:"NVIDIA",s:"Technology",t:"AMC"},
+ TSLA:{n:"Tesla",s:"Consumer",t:"AMC"},AVGO:{n:"Broadcom",s:"Technology",t:"AMC"},AMD:{n:"Advanced Micro Devices",s:"Technology",t:"AMC"},
+ INTC:{n:"Intel",s:"Technology",t:"AMC"},QCOM:{n:"Qualcomm",s:"Technology",t:"AMC"},TXN:{n:"Texas Instruments",s:"Technology",t:"AMC"},
+ MU:{n:"Micron",s:"Technology",t:"AMC"},CRM:{n:"Salesforce",s:"Technology",t:"AMC"},ORCL:{n:"Oracle",s:"Technology",t:"AMC"},
+ ADBE:{n:"Adobe",s:"Technology",t:"AMC"},CSCO:{n:"Cisco",s:"Technology",t:"AMC"},IBM:{n:"IBM",s:"Technology",t:"AMC"},
+ NOW:{n:"ServiceNow",s:"Technology",t:"AMC"},INTU:{n:"Intuit",s:"Technology",t:"AMC"},PYPL:{n:"PayPal",s:"Financials",t:"BMO"},
+ NFLX:{n:"Netflix",s:"Communication",t:"AMC"},DIS:{n:"Walt Disney",s:"Communication",t:"AMC"},CMCSA:{n:"Comcast",s:"Communication",t:"BMO"},
+ T:{n:"AT&T",s:"Communication",t:"BMO"},VZ:{n:"Verizon",s:"Communication",t:"BMO"},TMUS:{n:"T-Mobile",s:"Communication",t:"AMC"},
+ HD:{n:"Home Depot",s:"Consumer",t:"BMO"},MCD:{n:"McDonald's",s:"Consumer",t:"BMO"},NKE:{n:"Nike",s:"Consumer",t:"AMC"},
+ SBUX:{n:"Starbucks",s:"Consumer",t:"AMC"},KO:{n:"Coca-Cola",s:"Consumer",t:"BMO"},PEP:{n:"PepsiCo",s:"Consumer",t:"BMO"},
+ PG:{n:"Procter & Gamble",s:"Consumer",t:"BMO"},WMT:{n:"Walmart",s:"Consumer",t:"BMO"},COST:{n:"Costco",s:"Consumer",t:"AMC"},
+ TGT:{n:"Target",s:"Consumer",t:"BMO"},LOW:{n:"Lowe's",s:"Consumer",t:"BMO"},
+ JPM:{n:"JPMorgan Chase",s:"Financials",t:"BMO"},BAC:{n:"Bank of America",s:"Financials",t:"BMO"},WFC:{n:"Wells Fargo",s:"Financials",t:"BMO"},
+ C:{n:"Citigroup",s:"Financials",t:"BMO"},GS:{n:"Goldman Sachs",s:"Financials",t:"BMO"},MS:{n:"Morgan Stanley",s:"Financials",t:"BMO"},
+ V:{n:"Visa",s:"Financials",t:"AMC"},MA:{n:"Mastercard",s:"Financials",t:"BMO"},AXP:{n:"American Express",s:"Financials",t:"BMO"},
+ BLK:{n:"BlackRock",s:"Financials",t:"BMO"},SCHW:{n:"Charles Schwab",s:"Financials",t:"BMO"},
+ JNJ:{n:"Johnson & Johnson",s:"Healthcare",t:"BMO"},UNH:{n:"UnitedHealth",s:"Healthcare",t:"BMO"},PFE:{n:"Pfizer",s:"Healthcare",t:"BMO"},
+ MRK:{n:"Merck",s:"Healthcare",t:"BMO"},ABBV:{n:"AbbVie",s:"Healthcare",t:"BMO"},LLY:{n:"Eli Lilly",s:"Healthcare",t:"BMO"},
+ TMO:{n:"Thermo Fisher",s:"Healthcare",t:"BMO"},ABT:{n:"Abbott",s:"Healthcare",t:"BMO"},BMY:{n:"Bristol-Myers Squibb",s:"Healthcare",t:"BMO"},
+ BA:{n:"Boeing",s:"Industrials",t:"BMO"},CAT:{n:"Caterpillar",s:"Industrials",t:"BMO"},GE:{n:"GE Aerospace",s:"Industrials",t:"BMO"},
+ HON:{n:"Honeywell",s:"Industrials",t:"BMO"},UPS:{n:"United Parcel Service",s:"Industrials",t:"BMO"},RTX:{n:"RTX",s:"Industrials",t:"BMO"},
+ LMT:{n:"Lockheed Martin",s:"Industrials",t:"BMO"},MMM:{n:"3M",s:"Industrials",t:"BMO"},DE:{n:"Deere",s:"Industrials",t:"BMO"},
+ XOM:{n:"Exxon Mobil",s:"Energy",t:"BMO"},CVX:{n:"Chevron",s:"Energy",t:"BMO"},COP:{n:"ConocoPhillips",s:"Energy",t:"BMO"},
+ SLB:{n:"Schlumberger",s:"Energy",t:"BMO"},LIN:{n:"Linde",s:"Materials",t:"BMO"},FCX:{n:"Freeport-McMoRan",s:"Materials",t:"BMO"},
+ NEE:{n:"NextEra Energy",s:"Utilities",t:"BMO"},DUK:{n:"Duke Energy",s:"Utilities",t:"BMO"}
+};
+const estate={range:"week",view:"list",q:"",sector:"all",time:"all",watchOnly:false};
+let EARN=[], EPRO={}, earnLoaded=false;
+let WATCH=new Set(JSON.parse(localStorage.getItem("atlasWatch")||"[]"));
+function saveWatch(){localStorage.setItem("atlasWatch",JSON.stringify([...WATCH]));}
+function toggleWatch(sym,e){if(e)e.stopPropagation();WATCH.has(sym)?WATCH.delete(sym):WATCH.add(sym);saveWatch();renderEarnAll();}
+function ymd(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+function addDays(d,n){const x=new Date(d);x.setDate(x.getDate()+n);return x;}
+function mondayOf(d){const x=new Date(d);const w=(x.getDay()+6)%7;return addDays(x,-w);}
+function rangeDates(r){const now=new Date();
+  if(r==="today")return{from:ymd(now),to:ymd(now)};
+  if(r==="tomorrow"){const t=addDays(now,1);return{from:ymd(t),to:ymd(t)};}
+  const mon=mondayOf(now);
+  if(r==="next"){const m=addDays(mon,7);return{from:ymd(m),to:ymd(addDays(m,4))};}
+  return{from:ymd(mon),to:ymd(addDays(mon,4))};}
+function fmtEps(n){return n==null?"—":(n<0?"-$":"$")+Math.abs(n).toFixed(2);}
+function fmtRev(n){if(n==null)return"—";const a=Math.abs(n);if(a>=1e9)return"$"+(n/1e9).toFixed(2)+"B";if(a>=1e6)return"$"+(n/1e6).toFixed(0)+"M";return"$"+n.toFixed(0);}
+function fmtMcap(n){if(!n)return"—";if(n>=1e12)return"$"+(n/1e12).toFixed(2)+"T";if(n>=1e9)return"$"+(n/1e9).toFixed(0)+"B";return"$"+(n/1e6).toFixed(0)+"M";}
+function spCls(s){return s==null?"":s>=0?"up":"down";}
+
+function setView(v){
+  const on=v==="earn";
+  $("#earningsView").classList.toggle("show",on);
+  document.querySelectorAll(".vbtn").forEach(b=>b.classList.toggle("active",b.getAttribute("data-v")===v));
+  if(on&&!earnLoaded){earnLoaded=true;loadEarnings();}
+}
+function setEarnView(v){estate.view=v;document.querySelectorAll(".ev-vtoggle button").forEach(b=>b.classList.toggle("active",b.getAttribute("data-vt")===v));renderEarnAll();}
+function toggleWatchOnly(){estate.watchOnly=!estate.watchOnly;$("#evWatchBtn").classList.toggle("active",estate.watchOnly);renderEarnAll();}
+
+async function loadEarnings(){
+  const{from,to}=rangeDates(estate.range);
+  $("#evCount").textContent="Loading…";
+  let cal=[];
+  try{cal=await fetch(`https://financialmodelingprep.com/stable/earnings-calendar?from=${from}&to=${to}&apikey=${FMP_KEY}`).then(r=>r.json());}catch(e){}
+  if(!Array.isArray(cal))cal=[];
+  EARN=cal.filter(x=>U[x.symbol]).map(x=>{const u=U[x.symbol];
+    const es=(x.epsActual!=null&&x.epsEstimated)?(x.epsActual-x.epsEstimated)/Math.abs(x.epsEstimated)*100:null;
+    const rs=(x.revenueActual!=null&&x.revenueEstimated)?(x.revenueActual-x.revenueEstimated)/Math.abs(x.revenueEstimated)*100:null;
+    return{sym:x.symbol,name:u.n,sector:u.s,time:u.t,date:x.date,epsE:x.epsEstimated,epsA:x.epsActual,revE:x.revenueEstimated,revA:x.revenueActual,epsSp:es,revSp:rs};});
+  populateSectors();
+  renderEarnAll();
+  await enrichProfiles([...new Set(EARN.map(i=>i.sym))]);
+  renderEarnAll();
+}
+async function enrichProfiles(syms){
+  await Promise.all(syms.filter(s=>!EPRO[s]).map(async s=>{
+    try{const d=await fetch(`https://financialmodelingprep.com/stable/profile?symbol=${s}&apikey=${FMP_KEY}`).then(r=>r.json());
+      const p=Array.isArray(d)?d[0]:d;
+      if(p)EPRO[s]={mcap:p.marketCap,price:p.price,chg:p.changePercentage,exch:p.exchange,ctry:p.country,ind:p.industry};
+    }catch(e){}
+  }));
+}
+function populateSectors(){
+  const secs=[...new Set(EARN.map(i=>i.sector))].sort();
+  const sel=$("#evSector");if(sel.options.length>1)return;
+  secs.forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;sel.appendChild(o);});
+}
+function filterEarn(){
+  const q=estate.q.toLowerCase();
+  return EARN.filter(i=>{
+    if(estate.sector!=="all"&&i.sector!==estate.sector)return false;
+    if(estate.time!=="all"&&i.time!==estate.time)return false;
+    if(estate.watchOnly&&!WATCH.has(i.sym))return false;
+    if(q&&!(i.sym.toLowerCase().includes(q)||i.name.toLowerCase().includes(q)))return false;
+    return true;
+  });
+}
+function mcapOf(s){return (EPRO[s]&&EPRO[s].mcap)||0;}
+function ecard(i){
+  const P=EPRO[i.sym]||{};
+  const epsSp=i.epsSp==null?'<span class="epend">Pending</span>':`<span class="sp ${spCls(i.epsSp)}">${sgn(i.epsSp)}${i.epsSp.toFixed(1)}%</span>`;
+  const revSp=i.revSp==null?'':`<span class="sp ${spCls(i.revSp)}">${sgn(i.revSp)}${i.revSp.toFixed(1)}%</span>`;
+  const star=WATCH.has(i.sym)?"★":"☆";
+  return `<div class="ecard" onclick="openEarn('${i.sym}')" style="position:relative">
+    <img class="elogo" src="${logoURL(i.sym)}" onerror="this.style.visibility='hidden'">
+    <div class="eco"><div class="cn">${i.name}</div><div class="cm">${i.sym}<span class="tm tm-${i.time}">${i.time}</span></div></div>
+    <div class="emetric"><div class="k">EPS Est / Act</div><div class="v">${fmtEps(i.epsE)} / ${i.epsA!=null?fmtEps(i.epsA):'—'}</div><div>${epsSp}</div></div>
+    <div class="emetric rev"><div class="k">Rev Est / Act</div><div class="v">${fmtRev(i.revE)} / ${i.revA!=null?fmtRev(i.revA):'—'}</div><div>${revSp}</div></div>
+    <div class="emetric"><div class="k">Price</div><div class="v">${P.price?'$'+fmtN(P.price):'—'}</div><div>${P.chg!=null?`<span class="sp ${spCls(P.chg)}">${sgn(P.chg)}${P.chg.toFixed(2)}%</span>`:''}</div></div>
+    <div class="ecap"><div class="mc">${fmtMcap(P.mcap)}</div><div class="sec">${i.sector}</div></div>
+    <span onclick="toggleWatch('${i.sym}',event)" style="position:absolute;top:8px;right:10px;font-size:13px;color:${WATCH.has(i.sym)?'var(--amber)':'var(--dim)'};cursor:pointer">${star}</span>
+  </div>`;
+}
+function renderList(list){
+  const byDate={};list.forEach(i=>{(byDate[i.date]=byDate[i.date]||[]).push(i);});
+  const dates=Object.keys(byDate).sort();
+  if(!dates.length)return '<p style="color:var(--muted);padding:30px;text-align:center">No matching earnings in this range.</p>';
+  return dates.map(d=>{const items=byDate[d].sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym));
+    const dd=new Date(d+"T12:00:00");const lbl=dd.toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"});
+    return `<div class="eday"><div class="eday-h">${lbl}<span class="cnt">${items.length} reports</span></div>${items.map(ecard).join("")}</div>`;
+  }).join("");
+}
+function renderCal(list){
+  const{from}=rangeDates(estate.range);const mon=new Date(from+"T12:00:00");
+  const todayStr=ymd(new Date());
+  let html='<div class="ecalgrid">';
+  for(let k=0;k<5;k++){const d=addDays(mon,k);const ds=ymd(d);const items=list.filter(i=>i.date===ds).sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym));
+    html+=`<div class="ecalcol ${ds===todayStr?'today':''}"><div class="ch">${d.toLocaleDateString("en-US",{weekday:"short"})}<small>${d.toLocaleDateString("en-US",{month:"short",day:"numeric"})} · ${items.length}</small></div>${items.map(i=>{const sp=i.epsSp!=null?`<span class="es ${spCls(i.epsSp)}">${sgn(i.epsSp)}${i.epsSp.toFixed(0)}%</span>`:`<span class="es" style="color:var(--dim)">${i.time}</span>`;return `<div class="ecItem" onclick="openEarn('${i.sym}')"><img src="${logoURL(i.sym)}" onerror="this.style.visibility='hidden'"><span class="et">${i.sym}</span>${sp}</div>`;}).join("")}</div>`;
+  }
+  return html+"</div>";
+}
+function widget(title,icon,rows){return `<div class="ewidget"><h4>${icon} ${title}</h4>${rows||'<div style="font-size:10px;color:var(--dim)">No reported results yet.</div>'}</div>`;}
+function wrow(i,val,cls){const P=EPRO[i.sym]||{};return `<div class="ewrow" onclick="openEarn('${i.sym}')"><img src="${logoURL(i.sym)}" onerror="this.style.visibility='hidden'"><span class="et">${i.sym}</span><span class="en">${i.name}</span><span class="es ${cls||''}">${val}</span></div>`;}
+function renderWidgets(){
+  const rep=EARN.filter(i=>i.epsSp!=null);
+  const beats=[...rep].sort((a,b)=>b.epsSp-a.epsSp).slice(0,5);
+  const miss=[...rep].sort((a,b)=>a.epsSp-b.epsSp).slice(0,5);
+  const antic=[...EARN].sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym)).slice(0,5);
+  const mega=[...EARN].filter(i=>mcapOf(i.sym)>=3e11).sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym)).slice(0,5);
+  // sector heatmap
+  const secAgg={};rep.forEach(i=>{(secAgg[i.sector]=secAgg[i.sector]||[]).push(i.epsSp);});
+  const heat=Object.entries(secAgg).map(([s,arr])=>[s,arr.reduce((a,b)=>a+b,0)/arr.length]).sort((a,b)=>b[1]-a[1]);
+  const heatHtml=heat.length?`<div class="heatgrid">${heat.map(([s,v])=>{const c=v>=2?'rgba(24,224,138,.18)':v>=0?'rgba(24,224,138,.1)':v>=-2?'rgba(255,191,60,.14)':'rgba(255,84,104,.16)';const tc=v>=0?'var(--green)':'var(--red)';return `<div class="heatcell" style="background:${c};color:var(--text)">${s}<small style="color:${tc}">${sgn(v)}${v.toFixed(1)}%</small></div>`;}).join("")}</div>`:'<div style="font-size:10px;color:var(--dim)">No reported results yet.</div>';
+  $("#evWidgets").innerHTML=
+    widget("Biggest Beats","▲",beats.map(i=>wrow(i,sgn(i.epsSp)+i.epsSp.toFixed(1)+"%","up")).join(""))+
+    widget("Biggest Misses","▼",miss.map(i=>wrow(i,sgn(i.epsSp)+i.epsSp.toFixed(1)+"%","down")).join(""))+
+    widget("Most Anticipated","◆",antic.map(i=>wrow(i,fmtMcap(mcapOf(i.sym)))).join(""))+
+    widget("Mega-Cap Earnings","★",mega.length?mega.map(i=>wrow(i,fmtMcap(mcapOf(i.sym)))).join(""):'<div style="font-size:10px;color:var(--dim)">None in range.</div>')+
+    `<div class="ewidget" style="grid-column:span 1"><h4>▤ Sector Heatmap (EPS surprise)</h4>${heatHtml}</div>`;
+}
+function renderSidebar(){
+  const todayStr=ymd(new Date()),tomStr=ymd(addDays(new Date(),1));
+  const today=EARN.filter(i=>i.date===todayStr).sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym)).slice(0,8);
+  const soon=EARN.filter(i=>i.date===todayStr||i.date===tomStr).sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym)).slice(0,8);
+  const most=[...EARN].sort((a,b)=>mcapOf(b.sym)-mcapOf(a.sym)).slice(0,8);
+  const rows=arr=>arr.length?arr.map(i=>wrow(i,(EPRO[i.sym]&&EPRO[i.sym].chg!=null)?(sgn(EPRO[i.sym].chg)+EPRO[i.sym].chg.toFixed(1)+"%"):i.time, (EPRO[i.sym]&&EPRO[i.sym].chg!=null)?spCls(EPRO[i.sym].chg):'')).join(""):'<div style="font-size:10px;color:var(--dim)">None.</div>';
+  $("#evSide").innerHTML=`<h3>◈ TODAY'S MOST IMPORTANT</h3>${rows(today.length?today:most)}
+    <h3>◷ REPORTING &lt; 24H</h3>${rows(soon)}
+    <h3>★ MOST ANTICIPATED</h3>${rows(most)}`;
+}
+function renderEarnAll(){
+  const list=filterEarn();
+  $("#evCount").textContent=`${list.length} of ${EARN.length} companies`;
+  $("#evList").innerHTML=estate.view==="cal"?renderCal(list):renderList(list);
+  renderWidgets();renderSidebar();
+}
+async function openEarn(sym){
+  const i=EARN.find(x=>x.sym===sym);const P=EPRO[sym]||{};const u=U[sym]||{};
+  const p=$("#earnDetail");
+  const beat=i&&i.epsSp!=null;
+  const biasCol=beat?(i.epsSp>=0?"var(--green)":"var(--red)"):"var(--amber)";
+  let ai;
+  if(beat){ai=`${i.name} reported ${i.epsSp>=0?"a beat":"a miss"} on EPS of <b>${sgn(i.epsSp)}${i.epsSp.toFixed(1)}%</b> versus consensus${i.revSp!=null?`, with revenue ${i.revSp>=0?"above":"below"} estimates by ${sgn(i.revSp)}${i.revSp.toFixed(1)}%`:""}. ${i.epsSp>=0?"The upside print tends to support the stock, though the reaction ultimately hinges on forward guidance and margins.":"The shortfall pressures sentiment; watch guidance and management commentary for whether it's a one-off or a trend."}`;}
+  else if(i){ai=`${i.name} is scheduled to report ${new Date(i.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"long",month:"short",day:"numeric"})} (${i.time==="BMO"?"before the open":"after the close"}). Consensus looks for EPS around ${fmtEps(i.epsE)}${i.revE?` on revenue near ${fmtRev(i.revE)}`:""}. Watch the print versus estimates and, more importantly, forward guidance.`;}
+  else ai="Details unavailable.";
+  p.innerHTML=`<div class="edh"><img src="${logoURL(sym)}" onerror="this.style.visibility='hidden'"><div><h2>${(u.n||sym)} <span onclick="toggleWatch('${sym}',event)" style="cursor:pointer;color:${WATCH.has(sym)?'var(--amber)':'var(--dim)'};font-size:15px">${WATCH.has(sym)?'★':'☆'}</span></h2><div class="sub">${sym} · ${P.exch||''} · ${P.ind||u.s||''}</div></div><button class="close" onclick="closeEarn()">✕</button></div>
+    <div class="edb">
+      <div class="statbar" style="grid-template-columns:repeat(3,1fr)">
+        <div class="s"><div class="k">PRICE</div><div class="v">${P.price?'$'+fmtN(P.price):'—'}</div></div>
+        <div class="s"><div class="k">DAY CHANGE</div><div class="v ${spCls(P.chg)}">${P.chg!=null?sgn(P.chg)+P.chg.toFixed(2)+'%':'—'}</div></div>
+        <div class="s"><div class="k">MARKET CAP</div><div class="v">${fmtMcap(P.mcap)}</div></div>
+      </div>
+      <div class="impactrow" style="margin:14px 0">
+        <div class="badge" style="background:${beat?(i.epsSp>=0?'rgba(24,224,138,.15)':'rgba(255,84,104,.15)'):'rgba(255,191,60,.15)'};color:${biasCol};border:1px solid ${biasCol}">${beat?(i.epsSp>=0?'EPS BEAT':'EPS MISS'):'UPCOMING'}</div>
+        <div class="badge" style="background:rgba(139,109,255,.14);color:#b7a6ff;border:1px solid rgba(139,109,255,.4)">${i?(i.time==='BMO'?'BEFORE OPEN':'AFTER CLOSE'):''}</div>
+      </div>
+      <div class="statbar" style="grid-template-columns:repeat(3,1fr)">
+        <div class="s"><div class="k">EPS EST</div><div class="v">${fmtEps(i&&i.epsE)}</div></div>
+        <div class="s"><div class="k">EPS ACT</div><div class="v">${i&&i.epsA!=null?fmtEps(i.epsA):'—'}</div></div>
+        <div class="s"><div class="k">EPS SURPRISE</div><div class="v ${spCls(i&&i.epsSp)}">${i&&i.epsSp!=null?sgn(i.epsSp)+i.epsSp.toFixed(1)+'%':'—'}</div></div>
+        <div class="s"><div class="k">REV EST</div><div class="v">${fmtRev(i&&i.revE)}</div></div>
+        <div class="s"><div class="k">REV ACT</div><div class="v">${i&&i.revA!=null?fmtRev(i.revA):'—'}</div></div>
+        <div class="s"><div class="k">REV SURPRISE</div><div class="v ${spCls(i&&i.revSp)}">${i&&i.revSp!=null?sgn(i.revSp)+i.revSp.toFixed(1)+'%':'—'}</div></div>
+      </div>
+      <div class="aibox" style="margin-top:16px"><div class="t">✦ AI EARNINGS SUMMARY</div><p>${ai}</p></div>
+      <div class="newsgrp"><div class="gt">HISTORICAL EPS · LAST 8 QUARTERS<span class="ln"></span></div><div id="edHist"><p style="font-size:11px;color:var(--dim)">Loading…</p></div></div>
+      <div class="newsgrp"><div class="gt">RECENT NEWS<span class="ln"></span></div><div id="edNews"></div></div>
+      <div class="disc">Estimates, actuals, surprises, price and market cap are live via FMP · AI summary is generated from the reported figures · not investment advice.</div>
+    </div>`;
+  p.classList.add("open");
+  // historical + news
+  fetchHist(sym); renderEdNews(sym);
+}
+function closeEarn(){$("#earnDetail").classList.remove("open");}
+async function fetchHist(sym){
+  let h=[];try{h=await fetch(`https://financialmodelingprep.com/stable/earnings?symbol=${sym}&limit=16&apikey=${FMP_KEY}`).then(r=>r.json());}catch(e){}
+  const el=document.getElementById("edHist");if(!el)return;
+  const rows=(Array.isArray(h)?h:[]).filter(x=>x.epsActual!=null).slice(0,8).reverse();
+  if(!rows.length){el.innerHTML='<p style="font-size:11px;color:var(--dim)">No historical actuals available.</p>';return;}
+  const eps=rows.map(r=>r.epsActual);const mx=Math.max(...eps.map(Math.abs))||1;
+  el.innerHTML=`<div class="hq">${rows.map(r=>{const beat=(r.epsEstimated!=null)&&r.epsActual>=r.epsEstimated;const h=Math.max(3,Math.abs(r.epsActual)/mx*54);const c=beat?'var(--green)':'var(--red)';const q=(r.date||'').slice(2,7);return `<div class="hqb" style="height:${h}px;background:${c};box-shadow:0 0 8px ${c}"><span>${q}</span></div>`;}).join("")}</div><div style="margin-top:22px;font-size:9.5px;color:var(--muted)">Green = beat, red = miss · bar height = |EPS|</div>`;
+}
+function renderEdNews(sym){
+  const u=U[sym]||{};const src=NEWS.length?NEWS:[];
+  const re=new RegExp("\\b"+sym+"\\b|"+(u.n||sym).split(" ")[0],"i");
+  const hits=src.filter(n=>re.test(n.h+" "+(n.text||""))).slice(0,3);
+  const el=document.getElementById("edNews");if(!el)return;
+  el.innerHTML=hits.length?hits.map(n=>`<div class="ni"><span class="bd" style="background:var(--cyan)"></span><div class="tx">${n.h}<small>${n.site||''} · ${n.t||''}</small></div></div>`).join(""):'<p style="font-size:11px;color:var(--dim)">No recent headlines matched in the live feed.</p>';
+}
+// earnings toolbar events
+document.addEventListener("DOMContentLoaded",()=>{});
+function bindEarnUI(){
+  $("#evRange").addEventListener("click",e=>{const b=e.target.closest(".ev-tab");if(!b)return;estate.range=b.getAttribute("data-r");document.querySelectorAll("#evRange .ev-tab").forEach(x=>x.classList.toggle("active",x===b));loadEarnings();});
+  $("#evSearch").addEventListener("input",e=>{estate.q=e.target.value;renderEarnAll();});
+  $("#evSector").addEventListener("change",e=>{estate.sector=e.target.value;renderEarnAll();});
+  $("#evTime").addEventListener("change",e=>{estate.time=e.target.value;renderEarnAll();});
+}
+
 /* ---------- BOOT ---------- */
 renderTickers(); renderHeat(); renderFeed(); renderTimeline();
 initGlobe();
 setupMoon();
+bindEarnUI();
 fetchLive();
 fetchNews();
 setInterval(fetchLive, 60000);
