@@ -68,6 +68,8 @@ body{
   padding:7px 12px;border-radius:9px;border:1px solid var(--stroke2)}
 
 .up{color:var(--green)} .down{color:var(--red)} .flat{color:var(--amber)}
+.flimg{width:1.25em;height:auto;border-radius:2px;display:inline-block;vertical-align:-0.18em;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.flcode{font-weight:700;font-size:.66em;letter-spacing:.5px;color:var(--muted)}
 
 /* ---------- side panels ---------- */
 .side{position:fixed;z-index:15;width:300px;top:80px;bottom:132px;display:flex;flex-direction:column}
@@ -528,8 +530,9 @@ const hasKey = FMP_KEY && !/^PASTE/.test(FMP_KEY);
 
 /* ---------- helpers ---------- */
 const $=s=>document.querySelector(s);
-function flag(cc){ if(!cc||cc.length!==2||/[0-9]/.test(cc)) return '🌐';
-  return String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))); }
+function flag(cc){ if(!cc||cc.length!==2||/[0-9]/.test(cc)) return '<span class="flcode">'+(cc||'?')+'</span>';
+  const lc=cc.toLowerCase();
+  return `<img class="flimg" src="https://flagcdn.com/w40/${lc}.png" srcset="https://flagcdn.com/w80/${lc}.png 2x" alt="${cc.toUpperCase()}" loading="lazy" onerror="this.onerror=null;this.outerHTML='<span class=\\'flcode\\'>${cc.toUpperCase()}</span>'">`; }
 function sgn(n){return n>=0?'+':''}
 function col(n){return n>0?'up':n<0?'down':'flat'}
 function strengthHex(s){ // s in [-1,1]
@@ -882,7 +885,7 @@ function hideHover(){hoverEl.classList.remove("show");}
 /* ---------- DETAIL PANEL ---------- */
 function openDetail(cc){
   const c=C[cc]; if(!c) return;
-  $("#dFlag").textContent=flag(c.cc);
+  $("#dFlag").innerHTML=flag(c.cc);
   $("#dName").textContent=c.n;
   $("#dSub").textContent=`${c.idx.n} · POLICY ${c.rate}% · CPI ${c.infl}%`;
   const biasColor=c.bias==="BULLISH"?"var(--green)":c.bias==="BEARISH"?"var(--red)":"var(--amber)";
