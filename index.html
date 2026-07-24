@@ -367,6 +367,87 @@ body{
 .rncard p{font-size:10.5px;color:var(--muted);line-height:1.5;margin:0 0 9px}
 .rnbtn{display:inline-block;font-size:10px;font-weight:700;color:var(--cyan);text-decoration:none;border:1px solid rgba(63,224,255,.3);padding:5px 11px;border-radius:8px;transition:.15s}
 .rnbtn:hover{background:rgba(63,224,255,.12);border-color:var(--cyan);transform:translateY(-1px)}
+/* ===== space economy hub / moon ===== */
+#spaceLayer{position:fixed;inset:0;z-index:14;pointer-events:none;overflow:hidden}
+.orbitring{position:absolute;border:1px dashed rgba(120,180,255,.14);border-radius:50%;pointer-events:none}
+#moon{position:absolute;width:56px;height:56px;pointer-events:auto;cursor:pointer;will-change:transform,left,top;
+  filter:drop-shadow(0 0 16px rgba(170,195,255,.4));transition:filter .3s}
+#moon:hover{filter:drop-shadow(0 0 22px rgba(170,200,255,.75))}
+.moonface{width:100%;height:100%;border-radius:50%;
+  background:url('https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/moon_1024.jpg') center/cover,#9a9a9a;
+  box-shadow:inset -15px -11px 28px rgba(0,0,0,.9),inset 9px 7px 18px rgba(255,255,255,.16);
+  filter:grayscale(.18) brightness(.96)}
+.sat{position:absolute;top:50%;left:50%;margin:-2px;width:4px;height:4px;border-radius:50%;background:#c6ecff;box-shadow:0 0 7px #3fe0ff}
+.sat.s1{animation:sat1 4.5s linear infinite}
+.sat.s2{animation:sat2 6.5s linear infinite}
+.sat.s3{animation:sat3 5.5s linear infinite}
+@keyframes sat1{from{transform:rotate(0deg) translateX(35px)}to{transform:rotate(360deg) translateX(35px)}}
+@keyframes sat2{from{transform:rotate(140deg) translateX(43px)}to{transform:rotate(500deg) translateX(43px)}}
+@keyframes sat3{from{transform:rotate(250deg) translateX(39px)}to{transform:rotate(610deg) translateX(39px)}}
+.rocket{position:absolute;z-index:14;width:9px;height:9px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,#fff,#ffcf6a 60%,#ff8a3c);box-shadow:0 0 10px #ffb14d,0 0 22px rgba(255,140,50,.55);will-change:transform}
+.rocket::after{content:"";position:absolute;right:7px;top:50%;width:30px;height:2px;transform:translateY(-50%);
+  background:linear-gradient(90deg,transparent,rgba(255,180,90,.75));border-radius:2px}
+#moonTip{position:fixed;z-index:30;width:250px;pointer-events:none;opacity:0;transform:translateY(6px);transition:opacity .15s,transform .15s;padding:13px 15px}
+#moonTip.show{opacity:1;transform:translateY(0)}
+#moonTip .mt-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin-bottom:8px}
+#moonTip .mt-h .dot{width:8px;height:8px;border-radius:50%;background:#b7c6ff;box-shadow:0 0 8px #b7c6ff}
+#moonTip p{font-size:11px;color:var(--muted);line-height:1.5}
+#moonTip .mt-s{margin-top:9px;display:flex;align-items:center;gap:8px;font-size:10px}
+#moonTip .mt-s b{color:var(--green);font-weight:800}
+#moonTip .hint{margin-top:8px;font-size:9px;color:var(--dim);letter-spacing:1px;text-align:center}
+/* space panel (slide-in) */
+#spacepanel{position:fixed;z-index:42;top:0;right:0;height:100%;width:490px;max-width:95vw;transform:translateX(106%);
+  transition:transform .45s cubic-bezier(.22,.9,.3,1);display:flex;flex-direction:column;border-left:1px solid rgba(120,150,220,.35);
+  background:linear-gradient(180deg,rgba(9,11,22,0.97),rgba(6,8,15,0.98));backdrop-filter:blur(20px)}
+#spacepanel.open{transform:translateX(0)}
+#spacepanel .sph{padding:18px 20px 15px;border-bottom:1px solid var(--stroke);position:relative;display:flex;align-items:center;gap:13px;
+  background:linear-gradient(135deg,rgba(120,150,255,.12),rgba(63,224,255,.04))}
+#spacepanel .sph .mn{width:40px;height:40px;border-radius:50%;flex-shrink:0;
+  background:url('https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/moon_1024.jpg') center/cover,#9a9a9a;
+  box-shadow:inset -8px -6px 14px rgba(0,0,0,.85),0 0 14px rgba(170,195,255,.4)}
+#spacepanel .sph h2{font-size:17px;letter-spacing:.4px}
+#spacepanel .sph .sub{font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:2px;font-family:var(--mono)}
+#spacepanel .sph .close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:8px;border:1px solid var(--stroke2);background:var(--panel2);color:var(--text);cursor:pointer;font-size:15px}
+#spacepanel .sph .close:hover{background:rgba(255,84,104,.15);border-color:var(--red)}
+#spacepanel .spb{flex:1;overflow-y:auto;padding:16px 20px 30px}
+#spacepanel .spb::-webkit-scrollbar{width:7px}#spacepanel .spb::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:6px}
+.spsec{padding:15px 0;border-top:1px solid rgba(120,150,220,.1)}
+.spsec:first-child{border-top:none;padding-top:2px}
+.spsec .mh{font-size:9.5px;letter-spacing:1.6px;font-weight:800;color:#a9baff;margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.spsec>p{font-size:12px;line-height:1.6;color:#dfe4f5}
+.launchcard{background:linear-gradient(135deg,rgba(63,224,255,.1),rgba(120,150,255,.05));border:1px solid rgba(63,224,255,.3);border-radius:14px;padding:15px}
+.launchcard .lt{font-size:9px;letter-spacing:1.5px;color:var(--cyan);font-weight:800;margin-bottom:6px}
+.launchcard .ln{font-size:15px;font-weight:700;margin-bottom:10px}
+.cdclock{font-family:var(--mono);font-size:26px;font-weight:800;letter-spacing:1px;color:#fff;text-shadow:0 0 16px rgba(63,224,255,.5);margin-bottom:12px}
+.lgrid{display:grid;grid-template-columns:1fr 1fr;gap:7px 14px}
+.lgrid .li{font-size:10.5px}.lgrid .li .k{color:var(--muted);font-size:8.5px;letter-spacing:.5px;font-weight:700}.lgrid .li .v{font-weight:600;margin-top:1px}
+.status-go{color:var(--green)}
+.mtl{display:flex;flex-direction:column;gap:7px}
+.mtli{display:flex;align-items:center;gap:11px;border:1px solid var(--stroke);border-radius:11px;padding:9px 12px;background:rgba(12,18,34,.5);transition:transform .15s}
+.mtli:hover{transform:translateY(-2px)}
+.mtli .mdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.mtli .mi{flex:1;min-width:0}.mtli .mi b{font-size:11.5px;display:block}.mtli .mi small{font-size:8.5px;color:var(--muted);font-family:var(--mono)}
+.mtli .mcd{font-family:var(--mono);font-size:10px;font-weight:700;color:var(--cyan);text-align:right;flex-shrink:0}
+.mtli .mres{font-size:8px;font-weight:800;padding:2px 7px;border-radius:5px;flex-shrink:0}
+.spco{display:flex;align-items:center;gap:11px;border:1px solid var(--stroke);border-radius:12px;padding:10px 12px;background:rgba(12,18,34,.5);margin-bottom:8px;transition:transform .15s,box-shadow .15s,border-color .15s}
+.spco:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.3);border-color:rgba(63,224,255,.3)}
+.spco .clogo{width:30px;height:30px;border-radius:7px;background:#fff;object-fit:contain;flex-shrink:0;padding:2px}
+.spco .ci{flex:1;min-width:0}
+.spco .cn{display:flex;align-items:baseline;gap:6px}
+.spco .cn b{font-size:12px;font-weight:700}
+.spco .cn .tk{font-size:9px;color:var(--muted);font-family:var(--mono)}
+.spco .cx{font-size:9.5px;color:var(--muted);line-height:1.4;margin-top:3px}
+.spco .cright{text-align:right;flex-shrink:0;font-family:var(--mono)}
+.spco .cright .pr{font-size:12px;font-weight:700}
+.spco .cright .pc{font-size:10px;font-weight:700}
+.spco .cright .corr{font-size:7.5px;font-weight:800;letter-spacing:.3px;margin-top:3px}
+.spnews{display:flex;gap:9px;padding:9px 0;border-top:1px dashed rgba(120,150,220,.1)}
+.spnews:first-of-type{border-top:none}
+.spnews .cat{font-size:7.5px;font-weight:800;letter-spacing:.5px;padding:2px 6px;border-radius:5px;height:fit-content;margin-top:2px;flex-shrink:0;background:rgba(120,150,255,.14);color:#a9baff;border:1px solid rgba(120,150,255,.3)}
+.spnews .sn h5{font-size:11.5px;font-weight:650;line-height:1.35;margin:0}
+.spnews .sn .snt{font-size:8.5px;color:var(--dim);font-family:var(--mono);margin-top:3px}
+.spnews .sn .snl{font-size:7.5px;font-weight:800;padding:1px 5px;border-radius:4px;margin-left:6px}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -438,6 +519,17 @@ body{
 <div id="globeViz"></div>
 <div class="scanline"></div>
 <div class="vignette"></div>
+
+<!-- SPACE ECONOMY HUB -->
+<div id="spaceLayer">
+  <div class="orbitring" id="orbitring"></div>
+  <div id="moon">
+    <div class="moonface"></div>
+    <span class="sat s1"></span><span class="sat s2"></span><span class="sat s3"></span>
+  </div>
+</div>
+<div id="moonTip" class="glass"></div>
+<div id="spacepanel"></div>
 
 <div class="loadscreen" id="load"><div class="lg"></div><p>INITIALIZING GLOBAL FEED…</p></div>
 
@@ -1302,6 +1394,213 @@ document.addEventListener("click",e=>{
   if(openMktKey && !e.target.closest("#mktpanel") && !e.target.closest(".tk")) closeMarket();
 });
 window.addEventListener("resize",()=>{if(openMktKey)closeMarket();});
+
+/* ================= SPACE ECONOMY HUB (MOON) ================= */
+const SPACECOS=[
+ ["RKLB","Rocket Lab","Small-launch and space-systems rival; benefits as launch demand grows but competes for rideshare payloads.",0.72],
+ ["LUNR","Intuitive Machines","Lunar-lander and NASA CLPS contractor; rides the same Artemis tailwind as SpaceX.",0.60],
+ ["RDW","Redwire","Space-infrastructure and components supplier with broad space-economy exposure.",0.50],
+ ["PL","Planet Labs","Earth-imaging constellation; cheaper SpaceX launch lowers its deployment costs.",0.45],
+ ["BKSY","BlackSky","Real-time geospatial intelligence; gains from cheaper access to orbit.",0.40],
+ ["MDA","MDA Space","Satellite systems and robotics with broad commercial-space exposure.",0.30],
+ ["LMT","Lockheed Martin","Defense and space prime; both competes and partners on national-security launch.",-0.20],
+ ["NOC","Northrop Grumman","Defense/space prime; Antares and cargo overlap with SpaceX services.",-0.25],
+ ["BA","Boeing","Legacy space/defense prime; Starliner struggles contrast with SpaceX crew dominance.",-0.35],
+ ["IRDM","Iridium","Satellite-comms incumbent; Starlink direct-to-cell is a long-term overhang.",-0.50],
+ ["ASTS","AST SpaceMobile","Direct-to-cell operator; Starlink's D2C push is both validation and a competitive threat.",-0.55],
+ ["VSAT","Viasat","GEO satellite broadband; directly pressured by Starlink's LEO expansion.",-0.68]
+];
+const SPACENEWS=[
+ ["STARSHIP","Starship completes full-duration static fire ahead of next orbital test","2h ago","HIGH"],
+ ["LAUNCH","Falcon 9 launches 23 Starlink satellites from Cape Canaveral","5h ago","MED"],
+ ["NASA","NASA awards SpaceX an additional ISS crew-rotation mission","1d ago","HIGH"],
+ ["DEFENSE","Space Force books multiple national-security launches on Falcon Heavy","1d ago","HIGH"],
+ ["STARLINK","Starlink passes a new subscriber milestone as direct-to-cell expands","2d ago","MED"],
+ ["REGULATORY","FAA clears the next Starship test flight following environmental review","2d ago","HIGH"],
+ ["FUNDING","SpaceX valuation climbs in the latest secondary share sale","3d ago","MED"],
+ ["SATELLITE","New batch of next-gen Starlink V2 satellites deployed to orbit","4d ago","MED"],
+ ["PARTNERSHIP","Commercial Starship payload agreement announced with a satellite operator","4d ago","LOW"],
+ ["MISSION","Crew mission returns safely after a six-month ISS stay","5d ago","MED"]
+];
+const MISSIONS_UP=[
+ ["Starlink Group 12-5","Falcon 9","SLC-40 · Cape Canaveral","Starlink","#3fe0ff",14],
+ ["Starship Integrated Flight Test","Starship","Starbase · Boca Chica, TX","Test Flight","#8b6dff",62],
+ ["USSF-106 (National Security)","Falcon Heavy","LC-39A · Kennedy Space Center","Defense","#ff5468",110],
+ ["Crew-12 to ISS","Falcon 9","LC-39A · Kennedy Space Center","Crew","#18e08a",180]
+];
+const MISSIONS_DONE=[
+ ["Starlink Group 11-3","Falcon 9","Success","2d ago"],
+ ["CRS-32 Cargo Dragon","Falcon 9","Success","4d ago"],
+ ["O3b mPOWER","Falcon 9","Success","6d ago"]
+];
+let SPQ={}; // live quotes cache for space cos
+function logoURL(t){return `https://images.financialmodelingprep.com/symbol/${t}.png`;}
+
+/* ---- moon orbit + interactions ---- */
+const orbit={cx:0,cy:0,rx:320,ry:210,ang:Math.random()*6.28,speed:0.0016};
+function layoutOrbit(){
+  orbit.cx=window.innerWidth/2;
+  orbit.cy=64+(window.innerHeight-64-120)/2;
+  orbit.rx=Math.min(340,window.innerWidth*0.27);
+  orbit.ry=Math.min(220,window.innerHeight*0.30);
+  const ring=$("#orbitring");
+  if(ring){ring.style.width=(orbit.rx*2)+"px";ring.style.height=(orbit.ry*2)+"px";ring.style.left=(orbit.cx-orbit.rx)+"px";ring.style.top=(orbit.cy-orbit.ry)+"px";}
+}
+function moonLoop(){
+  orbit.ang+=orbit.speed;
+  const x=orbit.cx+Math.cos(orbit.ang)*orbit.rx, y=orbit.cy+Math.sin(orbit.ang)*orbit.ry;
+  const m=$("#moon"); if(m){
+    const depth=(Math.sin(orbit.ang)+1)/2, sc=0.82+depth*0.32;
+    m.style.left=(x-28)+"px"; m.style.top=(y-28)+"px"; m.style.transform=`scale(${sc.toFixed(3)})`;
+    m.style.opacity=(0.72+depth*0.28).toFixed(2);
+    m.__x=x; m.__y=y;
+    if($("#moonTip").classList.contains("show")) positionMoonTip();
+  }
+  requestAnimationFrame(moonLoop);
+}
+function positionMoonTip(){
+  const m=$("#moon"),tip=$("#moonTip"); if(!m)return;
+  let px=(m.__x||0)+40, py=(m.__y||0)-30;
+  if(px+250>window.innerWidth-20) px=(m.__x||0)-290;
+  py=Math.max(74,Math.min(py,window.innerHeight-200));
+  tip.style.left=px+"px"; tip.style.top=py+"px";
+}
+function setupMoon(){
+  layoutOrbit();
+  const m=$("#moon"),tip=$("#moonTip");
+  tip.innerHTML=`<div class="mt-h"><span class="dot"></span>SpaceX Ecosystem</div>
+    <p>Starship testing, record Falcon 9 cadence, Starlink expansion, and NASA / DoD contracts driving the commercial space economy.</p>
+    <div class="mt-s">Outlook <b>BULLISH · 78%</b></div>
+    <div class="hint">CLICK TO OPEN SPACE ECONOMY HUB</div>`;
+  m.addEventListener("mouseenter",()=>{positionMoonTip();tip.classList.add("show");});
+  m.addEventListener("mouseleave",()=>tip.classList.remove("show"));
+  m.addEventListener("click",e=>{e.stopPropagation();openSpace();});
+  window.addEventListener("resize",layoutOrbit);
+  requestAnimationFrame(moonLoop);
+  setInterval(spawnRocket, 15000);
+  setTimeout(spawnRocket, 4000);
+}
+function spawnRocket(){
+  if(document.hidden) return;
+  const m=$("#moon"); if(!m||!m.__x) return;
+  const r=document.createElement("div"); r.className="rocket";
+  $("#spaceLayer").appendChild(r);
+  const sx=orbit.cx, sy=orbit.cy, ex=m.__x, ey=m.__y;
+  const ang=Math.atan2(ey-sy,ex-sx)*180/Math.PI;
+  const t0=performance.now(), dur=3400;
+  (function fly(now){
+    const p=Math.min(1,(now-t0)/dur), e=p*p;
+    const x=sx+(ex-sx)*e, y=sy+(ey-sy)*e;
+    r.style.left=(x-4)+"px"; r.style.top=(y-4)+"px"; r.style.transform=`rotate(${ang}deg)`;
+    r.style.opacity=(p<0.1?p*10:p>0.85?(1-p)/0.15:1).toFixed(2);
+    if(p<1) requestAnimationFrame(fly); else r.remove();
+  })(performance.now());
+}
+
+/* ---- space panel ---- */
+let spCdTimer=null, spTargets=[];
+function fmtCountdown(ms){
+  if(ms<=0) return "LIFTOFF";
+  const s=Math.floor(ms/1000), d=Math.floor(s/86400), h=Math.floor(s%86400/3600), mi=Math.floor(s%3600/60), se=s%60;
+  const p=n=>String(n).padStart(2,"0");
+  return (d>0?d+"d ":"")+p(h)+":"+p(mi)+":"+p(se);
+}
+function tickCountdowns(){
+  spTargets.forEach(o=>{const el=document.getElementById(o.id); if(el) el.textContent=fmtCountdown(o.t-Date.now());});
+}
+function buildSpacePanel(){
+  const now=Date.now();
+  spTargets=[];
+  const up0=MISSIONS_UP[0];
+  const nextT=now+up0[5]*3600*1000;
+  spTargets.push({id:"cd-main",t:nextT});
+  // launch tracker
+  const tracker=`<div class="launchcard">
+    <div class="lt">◉ LIVE LAUNCH TRACKER · NEXT UP</div>
+    <div class="ln">${up0[0]}</div>
+    <div class="cdclock" id="cd-main">--:--:--</div>
+    <div class="lgrid">
+      <div class="li"><div class="k">ROCKET</div><div class="v">${up0[1]}</div></div>
+      <div class="li"><div class="k">SITE</div><div class="v">${up0[2]}</div></div>
+      <div class="li"><div class="k">OBJECTIVE</div><div class="v">${up0[3]} deployment</div></div>
+      <div class="li"><div class="k">STATUS</div><div class="v status-go">● GO FOR LAUNCH</div></div>
+      <div class="li"><div class="k">SUCCESS RATE</div><div class="v">99.3% (Falcon 9)</div></div>
+      <div class="li"><div class="k">BOOSTER</div><div class="v">Reused · landing planned</div></div>
+    </div></div>`;
+  // mission timeline
+  const upList=MISSIONS_UP.map((mn,i)=>{const id="cd-"+i; if(i>0){spTargets.push({id,t:now+mn[5]*3600*1000});}
+    return `<div class="mtli"><span class="mdot" style="background:${mn[4]};box-shadow:0 0 7px ${mn[4]}"></span>
+      <div class="mi"><b>${mn[0]}</b><small>${mn[1]} · ${mn[2]}</small></div>
+      <div class="mcd" ${i>0?`id="${id}"`:''}>${i===0?'NEXT ↑':''}</div></div>`;}).join("");
+  const doneList=MISSIONS_DONE.map(m=>`<div class="mtli"><span class="mdot" style="background:var(--green);box-shadow:0 0 7px var(--green)"></span>
+      <div class="mi"><b>${m[0]}</b><small>${m[1]} · ${m[3]}</small></div>
+      <div class="mres" style="background:rgba(24,224,138,.15);color:var(--green)">${m[2].toUpperCase()}</div></div>`).join("");
+  // market impact
+  const cos=SPACECOS.map(c=>{const q=SPQ[c[0]];
+    const price=q?("$"+Number(q.v).toLocaleString("en-US",{maximumFractionDigits:2})):"—";
+    const chg=q?((q.c>=0?"+":"")+q.c.toFixed(2)+"%"):"";
+    const chgcls=q?(q.c>=0?"up":"down"):"flat";
+    const corrCls=c[3]>=0?"up":"down"; const corrTxt=(c[3]>=0?"▲ BENEFITS ":"▼ COMPETES ")+c[3].toFixed(2);
+    return `<div class="spco"><img class="clogo" src="${logoURL(c[0])}" alt="${c[0]}" onerror="this.style.visibility='hidden'">
+      <div class="ci"><div class="cn"><b>${c[1]}</b><span class="tk">${c[0]}</span></div><div class="cx">${c[2]}</div></div>
+      <div class="cright"><div class="pr" data-sp="${c[0]}-pr">${price}</div><div class="pc ${chgcls}" data-sp="${c[0]}-pc">${chg}</div><div class="corr ${corrCls}">${corrTxt}</div></div></div>`;}).join("");
+  // starlink
+  const starlink=`<div class="statbar" style="grid-template-columns:repeat(3,1fr)">
+    <div class="s"><div class="k">SATELLITES IN ORBIT</div><div class="v">~7,900</div></div>
+    <div class="s"><div class="k">LAUNCHED YTD</div><div class="v">~1,300</div></div>
+    <div class="s"><div class="k">COUNTRIES LIVE</div><div class="v">100+</div></div>
+    <div class="s"><div class="k">SUBSCRIBERS</div><div class="v">~5M+</div></div>
+    <div class="s"><div class="k">DIRECT-TO-CELL</div><div class="v">Expanding</div></div>
+    <div class="s"><div class="k">GEN</div><div class="v">V2 Mini</div></div></div>
+    <p style="font-size:9px;color:var(--dim);margin-top:8px">Approximate representative figures · commercial space is fast-moving.</p>`;
+  // news
+  const news=SPACENEWS.map(n=>{const lv=n[3]==="HIGH"?"imp-High":n[3]==="LOW"?"imp-Low":"imp-Medium";
+    return `<div class="spnews"><span class="cat">${n[0]}</span><div class="sn"><h5>${n[1]}<span class="snl ${lv}">${n[3]}</span></h5><div class="snt">${n[2]}</div></div></div>`;}).join("");
+
+  return `<div class="sph"><div class="mn"></div><div><h2>Space Economy Hub</h2><div class="sub">SPACEX ECOSYSTEM · COMMERCIAL SPACE</div></div><button class="close" onclick="closeSpace()">✕</button></div>
+  <div class="spb">
+    <div class="spsec"><div class="mh">◈ OVERVIEW</div>
+      <div class="impactrow" style="margin:0 0 12px">
+        <div class="badge" style="background:rgba(24,224,138,.15);color:var(--green);border:1px solid var(--green)">SENTIMENT · 78 / 100</div>
+        <div class="badge" style="background:rgba(24,224,138,.15);color:var(--green);border:1px solid var(--green)">BULLISH OUTLOOK</div>
+      </div>
+      <p>The commercial space economy is in an accelerated phase: SpaceX's record Falcon 9 cadence, an advancing Starship program, and Starlink's rapid subscriber and direct-to-cell expansion are compressing launch costs and reshaping the competitive map. NASA and Department of Defense contract wins continue to anchor demand, while a rising private valuation signals strong investor conviction.</p></div>
+    <div class="spsec"><div class="mh">✦ WHY THIS MATTERS</div>
+      <div class="aibox"><div class="t">✦ AI INTELLIGENCE</div><p>Cheaper, more frequent access to orbit is the core catalyst. It <b>benefits</b> payload owners and space-infrastructure names (imaging, lunar, components) that launch on SpaceX, while it <b>pressures</b> legacy GEO-satellite and satellite-comms incumbents as Starlink scales. Short term, headlines drive sympathy moves across the small-cap space complex; long term, the winners are companies whose economics improve as launch costs fall, and the losers are those whose core market Starlink directly attacks.</p></div></div>
+    <div class="spsec"><div class="mh">◷ LIVE LAUNCH TRACKER</div>${tracker}</div>
+    <div class="spsec"><div class="mh">➤ MISSION TIMELINE · UPCOMING</div><div class="mtl">${upList}</div>
+      <div class="mh" style="margin:14px 0 9px;color:var(--muted)">RECENTLY COMPLETED</div><div class="mtl">${doneList}</div></div>
+    <div class="spsec"><div class="mh">◧ MARKET IMPACT · PUBLIC COMPANIES</div>${cos}
+      <p style="font-size:9px;color:var(--dim);margin-top:4px">Prices live via FMP · correlation scores are curated estimates of exposure to SpaceX activity.</p></div>
+    <div class="spsec"><div class="mh">▤ STARLINK DASHBOARD</div>${starlink}</div>
+    <div class="spsec"><div class="mh">⋯ SPACEX NEWS FEED</div>${news}</div>
+    <div class="disc" style="margin-top:14px">Curated space-economy intelligence · live equity prices · not investment advice</div>
+  </div>`;
+}
+function openSpace(){
+  const p=$("#spacepanel");
+  p.innerHTML=buildSpacePanel();
+  p.classList.add("open");
+  $("#moonTip").classList.remove("show");
+  clearInterval(spCdTimer); tickCountdowns(); spCdTimer=setInterval(tickCountdowns,1000);
+  fetchSpaceQuotes();
+}
+function closeSpace(){$("#spacepanel").classList.remove("open");clearInterval(spCdTimer);}
+async function fetchSpaceQuotes(){
+  if(!hasKey) return;
+  await Promise.all(SPACECOS.map(async c=>{
+    try{
+      const r=await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${c[0]}&apikey=${FMP_KEY}`);
+      const d=await r.json(); const row=Array.isArray(d)?d[0]:d;
+      if(row&&typeof row.price==="number"){
+        SPQ[c[0]]={v:row.price,c:row.changePercentage??0};
+        const pr=document.querySelector(`[data-sp="${c[0]}-pr"]`), pc=document.querySelector(`[data-sp="${c[0]}-pc"]`);
+        if(pr) pr.textContent="$"+Number(row.price).toLocaleString("en-US",{maximumFractionDigits:2});
+        if(pc){const cc=row.changePercentage??0;pc.textContent=(cc>=0?"+":"")+cc.toFixed(2)+"%";pc.className="pc "+(cc>=0?"up":"down");}
+      }
+    }catch(e){}
+  }));
+}
 function toggleNx(head){
   const card=head.parentElement, wasOpen=card.classList.contains("open");
   $("#dBody").querySelectorAll(".nx.open").forEach(n=>n.classList.remove("open"));
@@ -1468,6 +1767,7 @@ async function fetchLive(){
 /* ---------- BOOT ---------- */
 renderTickers(); renderHeat(); renderFeed(); renderTimeline();
 initGlobe();
+setupMoon();
 fetchLive();
 fetchNews();
 setInterval(fetchLive, 60000);
