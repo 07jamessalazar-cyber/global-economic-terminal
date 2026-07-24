@@ -163,6 +163,42 @@ body{
 .ni .bd{width:6px;height:6px;border-radius:50%;margin-top:5px;flex-shrink:0}
 .ni .tx{font-size:12px;line-height:1.4}
 .ni .tx small{display:block;color:var(--dim);font-size:9.5px;font-family:var(--mono);margin-top:2px}
+/* expandable news cards */
+.nx{border:1px solid var(--stroke);border-radius:14px;margin:8px 0;background:var(--panel2);overflow:hidden;transition:border-color .25s,background .25s,box-shadow .25s}
+.nx.open{border-color:rgba(63,224,255,.4);background:rgba(20,30,52,0.9);box-shadow:0 8px 28px rgba(0,0,0,.4)}
+.nxhead{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;border-left:2px solid transparent;transition:border-color .25s,background .15s}
+.nx.open .nxhead{border-left-color:var(--cyan);box-shadow:-2px 0 14px rgba(63,224,255,.35)}
+.nxhead:hover{background:rgba(63,224,255,.05)}
+.nxhead .bd{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.nxtitle{flex:1;min-width:0;font-size:12.5px;font-weight:600;line-height:1.35}
+.nxtitle small{display:block;color:var(--dim);font-size:9.5px;font-family:var(--mono);margin-top:3px}
+.chev{color:var(--muted);font-size:13px;transition:transform .3s ease,color .3s;flex-shrink:0}
+.nx.open .chev{transform:rotate(180deg);color:var(--cyan)}
+.nxbody{max-height:0;opacity:0;overflow:hidden;transition:max-height .33s cubic-bezier(.4,0,.2,1),opacity .3s ease}
+.nx.open .nxbody{max-height:1800px;opacity:1}
+.nxinner{padding:2px 16px 16px}
+.nxbadges{margin:4px 0 10px}
+.nxbias{font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 11px;border-radius:999px}
+.nxsec{padding:13px 0;border-top:1px solid rgba(120,150,220,.1)}
+.nxsec:first-of-type{border-top:none;padding-top:2px}
+.nxh{display:flex;align-items:center;gap:7px;font-size:9.5px;letter-spacing:1.5px;font-weight:800;color:var(--cyan);margin-bottom:9px}
+.nxh i{font-style:normal;font-size:12px;opacity:.9}
+.nxsec p{font-size:12px;line-height:1.58;color:#dfe4f5}
+.nxgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px}
+.mi{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;padding:4px 0;border-bottom:1px dashed rgba(120,150,220,.09)}
+.mi .mk{color:var(--muted);font-weight:600}
+.mi .mv{font-weight:700;font-family:var(--mono);font-size:11px}
+.mi .mv.flat{color:var(--muted)}
+.nxnums{display:grid;grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:8px}
+.nn{background:rgba(8,13,26,.6);border:1px solid var(--stroke);border-radius:10px;padding:8px 6px;text-align:center}
+.nn span{display:block;font-size:8px;letter-spacing:.5px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.nn b{font-family:var(--mono);font-size:14px;font-weight:800;margin-top:4px;display:block;color:var(--text)}
+.nxtake{list-style:none;display:flex;flex-direction:column;gap:7px}
+.nxtake li{position:relative;padding-left:17px;font-size:12px;line-height:1.45;color:#dfe4f5}
+.nxtake li::before{content:"▸";position:absolute;left:0;color:var(--cyan);font-weight:700}
+.nxchips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:11px;font-weight:600;color:#cfe6ff;background:rgba(63,224,255,.08);border:1px solid rgba(63,224,255,.25);padding:4px 11px;border-radius:8px;cursor:pointer;transition:.15s}
+.chip:hover{background:rgba(63,224,255,.18);border-color:var(--cyan);transform:translateY(-1px)}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -698,8 +734,7 @@ function openDetail(cc){
 
   for(const [grp,items] of Object.entries(c.news)){
     html+=`<div class="newsgrp"><div class="gt">${grp.toUpperCase()}<span class="ln"></span></div>`;
-    html+=items.map(it=>`<div class="ni"><span class="bd" style="background:${strengthHex(c.s)};box-shadow:0 0 6px ${strengthRGBA(c.s,.7)}"></span>
-      <div class="tx">${it[0]}<small>${it[1]}</small></div></div>`).join("");
+    html+=items.map(it=>nxCard(it[0],it[1],c)).join("");
     html+=`</div>`;
   }
   $("#dBody").innerHTML=html;
@@ -709,6 +744,123 @@ function openDetail(cc){
   if(window.__globe){ window.__globe.pointOfView({lat:c.lat,lng:c.lng,altitude:1.8},900); }
 }
 function closeDetail(){$("#detail").classList.remove("open");}
+
+/* ---------- EXPANDABLE NEWS CARDS (country panel) ---------- */
+const up=t=>({txt:t,dir:"up"}), dn=t=>({txt:t,dir:"down"}), fl=t=>({txt:t,dir:"flat"});
+function classify(s){
+  if(/cpi|inflation|\bprice|deflation/.test(s)) return "inflation";
+  if(/jobs|employ|payroll|unemploy|claims|labou?r/.test(s)) return "jobs";
+  if(/fed|fomc|\brate|\bboj|\becb|pboc|\bboe|\brba|central|refi|monetary|policy statement|selic|banxico|snb|\bbok\b|\bcbr\b/.test(s)) return "centralbank";
+  if(/yield|treasur|bond|10y|gilt/.test(s)) return "yields";
+  if(/trade|tariff|export|import|sanction/.test(s)) return "trade";
+  if(/tech|chip|semiconductor|\bai\b|nasdaq|memory/.test(s)) return "tech";
+  if(/gdp|growth/.test(s)) return "growth";
+  if(/yuan|yen|currency|forex|\bfx\b|peso|franc|rupee|sterling|loonie|aussie|krw|won/.test(s)) return "fx";
+  if(/pmi|manufactur|factory|industrial/.test(s)) return "pmi";
+  if(/oil|crude|opec|energy|\bgas\b/.test(s)) return "energy";
+  if(/stimulus|liquidity|easing|reserve ratio|injects/.test(s)) return "stimulus";
+  return "generic";
+}
+const FLAVOR={
+ inflation:(t,b,c)=>({summary:`Consumer prices in ${c.n} landed ${/cool|ease|slow|fall|below/.test(t.toLowerCase())?"softer, giving the central bank room to ease":"firmer than expected, keeping policy restrictive"}. Core and services components are the detail that matters — sticky services inflation is what delays rate cuts.`,
+   why:`Inflation is the single biggest driver of rate-cut expectations. A hotter print pushes easing bets further out, lifting yields and the dollar while pressuring long-duration equities, gold and crypto — a move that ripples through every global risk asset.`,
+   takeaway:["Higher-for-longer rate expectations stay intact on a firm print.","Rate-sensitive sectors — tech, real estate, growth — face the most pressure.","Watch Treasury yields and DXY to confirm direction before positioning."]}),
+ jobs:(t,b,c)=>({summary:`${c.n}'s labor data came in ${b==="BULLISH"?"stronger than expected, underscoring economic resilience":"softer, hinting the labor market is cooling"}. Jobs figures shape how much room the central bank has to cut rates.`,
+   why:`A resilient jobs market lets policymakers stay restrictive for longer (dollar-positive, yields up), while a weakening one revives rate-cut hopes that support equities. It's a core input to the growth-versus-inflation debate.`,
+   takeaway:["Strong jobs = delayed cuts; weak jobs = earlier easing hopes.","Cyclicals and financials track the growth read; defensives hedge weakness.","Cross-check wage growth and yields before trading the number."]}),
+ centralbank:(t,b,c)=>({summary:`The central bank overseeing ${c.n} ${/hold|keeps|unchanged|steady/.test(t.toLowerCase())?"held policy steady on a data-dependent stance":/cut|eas/.test(t.toLowerCase())?"moved to ease, prioritising growth":"signalled a firmer policy stance"}. The tone of the guidance matters more than the decision itself.`,
+   why:`Central-bank policy sets the price of money for the whole economy. Hawkish holds strengthen the currency and lift yields (pressuring stocks); dovish shifts do the opposite. Markets trade the forward guidance, not just today's move.`,
+   takeaway:["Guidance tone drives the currency and front-end yields.","Hawkish = pressure on growth stocks; dovish = risk-on relief.","Watch rate-path pricing and the currency for the real signal."]}),
+ yields:(t,b,c)=>({summary:`Government bond yields are on the move — a direct read on rate expectations and risk appetite. Rising yields tighten financial conditions across the board.`,
+   why:`The benchmark 10-year is the world's reference risk-free rate. Higher yields raise the discount rate on future earnings (bad for long-duration growth stocks) and strengthen the dollar, pressuring commodities and emerging markets.`,
+   takeaway:["Rising yields hit tech and rate-sensitive sectors first.","A stronger dollar pressures commodities and EM assets.","Watch the 10-year and real yields as the lead indicator."]}),
+ trade:(t,b,c)=>({summary:`Trade and tariff developments involving ${c.n} are back in focus. Escalation raises the risk premium on global supply chains; de-escalation lifts risk appetite.`,
+   why:`Trade friction is a stagflationary shock — it can raise prices while denting growth. It pressures exporters and supply-chain-heavy sectors (tech, autos, industrials) and often strengthens the dollar as a safe haven.`,
+   takeaway:["Supply-chain and export-heavy sectors are most exposed.","Safe havens — USD, gold — tend to bid on escalation.","Watch affected tariff lines and any retaliation headlines."]}),
+ tech:(t,b,c)=>({summary:`Technology and semiconductor news is moving ${c.n}-linked equities. The sector's heavy index weight means its swings set the broader tone.`,
+   why:`Mega-cap tech and chips dominate modern indices, so their direction disproportionately drives benchmarks like the Nasdaq. When yields rise, these long-duration names are sold first; the AI and chip cycle is the key earnings narrative.`,
+   takeaway:["Semis and mega-cap tech lead index direction.","Rising yields amplify downside in long-duration growth.","Watch the SOX chip index and mega-cap earnings guidance."]}),
+ growth:(t,b,c)=>({summary:`${c.n}'s growth data ${b==="BEARISH"?"disappointed, raising slowdown concerns":"pointed to resilient demand"}. GDP trends shape the medium-term risk backdrop.`,
+   why:`Growth momentum drives corporate earnings and risk sentiment. Strong data supports the currency and cyclical equities; weak data raises recession worries and shifts flows to defensives and bonds.`,
+   takeaway:["Cyclicals and the local currency track the growth surprise.","Weakness rotates flows into defensives and duration.","Confirm with forward indicators (PMIs) before extrapolating."]}),
+ fx:(t,b,c)=>({summary:`Currency moves are in focus for ${c.n}. FX shifts feed straight into import prices, exporter competitiveness and cross-border flows.`,
+   why:`Exchange rates transmit global monetary policy. A weaker currency flatters exporters but imports inflation; a stronger one does the reverse. Sharp moves can trigger carry-trade unwinds that ripple across risk assets.`,
+   takeaway:["Weaker FX helps exporters, pressures importers and inflation.","Watch for intervention risk on outsized moves.","Rate differentials are the primary FX driver to track."]}),
+ pmi:(t,b,c)=>({summary:`Business-activity surveys for ${c.n} ${/contraction|below 50|stuck|sub-50/.test(t.toLowerCase())?"stayed in contraction, signalling the economy is still shrinking":"improved, hinting at stabilisation"}. PMIs are a timely lead on the hard data.`,
+   why:`PMIs are among the earliest reads on the cycle. Sub-50 prints flag contraction that caps how restrictive the central bank can be and weighs on the currency and cyclical stocks.`,
+   takeaway:["Sub-50 = contraction; watch the trend, not one print.","Weak PMIs pressure the currency and cyclicals.","New orders and employment sub-indices lead the headline."]}),
+ energy:(t,b,c)=>({summary:`Energy-market developments are moving the crude complex. Oil sits at the intersection of geopolitics, supply discipline and global demand.`,
+   why:`Higher oil is a mixed blessing: bullish for energy producers and commodity currencies, but a renewed inflation worry that complicates central-bank easing. Supply shocks add a geopolitical risk premium.`,
+   takeaway:["Energy equities and commodity FX (CAD, NOK) benefit.","Higher crude revives inflation and rate-path worries.","Watch OPEC+ policy and inventory data for direction."]}),
+ stimulus:(t,b,c)=>({summary:`Policy stimulus signals from ${c.n} aim to shore up growth. Markets rally on the hope of stronger demand, though follow-through is the swing factor.`,
+   why:`Stimulus lifts risk assets tied to the region — equities, industrial metals and commodity currencies often rally first. The risk is under-delivery, so the size and credibility of measures matter more than the announcement.`,
+   takeaway:["Region-linked assets and industrial metals rally on stimulus hopes.","Fade the move if follow-through disappoints.","Watch credit growth and infrastructure spend for confirmation."]}),
+ generic:(t,b,c)=>({summary:`This development affects ${c.n}'s markets and the broader risk backdrop. The reaction depends on how it shifts growth and rate expectations.`,
+   why:`Every macro headline feeds the two master variables — growth and inflation — that set risk appetite, yields and the dollar. Traders weigh it against the existing policy path.`,
+   takeaway:["Gauge the impact on growth vs. inflation expectations.","Confirm direction with yields and the dollar.","Size positions to the headline's staying power, not the first spike."]})
+};
+function relatedFor(cat,c){
+  const cur=(c.cur.n||"").split(" ")[0];
+  const map={inflation:["US10Y","DXY","Gold","Nasdaq"],jobs:["US10Y","DXY","S&P 500"],centralbank:["DXY","US10Y",cur],
+    yields:["US10Y","DXY","Nasdaq","Gold"],trade:["DXY","Crude Oil","Nasdaq"],tech:["Nasdaq","S&P 500","SOX"],
+    growth:["S&P 500","Crude Oil","DXY"],fx:["DXY",cur,"US10Y"],pmi:["DXY","Crude Oil"],
+    energy:["Crude Oil","Gold","CAD"],stimulus:["Crude Oil","Copper","Nasdaq"],generic:["S&P 500","US10Y","DXY","Gold","Bitcoin"]};
+  return [c.idx.n, ...(map[cat]||map.generic)].filter((v,i,a)=>v&&a.indexOf(v)===i).slice(0,6);
+}
+const NUM_OVERRIDE=[
+ {re:/cpi holds at 2\.9/i,n:[{k:"Actual",v:"2.9%"},{k:"Forecast",v:"2.8%"},{k:"Previous",v:"2.7%"},{k:"Core",v:"3.2%"},{k:"Surprise",v:"+0.1%"}]},
+ {re:/jobless claims.*211/i,n:[{k:"Actual",v:"211K"},{k:"Forecast",v:"208K"},{k:"Previous",v:"208K"},{k:"Surprise",v:"+3K"}]},
+ {re:/keeps rates at 4\.50/i,n:[{k:"Rate",v:"4.50%"},{k:"Prior",v:"4.50%"},{k:"Cuts 12m",v:"~2"}]}
+];
+function parseNums(title){
+  for(const o of NUM_OVERRIDE){ if(o.re.test(title)) return o.n; }
+  const out=[]; (title.match(/-?\d+(\.\d+)?%/g)||[]).slice(0,3).forEach((p,i)=>out.push({k:i===0?"Reported":i===1?"Prior":"Detail",v:p}));
+  (title.match(/\b\d+(\.\d+)?[KMB]\b/g)||[]).slice(0,2).forEach(v=>out.push({k:"Figure",v}));
+  return out.slice(0,4);
+}
+function newsDetail(title,c){
+  const s=title.toLowerCase(), bias=biasFrom(title), cat=classify(s);
+  const inflationary=/cpi|inflation|price|yield|treasur|tariff|oil|crude|energy|hot|firmer|sticky/.test(s) && !/cool|ease|slow|below target|falls/.test(s);
+  const riskOn=bias==="BULLISH", riskOff=bias==="BEARISH";
+  const impact={
+    Stocks: riskOn?up("Supported"):(riskOff||inflationary)?dn("Pressured"):fl("Range-bound"),
+    Futures: riskOn?up("Firmer"):(riskOff||inflationary)?dn("Softer"):fl("Flat"),
+    Bonds: inflationary?dn("Yields higher"):riskOff?up("Bid · yields lower"):fl("Steady"),
+    Gold: inflationary?dn("Capped by yields"):riskOff?up("Haven bid"):fl("Neutral"),
+    Oil: cat==="energy"?up("Firmer"):riskOff?dn("Demand worries"):fl("Neutral"),
+    Crypto: riskOn?up("Risk-on bid"):riskOff?dn("Sold with risk"):fl("Volatile"),
+    USD: (inflationary||riskOff)?up("Stronger"):riskOn?dn("Softer"):fl("Steady")
+  };
+  const f=(FLAVOR[cat]||FLAVOR.generic)(title,bias,c);
+  return {bias, impact, summary:f.summary, why:f.why, takeaway:f.takeaway, related:relatedFor(cat,c), numbers:parseNums(title)};
+}
+function nxCard(title,time,c){
+  const d=newsDetail(title,c);
+  const bc=d.bias==="BULLISH"?"var(--green)":d.bias==="BEARISH"?"var(--red)":"var(--muted)";
+  const bbg=d.bias==="BULLISH"?"rgba(24,224,138,.14)":d.bias==="BEARISH"?"rgba(255,84,104,.14)":"rgba(120,150,220,.12)";
+  const nums=d.numbers.length?`<div class="nxsec"><div class="nxh"><i>#</i>KEY NUMBERS</div><div class="nxnums">${d.numbers.map(n=>`<div class="nn"><span>${n.k}</span><b>${n.v}</b></div>`).join("")}</div></div>`:"";
+  return `<div class="nx">
+    <div class="nxhead" onclick="toggleNx(this)">
+      <span class="bd" style="background:${strengthHex(c.s)};box-shadow:0 0 6px ${strengthRGBA(c.s,.7)}"></span>
+      <div class="nxtitle">${title}<small>${time}</small></div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="nxbody"><div class="nxinner">
+      <div class="nxbadges"><span class="nxbias" style="color:${bc};background:${bbg};border:1px solid ${bc}">${d.bias}</span></div>
+      <div class="nxsec"><div class="nxh"><i>❯</i>SUMMARY</div><p>${d.summary}</p></div>
+      <div class="nxsec"><div class="nxh"><i>◧</i>MARKET IMPACT</div><div class="nxgrid">${Object.entries(d.impact).map(([k,v])=>`<div class="mi"><span class="mk">${k}</span><span class="mv ${v.dir}">${v.txt}</span></div>`).join("")}</div></div>
+      ${nums}
+      <div class="nxsec"><div class="nxh"><i>✦</i>WHY IT MATTERS</div><p>${d.why}</p></div>
+      <div class="nxsec"><div class="nxh"><i>➤</i>TRADING TAKEAWAY</div><ul class="nxtake">${d.takeaway.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+      <div class="nxsec"><div class="nxh">RELATED MARKETS</div><div class="nxchips">${d.related.map(r=>`<span class="chip">${r}</span>`).join("")}</div></div>
+    </div></div>
+  </div>`;
+}
+function toggleNx(head){
+  const card=head.parentElement, wasOpen=card.classList.contains("open");
+  $("#dBody").querySelectorAll(".nx.open").forEach(n=>n.classList.remove("open"));
+  if(!wasOpen){ card.classList.add("open"); setTimeout(()=>card.scrollIntoView({behavior:"smooth",block:"nearest"}),120); }
+}
 
 /* ---------- AI ASSISTANT ---------- */
 const QA=[
