@@ -739,11 +739,12 @@ function openDetail(cc){
   }
   $("#dBody").innerHTML=html;
   $("#detail").classList.add("open");
+  $("#aibtn").style.display="none";
   hideHover();
   // spin globe to country
   if(window.__globe){ window.__globe.pointOfView({lat:c.lat,lng:c.lng,altitude:1.8},900); }
 }
-function closeDetail(){$("#detail").classList.remove("open");}
+function closeDetail(){$("#detail").classList.remove("open");$("#aibtn").style.display="";}
 
 /* ---------- EXPANDABLE NEWS CARDS (country panel) ---------- */
 const up=t=>({txt:t,dir:"up"}), dn=t=>({txt:t,dir:"down"}), fl=t=>({txt:t,dir:"flat"});
