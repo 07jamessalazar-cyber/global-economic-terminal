@@ -48,8 +48,12 @@ body{
 .brand span{display:block;font-size:9px;letter-spacing:2.5px;color:var(--muted);font-weight:600}
 .tickers{flex:1;display:flex;align-items:center;overflow:hidden;position:relative}
 .tickers .track{display:flex;gap:26px;padding:0 18px;align-items:center;white-space:nowrap}
-.tk{display:flex;flex-direction:column;line-height:1.15;font-family:var(--mono);cursor:pointer;padding:6px 8px;border-radius:9px;transition:background .15s}
+.tk{display:flex;flex-direction:row;align-items:center;gap:9px;line-height:1.15;font-family:var(--mono);cursor:pointer;padding:6px 9px;border-radius:9px;transition:background .15s}
 .tk:hover{background:rgba(63,224,255,.08)}
+.tk.active{background:rgba(63,224,255,.1)}
+.tkinfo{display:flex;flex-direction:column}
+.tkchev{color:var(--muted);font-size:9px;transition:transform .3s,color .3s}
+.tk.active .tkchev{transform:rotate(180deg);color:var(--cyan)}
 .tk .lab{font-size:9.5px;letter-spacing:1.5px;color:var(--muted);font-weight:600}
 .tk .row{display:flex;align-items:baseline;gap:7px}
 .tk .val{font-size:15px;font-weight:700}
@@ -352,6 +356,15 @@ body{
 #mktpanel.open .outbar i{width:var(--w)}
 .outbox p{font-size:11.5px;line-height:1.55;color:#dfe4f5}
 .chip.link:hover{background:rgba(63,224,255,.22);border-color:var(--cyan)}
+.rncard{border:1px solid var(--stroke);border-radius:12px;padding:11px 13px;background:rgba(12,18,34,.5);margin-bottom:8px;transition:transform .15s,box-shadow .15s,border-color .15s}
+.rncard:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.32);border-color:rgba(63,224,255,.3)}
+.rncard .rntop{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.rncard .rnsrc{font-size:8.5px;font-weight:800;letter-spacing:.5px;color:var(--cyan);text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:150px}
+.rncard .rntime{margin-left:auto;font-size:8.5px;color:var(--dim);font-family:var(--mono);flex-shrink:0}
+.rncard h5{font-size:12px;font-weight:650;line-height:1.35;margin:0 0 6px}
+.rncard p{font-size:10.5px;color:var(--muted);line-height:1.5;margin:0 0 9px}
+.rnbtn{display:inline-block;font-size:10px;font-weight:700;color:var(--cyan);text-decoration:none;border:1px solid rgba(63,224,255,.3);padding:5px 11px;border-radius:8px;transition:.15s}
+.rnbtn:hover{background:rgba(63,224,255,.12);border-color:var(--cyan);transform:translateY(-1px)}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -719,8 +732,8 @@ function renderTickers(){
   t.innerHTML=TICKERS.map(x=>{
     const c=col(x.c);
     const val=(x.pfx||"")+Number(x.v).toLocaleString("en-US",{maximumFractionDigits:x.v<100?2:0});
-    return `<div class="tk" data-k="${x.k}" onclick="openMarket('${x.k}',this)"><div class="lab">${x.k}</div><div class="row">
-      <span class="val">${val}</span><span class="chg ${c}">${sgn(x.c)}${x.c.toFixed(2)}%</span></div></div>`;
+    return `<div class="tk" data-k="${x.k}" onclick="openMarket('${x.k}',this)"><div class="tkinfo"><div class="lab">${x.k}</div><div class="row">
+      <span class="val">${val}</span><span class="chg ${c}">${sgn(x.c)}${x.c.toFixed(2)}%</span></div></div><span class="tkchev">▾</span></div>`;
   }).join("");
   // global sentiment from tickers + country scores
   const scoreVals=Object.values(C).map(c=>c.s);
@@ -1188,9 +1201,25 @@ function outlookOf(t){
 }
 function newsForMkt(re){
   const src=NEWS.length?NEWS:FEED;
-  let hits=src.filter(n=>re.test(n.h+" "+(n.text||"")));
-  if(hits.length<2) hits=hits.concat(src.filter(n=>!hits.includes(n)).slice(0,2-hits.length));
-  return hits.slice(0,3);
+  const rank={high:3,med:2,medium:2,low:1};
+  return src.filter(n=>re.test(n.h+" "+(n.text||"")))
+    .sort((a,b)=>(rank[(b.imp||'med').toLowerCase()]||2)-(rank[(a.imp||'med').toLowerCase()]||2))
+    .slice(0,4);
+}
+const REL2={
+"VIX":"Headlines that raise uncertainty and hedging demand are a key driver of volatility.",
+"DOLLAR IDX":"Anything that shifts Fed rate expectations or Treasury yields feeds directly into the dollar.",
+"GOLD":"Moves in the dollar, real yields, or geopolitical risk are the main levers for gold.",
+"BRENT CRUDE":"Supply, demand, and geopolitical shifts flow straight through to crude prices.",
+"BITCOIN":"As a high-beta risk asset, bitcoin is sensitive to liquidity, the dollar, and risk-sentiment shifts like this.",
+"S&P 500":"Broad equities react to the rate path, earnings, and macro risks this touches on.",
+"NASDAQ":"Tech is especially sensitive to the yields and AI/chip narrative this relates to.",
+"DOW":"Cyclicals and financials in the Dow track the growth and rate signals here."
+};
+function whyForMkt(n,key){
+  let s1=((n.text||"").split(/(?<=[.!?])\s/)[0]||n.h||"").trim();
+  s1=s1.replace(/[.;,]?$/,".");
+  return s1+" "+(REL2[key]||REL2["S&P 500"]);
 }
 function arrow(rel){return rel==="up"?"↑":rel==="down"?"↓":"→";}
 function buildMarketPanel(key){
@@ -1201,10 +1230,13 @@ function buildMarketPanel(key){
   const overview=`${a.name.split(" · ")[0]} is at ${price} (<span class="${chgCls}">${chg}</span> today). ${ov}`;
   // drivers
   const drv=`<div class="drvgrid">`+a.drivers.map(d=>`<div class="drvcard"><div class="dt">${d[0]}</div><div class="dx">${d[1]}</div><div class="db"><div class="dbar"><i style="--w:${d[2]}%"></i></div><span class="dc" data-count="${d[2]}" data-suf="%">0%</span></div></div>`).join("")+`</div>`;
-  // news
+  // related news (section hidden entirely when no relevant headlines)
   const nw=newsForMkt(a.re);
-  const news=nw.length?nw.map(n=>{const lv=(n.imp||"med").toUpperCase()==="HIGH"?"high":(n.imp||"med").toLowerCase()==="low"?"low":"med";
-    const why=(n.text||"").split(/[.!?]/)[0]; return `<div class="nimp"><span class="nlvl imp-${lv==='high'?'High':lv==='low'?'Low':'Medium'}">${lv.toUpperCase()}</span><div class="nc"><h5>${n.h}</h5><div class="nt">${n.t||""}${n.site?" · "+n.site:""}</div><p>${why||"Relevant macro or market development for this asset."}.</p></div></div>`;}).join(""):`<p style="color:var(--muted);font-size:11px">No directly related headlines in the current feed.</p>`;
+  const relnews=nw.length?`<div class="msec"><div class="mh">◷ RELATED NEWS</div>${nw.map(n=>{
+    const lvRaw=(n.imp||"med").toLowerCase(),lv=lvRaw==="high"?"High":lvRaw==="low"?"Low":"Medium";
+    const btn=n.url?`<a class="rnbtn" href="${n.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Read Full Article ↗</a>`:"";
+    return `<div class="rncard"><div class="rntop"><span class="nlvl imp-${lv}">${lv.toUpperCase()}</span><span class="rnsrc">${n.site||"WIRE"}</span><span class="rntime">${n.t||""}</span></div><h5>${n.h}</h5><p>${whyForMkt(n,key)}</p>${btn}</div>`;
+  }).join("")}</div>`:"";
   // correlations
   const corr=`<div class="corrgrid">`+a.corr.map(x=>`<div class="corr"><span class="ck">${x[0]}</span><span class="cv ${x[1]}">${arrow(x[1])}</span></div>`).join("")+`</div>`;
   // technical
@@ -1234,7 +1266,7 @@ function buildMarketPanel(key){
   <div class="mpb">
     <div class="msec"><div class="mh">◈ OVERVIEW</div><p>${overview}</p></div>
     <div class="msec"><div class="mh">◧ PRIMARY DRIVERS</div>${drv}</div>
-    <div class="msec"><div class="mh">◷ NEWS IMPACT</div>${news}</div>
+    ${relnews}
     <div class="msec"><div class="mh">⇄ CROSS-ASSET CORRELATIONS</div>${corr}</div>
     <div class="msec"><div class="mh">▤ TECHNICAL PICTURE</div>${tech2}</div>
     <div class="msec"><div class="mh">➤ WHAT TO WATCH NEXT</div>${watch}</div>
@@ -1252,9 +1284,10 @@ function openMarket(key,anchorEl){
   panel.scrollTop=0;
   panel.classList.add("open");
   openMktKey=key;
+  document.querySelectorAll('.tk').forEach(x=>x.classList.toggle('active',x.getAttribute('data-k')===key));
   requestAnimationFrame(()=>animateCounts(panel));
 }
-function closeMarket(){$("#mktpanel").classList.remove("open");openMktKey=null;}
+function closeMarket(){$("#mktpanel").classList.remove("open");openMktKey=null;document.querySelectorAll('.tk.active').forEach(x=>x.classList.remove('active'));}
 function animateCounts(root){
   root.querySelectorAll("[data-count]").forEach(el=>{
     const target=+el.getAttribute("data-count"),suf=el.getAttribute("data-suf")||"";
