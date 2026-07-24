@@ -1155,6 +1155,18 @@ async function fetchExpo(tickers){
   await Promise.all(tickers.map(async t=>{try{const d=await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${t}&apikey=${FMP_KEY}`).then(r=>r.json());const row=Array.isArray(d)?d[0]:d;if(row&&typeof row.price==="number"){EXQ[t]={v:row.price,c:row.changePercentage??0};const pr=document.querySelector(`[data-ex="${t}-pr"]`),pc=document.querySelector(`[data-ex="${t}-pc"]`);if(pr)pr.textContent="$"+Number(row.price).toLocaleString("en-US",{maximumFractionDigits:2});if(pc){const cc=row.changePercentage??0;pc.textContent=(cc>=0?"+":"")+cc.toFixed(2)+"%";pc.className="pc "+(cc>=0?"up":"down");}}}catch(e){}}));
 }
 
+const CNEWS_ALIAS={US:"United States|U\\.S\\.|\\bUS\\b|America|\\bFed\\b|Washington|Wall Street",CN:"China|Chinese|Beijing|Yuan|PBOC",JP:"Japan|Japanese|Tokyo|\\bYen\\b|\\bBOJ\\b|Nikkei",DE:"German|Germany|Berlin|Bund",GB:"\\bUK\\b|Britain|British|London|Sterling|Pound|\\bBoE\\b|FTSE",IN:"India|Indian|Mumbai|Rupee|Nifty|\\bRBI\\b",FR:"France|French|Paris|\\bCAC\\b",BR:"Brazil|Brazilian|\\bReal\\b|Bovespa",CA:"Canada|Canadian|Loonie|\\bTSX\\b",AU:"Australia|Aussie|\\bRBA\\b|\\bASX\\b",KR:"Korea|Korean|Seoul|\\bWon\\b|KOSPI",SA:"Saudi|Riyadh|Aramco|OPEC",RU:"Russia|Russian|Moscow|Ruble|Kremlin",MX:"Mexico|Mexican|Peso|Banxico",CH:"Swiss|Switzerland|Franc|\\bSNB\\b",IR:"Iran|Iranian|Tehran|Hormuz|Strait",IL:"Israel|Israeli|Tel Aviv|Gaza",UA:"Ukraine|Ukrainian|Kyiv|Kiev",IQ:"Iraq|Iraqi|Baghdad",VE:"Venezuela|Venezuelan|Caracas",AE:"\\bUAE\\b|Emirates|Abu Dhabi|Dubai|Dirham"};
+function countryHeadlines(c){
+  const re=new RegExp(CNEWS_ALIAS[c.cc]||c.n,"i");
+  const src=NEWS.length?NEWS:[];
+  const hits=src.filter(n=>re.test(n.h+" "+(n.text||""))).slice(0,4);
+  if(!hits.length) return "";
+  return `<div class="newsgrp"><div class="gt">◷ LIVE HEADLINES<span class="ln"></span></div>`+hits.map(n=>{
+    const lvRaw=(n.imp||"med").toLowerCase(),lv=lvRaw==="high"?"High":lvRaw==="low"?"Low":"Medium";
+    const btn=n.url?`<a class="rnbtn" href="${n.url}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">Read Full Article ↗</a>`:"";
+    return `<div class="rncard"><div class="rntop"><span class="nlvl imp-${lv}">${lv.toUpperCase()}</span><span class="rnsrc">${n.site||"WIRE"}</span><span class="rntime">${n.t||""}</span></div><h5>${n.h}</h5>${btn}</div>`;
+  }).join("")+`</div>`;
+}
 function openDetail(cc){
   const c=C[cc]; if(!c) return;
   const g=GEO[cc]||deriveGeo(c);
@@ -1197,7 +1209,8 @@ function openDetail(cc){
     </div></div>`;}
   if(g.military){html+=`<div class="newsgrp"><div class="gt">⚔ MILITARY ACTIVITY<span class="ln"></span></div><div class="mtl">`+g.military.map(m=>{const lc=m[2]==="HIGH"?"var(--red)":m[2]==="MED"?"var(--amber)":"var(--cyan)";return `<div class="mtli"><span class="mdot" style="background:${lc};box-shadow:0 0 7px ${lc}"></span><div class="mi"><b>${m[1]}</b><small>${m[0]} · ${m[3]}</small></div><span class="mres" style="background:${lc.replace('var(--','rgba(').replace(')',',.15)')};color:${lc}">${m[2]}</span></div>`;}).join("")+`</div><div style="margin-top:9px;font-size:10.5px;color:var(--muted)">Escalation trend: <b style="color:${g.mil>=60?'var(--red)':g.mil>=35?'var(--amber)':'var(--green)'}">${g.mil>=60?"RISING":g.mil>=35?"ELEVATED":"DE-ESCALATING"}</b></div></div>`;}
   html+=`<div class="newsgrp"><div class="gt">◨ MARKET EXPOSURE<span class="ln"></span></div>`+g.exposure.map(x=>`<div class="expo"><img src="${logoURL(x[0])}" onerror="this.style.visibility='hidden'"><div class="ei"><b>${x[0]}</b><div class="ex">${x[1]}</div></div><div class="ep"><div class="pr" data-ex="${x[0]}-pr">—</div><div class="pc" data-ex="${x[0]}-pc"></div></div></div>`).join("")+`</div>`;
-  html+=`<div class="newsgrp"><div class="gt">◷ LIVE NEWS<span class="ln"></span></div></div>`;
+  html+=countryHeadlines(c);
+  html+=`<div class="newsgrp"><div class="gt">◷ NEWS ANALYSIS<span class="ln"></span></div></div>`;
   for(const [grp,items] of Object.entries(c.news)){
     html+=`<div class="newsgrp"><div class="gt">${grp.toUpperCase()}<span class="ln"></span></div>`;
     html+=items.map(it=>nxCard(it[0],it[1],c)).join("");
@@ -2190,7 +2203,7 @@ function renderEdNews(sym){
   const re=new RegExp("\\b"+sym+"\\b|"+(u.n||sym).split(" ")[0],"i");
   const hits=src.filter(n=>re.test(n.h+" "+(n.text||""))).slice(0,3);
   const el=document.getElementById("edNews");if(!el)return;
-  el.innerHTML=hits.length?hits.map(n=>`<div class="ni"><span class="bd" style="background:var(--cyan)"></span><div class="tx">${n.h}<small>${n.site||''} · ${n.t||''}</small></div></div>`).join(""):'<p style="font-size:11px;color:var(--dim)">No recent headlines matched in the live feed.</p>';
+  el.innerHTML=hits.length?hits.map(n=>`<div class="ni"><span class="bd" style="background:var(--cyan)"></span><div class="tx">${n.h}<small>${n.site||''} · ${n.t||''}</small>${n.url?`<a class="rnbtn" href="${n.url}" target="_blank" rel="noopener noreferrer" style="margin-top:6px;font-size:9.5px;padding:4px 9px">Read Full Article ↗</a>`:''}</div></div>`).join(""):'<p style="font-size:11px;color:var(--dim)">No recent headlines matched in the live feed.</p>';
 }
 // earnings toolbar events
 document.addEventListener("DOMContentLoaded",()=>{});
