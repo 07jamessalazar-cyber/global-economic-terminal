@@ -175,7 +175,7 @@ body{
 .chev{color:var(--muted);font-size:13px;transition:transform .3s ease,color .3s;flex-shrink:0}
 .nx.open .chev{transform:rotate(180deg);color:var(--cyan)}
 .nxbody{max-height:0;opacity:0;overflow:hidden;transition:max-height .33s cubic-bezier(.4,0,.2,1),opacity .3s ease}
-.nx.open .nxbody{max-height:1800px;opacity:1}
+.nx.open .nxbody{max-height:6000px;opacity:1}
 .nxinner{padding:2px 16px 16px}
 .nxbadges{margin:4px 0 10px}
 .nxbias{font-size:10px;font-weight:800;letter-spacing:.5px;padding:3px 11px;border-radius:999px}
@@ -199,6 +199,88 @@ body{
 .nxchips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{font-size:11px;font-weight:600;color:#cfe6ff;background:rgba(63,224,255,.08);border:1px solid rgba(63,224,255,.25);padding:4px 11px;border-radius:8px;cursor:pointer;transition:.15s}
 .chip:hover{background:rgba(63,224,255,.18);border-color:var(--cyan);transform:translateY(-1px)}
+/* ===== premium expanded news redesign ===== */
+.nx.open{background:rgba(20,30,52,0.92);box-shadow:0 10px 34px rgba(0,0,0,.45),0 0 0 1px rgba(63,224,255,.14),0 0 26px rgba(63,224,255,.12)}
+.nxhead{align-items:flex-start;gap:12px}
+.nxmeta{flex:1;min-width:0}
+.nxcty{font-size:9.5px;letter-spacing:.4px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.nxcty .fl{font-size:12px}
+.nxtime{color:var(--dim);font-family:var(--mono)}
+.nxhl{font-size:13px;font-weight:650;line-height:1.36;color:var(--text)}
+.nxright{display:flex;flex-direction:column;align-items:flex-end;gap:9px;flex-shrink:0}
+.nxbadge{font-size:8px;font-weight:800;letter-spacing:.6px;padding:3px 8px;border-radius:6px;white-space:nowrap}
+.lvl-HIGH{color:#ff8894;background:rgba(255,84,104,.14);border:1px solid rgba(255,84,104,.5);box-shadow:0 0 13px rgba(255,84,104,.4)}
+.lvl-MEDIUM{color:#ffcf6a;background:rgba(255,191,60,.13);border:1px solid rgba(255,191,60,.5);box-shadow:0 0 13px rgba(255,191,60,.3)}
+.lvl-LOW{color:#5fe3a6;background:rgba(24,224,138,.12);border:1px solid rgba(24,224,138,.45);box-shadow:0 0 13px rgba(24,224,138,.26)}
+.biaspill{display:inline-flex;align-items:center;gap:7px;font-size:9.5px;font-weight:800;letter-spacing:.6px;padding:4px 12px;border-radius:999px;margin:6px 0 2px}
+.biaspill .d{width:6px;height:6px;border-radius:50%}
+.sub{border-top:1px solid rgba(120,150,220,.11)}
+.sub:first-of-type{border-top:none}
+.subhead{display:flex;align-items:center;gap:9px;padding:13px 0 12px;cursor:pointer;user-select:none}
+.subhead .si{width:15px;text-align:center;color:var(--cyan);font-size:12px}
+.subhead h4{flex:1;font-size:10px;letter-spacing:1.6px;font-weight:800;color:#c9d3ee;margin:0}
+.subhead .sc{color:var(--muted);font-size:10px;transition:transform .3s}
+.sub.open .subhead .sc{transform:rotate(180deg);color:var(--cyan)}
+.subbody{max-height:0;opacity:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1),opacity .28s}
+.sub.open .subbody{max-height:2600px;opacity:1}
+.subinner{padding:0 0 15px}
+.subinner p{font-size:12px;line-height:1.6;color:#dfe4f5;margin-bottom:9px}
+.kn{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:7px;margin-top:4px}
+.kn .nn{background:rgba(8,13,26,.6);border:1px solid var(--stroke);border-radius:9px;padding:7px 5px;text-align:center}
+.kn .nn span{display:block;font-size:7.5px;letter-spacing:.4px;color:var(--muted);font-weight:700;text-transform:uppercase}
+.kn .nn b{font-family:var(--mono);font-size:13px;font-weight:800;margin-top:3px;display:block}
+.volwrap{margin:2px 0 14px}
+.voltop{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.voltop .vl{font-size:8.5px;letter-spacing:1px;color:var(--muted);font-weight:800}
+.voltop .vv{font-family:var(--mono);font-size:13px;font-weight:800;color:var(--text)}
+.voltrack{height:7px;border-radius:6px;background:rgba(120,150,220,.14);overflow:hidden}
+.volfill{height:100%;border-radius:6px;width:0;transition:width .8s cubic-bezier(.3,.8,.4,1);background:linear-gradient(90deg,#18e08a,#ffbf3c,#ff5468)}
+.nx.open .volfill{width:var(--vw)}
+.mkgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mkcard{border:1px solid var(--stroke);border-left-width:3px;border-radius:11px;padding:9px 11px;background:rgba(12,18,34,.5);transition:transform .15s,box-shadow .15s,border-color .15s}
+.mkcard:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.35);border-color:rgba(63,224,255,.3)}
+.mkcard.up{border-left-color:var(--green)}.mkcard.down{border-left-color:var(--red)}.mkcard.flat{border-left-color:var(--muted)}
+.mkcard .mn{display:flex;justify-content:space-between;align-items:center}
+.mkcard .mn b{font-size:11.5px;font-weight:700}
+.mkcard .mn .mb{font-size:8px;font-weight:800;letter-spacing:.5px}
+.mkcard .mb.flat{color:var(--muted)}
+.mkcard .me{font-size:10px;color:var(--muted);line-height:1.4;margin-top:5px}
+.sparkbox{background:rgba(12,18,34,.5);border:1px solid var(--stroke);border-radius:12px;padding:12px 14px}
+.sparkbox .st{font-size:8.5px;letter-spacing:1px;color:var(--muted);font-weight:800;margin-bottom:9px}
+.spark{width:100%;height:44px;display:block}
+.sparkpath{fill:none;stroke:var(--cyan);stroke-width:2;stroke-dasharray:600;stroke-dashoffset:600;transition:stroke-dashoffset 1s ease}
+.nx.open .sparkpath{stroke-dashoffset:0}
+.sparkdots circle{fill:var(--cyan);opacity:0;transition:opacity .5s ease .55s}
+.nx.open .sparkdots circle{opacity:.9}
+.sparkfoot{display:flex;align-items:center;gap:10px;margin-top:10px}
+.trendtag{font-size:8.5px;font-weight:800;letter-spacing:.6px;padding:3px 9px;border-radius:6px;flex-shrink:0}
+.sparkfoot small{font-size:10.5px;color:var(--muted);line-height:1.4}
+.takegrid{display:grid;gap:8px}
+.takecard{border:1px solid var(--stroke);border-radius:12px;padding:10px 13px;background:rgba(12,18,34,.5);transition:transform .15s,box-shadow .15s}
+.takecard:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.32)}
+.takecard .tt{font-size:8.5px;font-weight:800;letter-spacing:1px;margin-bottom:5px}
+.takecard p{font-size:11.5px;line-height:1.5;color:#dfe4f5}
+.tc-buy{border-left:3px solid var(--green)}.tc-buy .tt{color:var(--green)}
+.tc-sell{border-left:3px solid var(--red)}.tc-sell .tt{color:#ff8894}
+.tc-watch{border-left:3px solid var(--cyan)}.tc-watch .tt{color:var(--cyan)}
+.confwrap{display:flex;align-items:center;gap:15px;background:rgba(12,18,34,.5);border:1px solid var(--stroke);border-radius:12px;padding:14px;margin:14px 0}
+.ring{width:72px;height:72px;flex-shrink:0}
+.ring-bg{fill:none;stroke:rgba(120,150,220,.15);stroke-width:7}
+.ring-fg{fill:none;stroke:var(--cyan);stroke-width:7;stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;stroke-dasharray:var(--circ);stroke-dashoffset:var(--circ);transition:stroke-dashoffset 1.1s cubic-bezier(.3,.8,.4,1);filter:drop-shadow(0 0 5px rgba(63,224,255,.5))}
+.nx.open .ring-fg{stroke-dashoffset:var(--off)}
+.ring-txt{font-family:var(--mono);font-size:15px;font-weight:800;fill:var(--text)}
+.confwrap .ct{font-size:8.5px;letter-spacing:1px;color:var(--cyan);font-weight:800;margin-bottom:6px}
+.confwrap .cd{font-size:10.5px;color:var(--muted);line-height:1.45}
+.reactscroll{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 8px;scroll-snap-type:x mandatory}
+.reactscroll::-webkit-scrollbar{height:5px}.reactscroll::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:6px}
+.reactcard{flex:0 0 auto;width:152px;scroll-snap-align:start;border:1px solid var(--stroke);border-radius:12px;padding:11px 12px;background:rgba(12,18,34,.55);opacity:0;transform:translateX(16px);transition:opacity .45s ease,transform .45s ease,box-shadow .15s}
+.reactcard:hover{box-shadow:0 7px 18px rgba(0,0,0,.35);border-color:rgba(63,224,255,.3)}
+.nx.open .reactcard{opacity:1;transform:none}
+.reactcard .rm{font-size:9.5px;letter-spacing:.5px;color:var(--cyan);font-weight:800;margin-bottom:9px}
+.reactcard .rr{display:flex;justify-content:space-between;font-size:11px;padding:4px 0;border-top:1px dashed rgba(120,150,220,.1)}
+.reactcard .rr:first-of-type{border-top:none}
+.reactcard .rr span{color:var(--muted)}
+.reactcard .rr b{font-family:var(--mono);font-weight:700}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -835,28 +917,115 @@ function newsDetail(title,c){
   const f=(FLAVOR[cat]||FLAVOR.generic)(title,bias,c);
   return {bias, impact, summary:f.summary, why:f.why, takeaway:f.takeaway, related:relatedFor(cat,c), numbers:parseNums(title)};
 }
+/* ---- premium card data helpers ---- */
+function hashStr(s){let h=0;for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;}return h;}
+function biasColor(b){return b==="BULLISH"?"var(--green)":b==="BEARISH"?"var(--red)":"var(--muted)";}
+function biasBg(b){return b==="BULLISH"?"rgba(24,224,138,.14)":b==="BEARISH"?"rgba(255,84,104,.14)":"rgba(120,150,220,.12)";}
+function levelOf(title){const s=title.toLowerCase();
+  if(/fed|fomc|\bcpi\b|inflation|tariff|payroll|jobs report|rate decision|\bwar\b|opec|\bgdp\b|treasury yield|10y/.test(s)) return "HIGH";
+  if(/leading index|confidence|sentiment|prelim|holiday|revised|minor/.test(s)) return "LOW";
+  return /claims|pmi|retail|trade|earnings|policy|holds|keeps|rate/.test(s)?"MEDIUM":"MEDIUM";}
+function volOf(title,level){const base=level==="HIGH"?77:level==="MEDIUM"?50:29;return Math.min(97,base+(hashStr(title)%15));}
+function confOf(title,level,bias){const base=level==="HIGH"?86:level==="MEDIUM"?76:66;const clr=bias==="NEUTRAL"?-7:2;return Math.min(96,Math.max(56,base+clr+(hashStr(title+"c")%6)));}
+const MK_LINES={
+ Stocks:{up:"Equities catch a bid as risk appetite firms.",down:"Equities pressured as risk sentiment sours.",flat:"Equities range-bound pending confirmation."},
+ Futures:{up:"Index futures point higher pre-market.",down:"Futures drift lower ahead of the open.",flat:"Futures little changed, awaiting catalysts."},
+ Bonds:{up:"Yields fall as haven demand lifts bonds.",down:"Yields rise, pressuring bond prices.",flat:"Yields steady with no clear rate signal."},
+ Gold:{up:"Gold bid as a hedge into uncertainty.",down:"Gold capped by firmer yields and dollar.",flat:"Gold consolidates near its recent range."},
+ Oil:{up:"Crude firms on supply or geopolitical risk.",down:"Crude softens on demand concerns.",flat:"Oil steady on balanced supply and demand."},
+ Crypto:{up:"Bitcoin tracks risk-on flows higher.",down:"Crypto sold alongside broader risk assets.",flat:"Crypto volatile with no clear direction."},
+ USD:{up:"Dollar strengthens on rates or haven bid.",down:"Dollar eases as risk appetite returns.",flat:"Dollar steady versus major peers."}};
+const TAKE={
+ inflation:{buy:"USD, financials and value; short-dated Treasuries.",sell:"Long-duration tech, REITs and gold.",watch:"US10Y, DXY and Fed rate-path pricing."},
+ jobs:{buy:"Cyclicals and financials on strength.",sell:"Rate-sensitive growth if hot; defensives if weak.",watch:"Wage growth, unemployment rate and yields."},
+ centralbank:{buy:"Currency and banks on a hawkish tone.",sell:"Growth stocks on higher-for-longer.",watch:"Forward guidance and terminal-rate pricing."},
+ yields:{buy:"USD, banks and value names.",sell:"Tech, utilities, gold and EM.",watch:"10Y real yields and the MOVE index."},
+ trade:{buy:"USD, domestic-focused names and defense.",sell:"Exporters, semis, autos and industrials.",watch:"Tariff lines, retaliation and supply chains."},
+ tech:{buy:"Semis and mega-cap tech on strength.",sell:"Long-duration names if yields rise.",watch:"SOX index, mega-cap earnings and yields."},
+ growth:{buy:"Cyclicals and local currency on a beat.",sell:"Defensives and duration on a miss.",watch:"Forward PMIs and earnings revisions."},
+ fx:{buy:"Exporters on a weaker currency.",sell:"Importers and inflation-sensitive names.",watch:"Rate differentials and intervention risk."},
+ pmi:{buy:"Cyclicals on signs of stabilisation.",sell:"Currency and industrials on contraction.",watch:"New orders and employment sub-indices."},
+ energy:{buy:"Energy majors and commodity FX (CAD).",sell:"Airlines and consumer discretionary.",watch:"OPEC+ policy, inventories and crack spreads."},
+ stimulus:{buy:"China proxies, miners and industrial metals.",sell:"Fade the move if follow-through disappoints.",watch:"Credit growth and infrastructure spend."},
+ generic:{buy:"Assets aligned with the surprise direction.",sell:"Assets on the wrong side of the move.",watch:"Yields and the dollar for confirmation."}};
+function sparkGen(title,bias){
+  const s=title.toLowerCase(), h=hashStr(title), m=title.match(/-?\d+(\.\d+)?%/);
+  let base=m?parseFloat(m[0]):2+(h%40)/10;
+  const cooling=/cool|ease|slow|fall|below|drop/.test(s);
+  const dir=cooling?-1:(bias==="BEARISH"?-1:1);
+  const series=[]; let v=base-dir*(0.35+(h%4)/10);
+  for(let i=0;i<8;i++){series.push(+v.toFixed(1));v+=dir*(0.03+(hashStr(title+i)%6)/100);}
+  series[7]=+base.toFixed(1);
+  return {series,trend:dir>0?"Rising":dir<0?"Falling":"Stable"};
+}
+function buildSpark(series){
+  const w=280,h=40,p=4,mn=Math.min(...series),mx=Math.max(...series),rng=(mx-mn)||1;
+  const pts=series.map((v,i)=>[p+i*(w-2*p)/(series.length-1),h-p-((v-mn)/rng)*(h-2*p)]);
+  const path=pts.map((q,i)=>(i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1)).join(" ");
+  const dots=pts.map(q=>`<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="2.1"/>`).join("");
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><path class="sparkpath" d="${path}"/><g class="sparkdots">${dots}</g></svg>`;
+}
+const RMONTHS=["Jul 2025","Mar 2025","Nov 2024"];
+function reactionsGen(title){
+  const assets=["S&P 500","Nasdaq","USD Index","Gold"];
+  return RMONTHS.map((mo,ei)=>{
+    const seed=hashStr(title+mo), riskDir=((seed>>ei)&1)?1:-1;
+    const rows=assets.map(a=>{const s2=hashStr(title+mo+a),mag=(((s2%18)+2)/10);
+      let upv; if(a==="USD Index")upv=riskDir<0; else if(a==="Gold")upv=(s2%2)===0; else upv=riskDir>0;
+      return {k:a,v:(upv?"+":"-")+mag.toFixed(1)+"%",dir:upv?"up":"down"};});
+    const y=((hashStr(mo+title)%16)-6); rows.push({k:"US10Y",v:(y>=0?"+":"")+y+" bps",dir:y>=0?"down":"up"});
+    return {when:mo,rows};
+  });
+}
+function subSec(icon,title,body,open){
+  return `<div class="sub ${open?'open':''}">
+    <div class="subhead" onclick="toggleSub(this)"><span class="si">${icon}</span><h4>${title}</h4><span class="sc">▾</span></div>
+    <div class="subbody"><div class="subinner">${body}</div></div>
+  </div>`;
+}
 function nxCard(title,time,c){
-  const d=newsDetail(title,c);
-  const bc=d.bias==="BULLISH"?"var(--green)":d.bias==="BEARISH"?"var(--red)":"var(--muted)";
-  const bbg=d.bias==="BULLISH"?"rgba(24,224,138,.14)":d.bias==="BEARISH"?"rgba(255,84,104,.14)":"rgba(120,150,220,.12)";
-  const nums=d.numbers.length?`<div class="nxsec"><div class="nxh"><i>#</i>KEY NUMBERS</div><div class="nxnums">${d.numbers.map(n=>`<div class="nn"><span>${n.k}</span><b>${n.v}</b></div>`).join("")}</div></div>`:"";
+  const d=newsDetail(title,c), bias=d.bias;
+  const level=levelOf(title), vol=volOf(title,level), conf=confOf(title,level,bias);
+  const bc=biasColor(bias), bbg=biasBg(bias);
+  // SUMMARY (max 3 short paras)
+  const nums=d.numbers.length?`<div class="kn">${d.numbers.map(n=>`<div class="nn"><span>${n.k}</span><b>${n.v}</b></div>`).join("")}</div>`:"";
+  const summaryHTML=`<p>${d.summary}</p><p>${d.why}</p>${nums}`;
+  // MARKET IMPACT
+  const volHTML=`<div class="volwrap"><div class="voltop"><span class="vl">EXPECTED VOLATILITY</span><span class="vv">${vol} / 100</span></div><div class="voltrack"><div class="volfill" style="--vw:${vol}%"></div></div></div>`;
+  const mkHTML=volHTML+`<div class="mkgrid">`+Object.entries(d.impact).map(([k,v])=>`<div class="mkcard ${v.dir}"><div class="mn"><b>${k}</b><span class="mb ${v.dir}">${v.dir==='up'?'BULLISH':v.dir==='down'?'BEARISH':'NEUTRAL'}</span></div><div class="me">${(MK_LINES[k]&&MK_LINES[k][v.dir])||v.txt}</div></div>`).join("")+`</div>`;
+  // HISTORICAL CONTEXT
+  const sp=sparkGen(title,bias), tCol=sp.trend==="Rising"?"#18e08a":sp.trend==="Falling"?"#ff5468":"#8a97b8", tBg=sp.trend==="Rising"?"rgba(24,224,138,.14)":sp.trend==="Falling"?"rgba(255,84,104,.14)":"rgba(120,150,220,.14)";
+  const tNote=sp.trend==="Rising"?"Readings have trended higher across recent releases, reinforcing the theme.":sp.trend==="Falling"?"Readings have trended lower across recent releases, easing the pressure.":"Readings have held broadly steady across recent releases.";
+  const histHTML=`<div class="sparkbox"><div class="st">PAST 8 RELEASES</div>${buildSpark(sp.series)}<div class="sparkfoot"><span class="trendtag" style="color:${tCol};background:${tBg}">${sp.trend.toUpperCase()}</span><small>${tNote}</small></div></div>`;
+  // TRADING TAKEAWAY
+  const tk=TAKE[classify(title.toLowerCase())]||TAKE.generic;
+  const takeHTML=`<div class="takegrid"><div class="takecard tc-buy"><div class="tt">▲ BUY PRESSURE</div><p>${tk.buy}</p></div><div class="takecard tc-sell"><div class="tt">▼ SELL PRESSURE</div><p>${tk.sell}</p></div><div class="takecard tc-watch"><div class="tt">◉ WATCH</div><p>${tk.watch}</p></div></div>`;
+  // AI CONFIDENCE ring
+  const R=30, CIRC=2*Math.PI*R, off=CIRC*(1-conf/100);
+  const confHTML=`<div class="confwrap"><svg class="ring" viewBox="0 0 80 80"><circle class="ring-bg" cx="40" cy="40" r="${R}"/><circle class="ring-fg" cx="40" cy="40" r="${R}" style="--circ:${CIRC.toFixed(1)};--off:${off.toFixed(1)}"/><text class="ring-txt" x="40" y="45" text-anchor="middle">${conf}%</text></svg><div><div class="ct">AI CONFIDENCE</div><div class="cd">Estimated from historical reactions, macro conditions and cross-market confirmation.</div></div></div>`;
+  // PREVIOUS MARKET REACTIONS
+  const reactHTML=`<div class="reactscroll">`+reactionsGen(title).map((r,i)=>`<div class="reactcard" style="transition-delay:${i*90}ms"><div class="rm">${r.when}</div>${r.rows.map(rw=>`<div class="rr"><span>${rw.k}</span><b class="${rw.dir}">${rw.v}</b></div>`).join("")}</div>`).join("")+`</div>`;
+
   return `<div class="nx">
     <div class="nxhead" onclick="toggleNx(this)">
-      <span class="bd" style="background:${strengthHex(c.s)};box-shadow:0 0 6px ${strengthRGBA(c.s,.7)}"></span>
-      <div class="nxtitle">${title}<small>${time}</small></div>
-      <span class="chev">▾</span>
+      <div class="nxmeta">
+        <div class="nxcty"><span class="fl">${flag(c.cc)}</span> ${c.n} · <span class="nxtime">${time}</span></div>
+        <div class="nxhl">${title}</div>
+      </div>
+      <div class="nxright"><span class="nxbadge lvl-${level}">${level} IMPACT</span><span class="chev">▾</span></div>
     </div>
     <div class="nxbody"><div class="nxinner">
-      <div class="nxbadges"><span class="nxbias" style="color:${bc};background:${bbg};border:1px solid ${bc}">${d.bias}</span></div>
-      <div class="nxsec"><div class="nxh"><i>❯</i>SUMMARY</div><p>${d.summary}</p></div>
-      <div class="nxsec"><div class="nxh"><i>◧</i>MARKET IMPACT</div><div class="nxgrid">${Object.entries(d.impact).map(([k,v])=>`<div class="mi"><span class="mk">${k}</span><span class="mv ${v.dir}">${v.txt}</span></div>`).join("")}</div></div>
-      ${nums}
-      <div class="nxsec"><div class="nxh"><i>✦</i>WHY IT MATTERS</div><p>${d.why}</p></div>
-      <div class="nxsec"><div class="nxh"><i>➤</i>TRADING TAKEAWAY</div><ul class="nxtake">${d.takeaway.map(x=>`<li>${x}</li>`).join("")}</ul></div>
-      <div class="nxsec"><div class="nxh">RELATED MARKETS</div><div class="nxchips">${d.related.map(r=>`<span class="chip">${r}</span>`).join("")}</div></div>
+      <span class="biaspill" style="color:${bc};background:${bbg};border:1px solid ${bc}"><span class="d" style="background:${bc}"></span>${bias}</span>
+      ${subSec("❯","SUMMARY",summaryHTML,true)}
+      ${subSec("◧","MARKET IMPACT",mkHTML,false)}
+      ${subSec("〜","HISTORICAL CONTEXT",histHTML,false)}
+      ${subSec("➤","TRADING TAKEAWAY",takeHTML,false)}
+      ${confHTML}
+      ${subSec("◷","PREVIOUS MARKET REACTIONS",reactHTML,false)}
     </div></div>
   </div>`;
 }
+function toggleSub(head){head.parentElement.classList.toggle("open");}
 function toggleNx(head){
   const card=head.parentElement, wasOpen=card.classList.contains("open");
   $("#dBody").querySelectorAll(".nx.open").forEach(n=>n.classList.remove("open"));
