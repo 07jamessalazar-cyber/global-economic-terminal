@@ -539,6 +539,30 @@ body{
 .hq .hqb{flex:1;border-radius:3px 3px 0 0;min-height:3px;position:relative}
 .hq .hqb span{position:absolute;bottom:-15px;left:0;right:0;text-align:center;font-size:7px;color:var(--dim);font-family:var(--mono)}
 @media(max-width:900px){.ev-body{grid-template-columns:1fr}.ev-side{display:none}.ecard{grid-template-columns:40px 1fr 1fr 70px}.ecard .emetric.rev{display:none}}
+/* ===== country intelligence center ===== */
+.cic-risk{display:flex;align-items:center;gap:15px;background:rgba(12,18,34,.5);border:1px solid var(--stroke);border-radius:12px;padding:13px 15px;margin:4px 0 12px}
+.cic-risk .rl{font-size:8px;letter-spacing:1px;color:var(--muted);font-weight:800}
+.cic-risk .big{font-family:var(--mono);font-size:30px;font-weight:800;line-height:1;margin-top:3px}
+.cic-risk .rd{font-size:10.5px;color:var(--muted);line-height:1.5}
+.cic-scores{display:flex;flex-direction:column;gap:9px;margin-bottom:6px}
+.sitem{display:grid;grid-template-columns:130px 1fr 34px;gap:11px;align-items:center}
+.sitem .sl{font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.3px}
+.sitem .sbar{height:6px;border-radius:4px;background:rgba(120,150,220,.15);overflow:hidden}
+.sitem .sbar i{display:block;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.3,.8,.4,1)}
+.sitem .sv{font-family:var(--mono);font-weight:800;font-size:12px;text-align:right}
+.enbox{background:linear-gradient(135deg,rgba(255,140,50,.1),rgba(255,84,104,.05));border:1px solid rgba(255,140,50,.32);border-radius:12px;padding:13px}
+.enbox .ehz{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;margin:11px 0}
+.enbox .ehz .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.expo{display:flex;align-items:center;gap:11px;border:1px solid var(--stroke);border-radius:11px;padding:9px 12px;background:rgba(12,18,34,.5);margin-bottom:7px;transition:transform .15s}
+.expo:hover{transform:translateY(-2px)}
+.expo img{width:27px;height:27px;border-radius:6px;background:#fff;object-fit:contain;flex-shrink:0;padding:2px}
+.expo .ei{flex:1;min-width:0}.expo .ei b{font-size:11.5px;font-family:var(--mono);font-weight:700}
+.expo .ei .ex{font-size:9.5px;color:var(--muted);line-height:1.35;margin-top:2px}
+.expo .ep{text-align:right;font-family:var(--mono);flex-shrink:0}
+.expo .ep .pr{font-size:11.5px;font-weight:700}.expo .ep .pc{font-size:10px;font-weight:700}
+.mkimp{display:grid;grid-template-columns:1fr 1fr;gap:4px 16px}
+.mkrow{display:flex;justify-content:space-between;align-items:center;font-size:11px;padding:5px 0;border-bottom:1px dashed rgba(120,150,220,.09)}
+.mkrow .mk{color:var(--muted)}.mkrow .mv{font-weight:700;font-family:var(--mono);font-size:10.5px}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -1093,37 +1117,104 @@ function showHover(cc,x,y){
 function hideHover(){hoverEl.classList.remove("show");}
 
 /* ---------- DETAIL PANEL ---------- */
+/* ---------- geopolitical intelligence data ---------- */
+Object.assign(C,{
+ IR:{n:"Iran",cc:"IR",lat:32,lng:53,s:-0.72,idx:{n:"TEDPIX",c:-1.4},cur:{n:"IRR",c:-2.6},infl:39,rate:23,gdp:2.4,sent:"High Risk",ev:"Regional tensions elevate oil-export and Strait of Hormuz risk.",impact:"HIGH",bias:"BEARISH",ai:"Iran sits at the center of Middle East oil-supply risk. Any escalation threatens the Strait of Hormuz — the transit route for ~20% of seaborne crude — which spikes oil, freight and volatility worldwide.",news:{Military:[["Regional strikes reported near military sites","3h ago"],["Naval posturing near the Strait of Hormuz","6h ago"]],Energy:[["Sanctioned oil exports reroute to Asian buyers","5h ago"]],Economy:[["Rial slides further amid heightened tension","8h ago"]]}},
+ IL:{n:"Israel",cc:"IL",lat:31,lng:35,s:-0.22,idx:{n:"TA-35",c:0.3},cur:{n:"ILS",c:-0.5},infl:3.3,rate:4.5,gdp:3.0,sent:"Elevated",ev:"Security situation drives regional risk premium and defense demand.",impact:"HIGH",bias:"MIXED",ai:"Israel's security posture is a key regional risk barometer. Flare-ups lift oil risk premia and defense stocks while pressuring regional risk assets.",news:{Military:[["Air-defense activity reported overnight","4h ago"],["Border tensions remain elevated","1d ago"]],Politics:[["Coalition weighs security response","1d ago"]]}},
+ UA:{n:"Ukraine",cc:"UA",lat:49,lng:32,s:-0.62,idx:{n:"—",c:0},cur:{n:"UAH",c:-1.1},infl:12,rate:15,gdp:-1.2,sent:"Conflict",ev:"Ongoing war disrupts energy and grain flows into Europe.",impact:"HIGH",bias:"BEARISH",ai:"The war's main global-market channel is energy and grain supply. Infrastructure strikes lift European gas and complicate the ECB's inflation fight.",news:{Military:[["Energy-infrastructure strikes reported","2h ago"],["Front-line activity intensifies","1d ago"]],Energy:[["European gas ticks higher on supply risk","3h ago"]]}},
+ IQ:{n:"Iraq",cc:"IQ",lat:33,lng:44,s:-0.28,idx:{n:"ISX",c:0.1},cur:{n:"IQD",c:-0.2},infl:4.5,rate:7.5,gdp:3.5,sent:"Elevated",ev:"Major OPEC producer; export stability is the key market factor.",impact:"MED",bias:"MIXED",ai:"Iraq is OPEC's second-largest producer. Its export reliability and internal stability feed directly into global oil balances.",news:{Energy:[["Southern export terminals operating normally","5h ago"]],Politics:[["Budget and oil-revenue debate continues","1d ago"]]}},
+ VE:{n:"Venezuela",cc:"VE",lat:7,lng:-66,s:-0.5,idx:{n:"IBC",c:0.5},cur:{n:"VES",c:-3.0},infl:60,rate:55,gdp:1.5,sent:"High Risk",ev:"Sanctioned oil sector; production recovery is the swing factor.",impact:"LOW",bias:"MIXED",ai:"Venezuela holds the world's largest oil reserves but output is constrained by sanctions and underinvestment. Any sanctions relief adds marginal global supply.",news:{Energy:[["Heavy-crude output slowly recovering","6h ago"]],Politics:[["Sanctions framework under review","2d ago"]]}},
+ AE:{n:"United Arab Emirates",cc:"AE",lat:24,lng:54,s:0.4,idx:{n:"ADX",c:0.3},cur:{n:"AED (peg)",c:0.0},infl:2.3,rate:5.0,gdp:3.8,sent:"Stable",ev:"OPEC+ producer; diversification and spare capacity in focus.",impact:"MED",bias:"MIXED",ai:"The UAE is a key OPEC+ producer with meaningful spare capacity, a stabilizing force for oil prices, while its diversified economy anchors Gulf stability.",news:{Energy:[["Spare capacity supports market stability","5h ago"]],Economy:[["Non-oil diversification drives growth","1d ago"]]}}
+});
+const OILSET=new Set(["SA","RU","IR","IQ","AE","VE","KW","QA"]);
+const ENERGY_EXPO=[["XOM","Integrated major; earnings track crude prices."],["CVX","Integrated major; upstream oil leverage."],["COP","Pure-play E&P; high oil-price beta."],["OXY","Leveraged E&P; sensitive to price swings."],["SLB","Oilfield services; drilling-activity driven."],["HAL","Oilfield services; North America exposure."],["VLO","Refiner; margins move with crack spreads."],["MPC","Refiner; product-demand sensitive."],["XLE","Energy sector ETF; broad energy exposure."],["USO","Crude oil fund; direct price tracker."]];
+const ETFMAP={CN:"FXI",BR:"EWZ",IN:"INDA",JP:"EWJ",DE:"EWG",GB:"EWU",KR:"EWY",MX:"EWW",FR:"EWQ",AU:"EWA",CA:"EWC",CH:"EWL",SA:"KSA"};
+const CONFLICT={
+ UA:{risk:84,pol:28,mil:80,events:[["2h ago","Energy-infrastructure strikes","HIGH","Lifts European gas and complicates ECB policy."],["1d ago","Front-line activity intensifies","HIGH","Sustains the war-risk premium in energy."],["3d ago","Air-defense engagements","MED","Ongoing but contained escalation."]]},
+ IL:{risk:68,pol:52,mil:62,events:[["4h ago","Air-defense activity overnight","HIGH","Regional flare-up lifts oil risk premium and defense names."],["1d ago","Border tensions elevated","MED","Keeps a persistent regional risk premium."]]}};
+function expoDefault(cc){const etf=ETFMAP[cc];const l=[];if(etf)l.push([etf,"Country ETF; direct exposure to local equities."]);l.push(["SPY","US large-cap; global risk barometer."]);l.push(["GLD","Gold; haven bid when risk rises."]);return l;}
+function baseInd(c){return{gdp:c.gdp+"%",infl:c.infl+"%",rate:c.rate+"%",cur:sgn(c.cur.c)+c.cur.c+"%",idx:c.idx.n+" "+sgn(c.idx.c)+c.idx.c+"%",yield:"—",trade:"—",unemp:"—",pmi:"—",conf:"—"};}
+function genMarkets(c){const off=c.s<-0.2;return{stocks:[off?"Pressured":"Supported",off?"down":"up"],oil:["Neutral","flat"],gold:[off?"Haven bid":"Neutral",off?"up":"flat"],gas:["Neutral","flat"],fx:[c.cur.c>=0?"Firmer":"Softer",c.cur.c>=0?"up":"down"],bonds:[off?"Bid":"Steady",off?"up":"flat"],crypto:[off?"Risk-off":"Neutral",off?"down":"flat"],benefit:"defensives and quality",risk:"cyclicals and high-beta names",hist:"Comparable macro-stress episodes drove haven flows into the dollar, gold and Treasuries."};}
+const GEO={
+ US:{risk:32,mkt:74,econ:68,pol:55,mil:24,tension:"elevated",sit:"US rate expectations and fiscal/trade-policy headlines set the global risk tone; markets are caught between resilient growth and a sticky-inflation Fed.",oil:false,exposure:[["SPY","US large-cap benchmark."],["QQQ","Nasdaq-100; rate-sensitive growth."],["XLE","Energy; oil-price exposure."],["GLD","Gold; policy/uncertainty hedge."]],ind:{gdp:"2.1%",infl:"2.9%",rate:"4.50%",cur:"DXY +0.4%",idx:"S&P −1.2%",yield:"10Y 4.30%",trade:"−$70B/mo",unemp:"4.1%",pmi:"49.8",conf:"Neutral"},markets:{stocks:["Rate-path driven","flat"],oil:["Neutral","flat"],gold:["Firm on uncertainty","up"],gas:["Neutral","flat"],fx:["Dollar bid","up"],bonds:["Yields the key driver","flat"],crypto:["High-beta risk","flat"],benefit:"defensives, quality, the dollar",risk:"long-duration growth and EM assets",hist:"Prior policy-uncertainty spikes favored the USD and Treasuries over risk assets."}},
+ CN:{risk:56,mkt:70,econ:48,pol:44,mil:40,tension:"elevated",sit:"China's sub-target growth, deflation risk and trade friction make it a global-demand swing factor; PBOC stimulus offers tactical relief.",oil:false,exposure:[["FXI","China large-cap ETF."],["BABA","China consumer bellwether."],["FCX","Copper; China-demand proxy."],["EWA","Australia; iron-ore/China link."]],ind:{gdp:"4.7%",infl:"0.3%",rate:"3.10%",cur:"CNY −0.3%",idx:"CSI300 +0.6%",yield:"10Y 2.20%",trade:"+$80B/mo",unemp:"5.1%",pmi:"49.4",conf:"Cautious"},markets:{stocks:["Stimulus-hope driven","flat"],oil:["Demand swing factor","flat"],gold:["Neutral","flat"],gas:["Neutral","flat"],fx:["Yuan managed weaker","down"],bonds:["Easing bias","up"],crypto:["Neutral","flat"],benefit:"industrial metals, China proxies on stimulus",risk:"exporters into China, luxury, EM",hist:"China-slowdown scares historically pressured commodities and EM FX."}},
+ RU:{risk:78,mkt:56,econ:34,pol:30,mil:76,tension:"conflict",sit:"A war-economy footing with double-digit inflation and a 16% policy rate; the main global channel is energy and grain supply.",oil:true,energy:{prod:"~10.5M bpd",exp:"~4.8M bpd",gas:"Major (pipeline + LNG)",hormuz:"—",hzLevel:"stable",note:"Sanctions reroute exports to Asia at discounts; Russian supply remains a global swing factor and a persistent war-risk premium in energy."},military:[["2h ago","Energy-infrastructure strikes in the war","HIGH","Lifts European gas and complicates ECB policy."],["1d ago","Sustained front-line operations","HIGH","Keeps the war-risk premium elevated."]],exposure:ENERGY_EXPO,ind:{gdp:"1.2%",infl:"8.4%",rate:"16.00%",cur:"RUB −0.7%",idx:"MOEX −0.5%",yield:"10Y 15.5%",trade:"+$12B/mo",unemp:"2.9%",pmi:"51.0",conf:"Weak"},markets:{stocks:["Walled-off, war-driven","down"],oil:["Supply swing factor","up"],gold:["Haven / de-dollarization bid","up"],gas:["European supply risk","up"],fx:["Ruble stressed","down"],bonds:["High-yield, capital-controlled","flat"],crypto:["Sanctions-evasion narrative","flat"],benefit:"energy majors, defense, gold",risk:"European industrials, airlines",hist:"The 2022 invasion triggered an energy-price shock and a global inflation surge."}},
+ IR:{risk:88,mkt:62,econ:28,pol:34,mil:82,tension:"conflict",sit:"Middle East escalation centers on Iran; the market's core fear is a Strait of Hormuz disruption that would spike crude, freight and volatility globally.",oil:true,energy:{prod:"~3.2M bpd",exp:"~1.4M bpd (sanctioned)",gas:"Vast reserves, limited exports",hormuz:"ELEVATED — key chokepoint at risk",hzLevel:"tense",note:"Roughly 20% of global seaborne oil transits the Strait of Hormuz; any threat to the strait sends Brent sharply higher and lifts tanker rates and volatility."},military:[["3h ago","Regional strikes near military sites","HIGH","Raises the odds of a broader escalation and Hormuz risk."],["6h ago","Naval posturing near Hormuz","HIGH","Directly threatens the world's most critical oil chokepoint."],["1d ago","Proxy activity reported","MED","Keeps the regional risk premium elevated."]],exposure:ENERGY_EXPO,ind:{gdp:"2.4%",infl:"39%",rate:"23.0%",cur:"IRR −2.6%",idx:"TEDPIX −1.4%",yield:"—",trade:"Oil-dependent",unemp:"9.5%",pmi:"—",conf:"Weak"},markets:{stocks:["Risk-off on escalation","down"],oil:["Sharp spike risk on Hormuz","up"],gold:["Strong haven bid","up"],gas:["Higher on supply fear","up"],fx:["Dollar and CHF bid","up"],bonds:["Treasuries bid","up"],crypto:["Volatile, risk-off","down"],benefit:"energy majors, defense, tankers, gold",risk:"airlines, consumer discretionary, EM importers",hist:"Past Hormuz scares (2019, 2024) produced fast double-digit oil spikes and volatility surges."}},
+ SA:{risk:44,mkt:66,econ:62,pol:55,mil:46,tension:"elevated",sit:"Saudi Arabia is OPEC+'s swing producer; its output policy sets the global oil price floor while Vision 2030 diversifies the economy.",oil:true,energy:{prod:"~9.5M bpd",exp:"~6.5M bpd",gas:"Growing",hormuz:"Transit route — monitored",hzLevel:"tense",note:"As the swing producer, Saudi output decisions and spare capacity are the single biggest lever on global oil prices."},military:[["1d ago","Regional air-defense on alert","MED","Precautionary posture amid regional tension."],["3d ago","Facility security reinforced","LOW","Protects critical export infrastructure."]],exposure:ENERGY_EXPO,ind:{gdp:"1.9%",infl:"1.7%",rate:"5.00%",cur:"SAR peg",idx:"Tadawul +0.2%",yield:"—",trade:"+$25B/mo",unemp:"5.6%",pmi:"56.0",conf:"Neutral"},markets:{stocks:["Oil-price linked","flat"],oil:["Policy sets the floor","up"],gold:["Neutral","flat"],gas:["Neutral","flat"],fx:["Riyal pegged to USD","flat"],bonds:["Investment-grade","flat"],crypto:["Neutral","flat"],benefit:"energy, oilfield services",risk:"oil-importing economies if prices spike",hist:"OPEC+ supply cuts have repeatedly tightened balances and lifted crude."}}
+};
+function deriveGeo(c){const cc=c.cc,oil=OILSET.has(cc),conf=CONFLICT[cc];
+ const econ=Math.round(Math.max(15,Math.min(85,52+c.s*36)));
+ const risk=conf?conf.risk:Math.round(Math.max(10,Math.min(90,42-c.s*30+(c.infl>7?12:0))));
+ return{risk,mkt:Math.round(45+Math.abs(c.s)*28),econ,pol:conf?conf.pol:62,mil:conf?conf.mil:12,
+  tension:risk>=70?"conflict":risk>=50?"high":c.s<-0.2?"elevated":"stable",sit:c.ai,oil,
+  energy:oil?{prod:"Significant producer",exp:"Major exporter",gas:"Regional supplier",hormuz:(cc==="IQ"||cc==="AE")?"Transit route — monitored":"—",hzLevel:"tense",note:"Crude output and export flows feed directly into global oil balances and prices."}:null,
+  military:conf?conf.events:null,exposure:oil?ENERGY_EXPO:expoDefault(cc),ind:baseInd(c),markets:genMarkets(c)};}
+let EXQ={};
+async function fetchExpo(tickers){
+  if(!hasKey)return;
+  await Promise.all(tickers.map(async t=>{try{const d=await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${t}&apikey=${FMP_KEY}`).then(r=>r.json());const row=Array.isArray(d)?d[0]:d;if(row&&typeof row.price==="number"){EXQ[t]={v:row.price,c:row.changePercentage??0};const pr=document.querySelector(`[data-ex="${t}-pr"]`),pc=document.querySelector(`[data-ex="${t}-pc"]`);if(pr)pr.textContent="$"+Number(row.price).toLocaleString("en-US",{maximumFractionDigits:2});if(pc){const cc=row.changePercentage??0;pc.textContent=(cc>=0?"+":"")+cc.toFixed(2)+"%";pc.className="pc "+(cc>=0?"up":"down");}}}catch(e){}}));
+}
+
 function openDetail(cc){
   const c=C[cc]; if(!c) return;
+  const g=GEO[cc]||deriveGeo(c);
   $("#dFlag").innerHTML=flag(c.cc);
   $("#dName").textContent=c.n;
-  $("#dSub").textContent=`${c.idx.n} · POLICY ${c.rate}% · CPI ${c.infl}%`;
-  const biasColor=c.bias==="BULLISH"?"var(--green)":c.bias==="BEARISH"?"var(--red)":"var(--amber)";
-  const impColor=c.impact==="HIGH"?"var(--red)":c.impact==="MED"?"var(--amber)":"var(--cyan)";
-  let html=`<div class="statbar">
-    <div class="s"><div class="k">${c.idx.n}</div><div class="v ${col(c.idx.c)}">${sgn(c.idx.c)}${c.idx.c}%</div></div>
-    <div class="s"><div class="k">GDP GROWTH</div><div class="v ${col(c.gdp)}">${c.gdp}%</div></div>
-    <div class="s"><div class="k">CURRENCY</div><div class="v ${col(c.cur.c)}">${sgn(c.cur.c)}${c.cur.c}%</div></div>
-    <div class="s"><div class="k">INFLATION</div><div class="v">${c.infl}%</div></div>
-    <div class="s"><div class="k">INTEREST RATE</div><div class="v">${c.rate}%</div></div>
-    <div class="s"><div class="k">SENTIMENT</div><div class="v" style="color:${strengthHex(c.s)}">${c.sent}</div></div>
-  </div>
-  <div class="impactrow">
-    <div class="badge" style="background:${strengthRGBA(c.impact==='HIGH'?-1:c.impact==='MED'?0:1,.15)};color:${impColor};border:1px solid ${impColor}">MARKET IMPACT · ${c.impact}</div>
-    <div class="badge" style="background:${biasColor.includes('green')?'rgba(24,224,138,.15)':biasColor.includes('red')?'rgba(255,84,104,.15)':'rgba(255,191,60,.15)'};color:${biasColor};border:1px solid ${biasColor}">${c.bias}</div>
-  </div>
-  <div class="aibox"><div class="t">✦ AI SUMMARY — WHY IT MATTERS</div><p>${c.ai}</p></div>`;
-
+  $("#dSub").textContent="COUNTRY INTELLIGENCE CENTER";
+  const riskCol=g.risk>=70?"var(--red)":g.risk>=45?"var(--amber)":"var(--green)";
+  const bar=(label,val,bad)=>{const cl=bad?(val>=66?"var(--red)":val>=40?"var(--amber)":"var(--green)"):(val>=66?"var(--green)":val>=40?"var(--amber)":"var(--red)");return `<div class="sitem"><span class="sl">${label}</span><div class="sbar"><i style="width:${val}%;background:${cl}"></i></div><span class="sv" style="color:${cl}">${val}</span></div>`;};
+  let html=`<div class="cic-risk"><div style="flex-shrink:0"><div class="rl">OVERALL RISK</div><div class="big" style="color:${riskCol}">${g.risk}<span style="font-size:12px;color:var(--dim)">/100</span></div></div><div class="rd">${g.sit}</div></div>
+    <div class="cic-scores">
+      ${bar("Market Impact",g.mkt,true)}
+      ${bar("Economic Stability",g.econ,false)}
+      ${bar("Political Stability",g.pol,false)}
+      ${bar("Military Escalation",g.mil,true)}
+    </div>`;
+  const ind=g.ind;
+  html+=`<div class="newsgrp"><div class="gt">◧ ECONOMIC DASHBOARD<span class="ln"></span></div>
+    <div class="statbar" style="grid-template-columns:repeat(3,1fr)">
+     <div class="s"><div class="k">GDP GROWTH</div><div class="v">${ind.gdp}</div></div>
+     <div class="s"><div class="k">INFLATION</div><div class="v">${ind.infl}</div></div>
+     <div class="s"><div class="k">INTEREST RATE</div><div class="v">${ind.rate}</div></div>
+     <div class="s"><div class="k">CURRENCY</div><div class="v">${ind.cur}</div></div>
+     <div class="s"><div class="k">STOCK INDEX</div><div class="v">${ind.idx}</div></div>
+     <div class="s"><div class="k">10Y YIELD</div><div class="v">${ind.yield}</div></div>
+     <div class="s"><div class="k">TRADE BALANCE</div><div class="v">${ind.trade}</div></div>
+     <div class="s"><div class="k">UNEMPLOYMENT</div><div class="v">${ind.unemp}</div></div>
+     <div class="s"><div class="k">PMI</div><div class="v">${ind.pmi}</div></div>
+    </div></div>`;
+  if(g.oil&&g.energy){const e=g.energy;const hz=e.hzLevel==="disrupted"?"var(--red)":e.hzLevel==="tense"?"var(--amber)":"var(--green)";
+   html+=`<div class="newsgrp"><div class="gt">⛽ ENERGY & OIL INTELLIGENCE<span class="ln"></span></div>
+    <div class="enbox">
+     <div class="statbar" style="grid-template-columns:repeat(2,1fr)">
+      <div class="s"><div class="k">OIL PRODUCTION</div><div class="v">${e.prod}</div></div>
+      <div class="s"><div class="k">OIL EXPORTS</div><div class="v">${e.exp}</div></div>
+      <div class="s"><div class="k">NAT GAS EXPORTS</div><div class="v">${e.gas}</div></div>
+      <div class="s"><div class="k">BRENT / WTI</div><div class="v" id="cicOil">—</div></div>
+     </div>
+     <div class="ehz"><span class="dot" style="background:${hz};box-shadow:0 0 8px ${hz}"></span>Strait of Hormuz: <span style="color:${hz}">${e.hormuz}</span></div>
+     <p style="font-size:11px;line-height:1.55;color:#dfe4f5">${e.note}</p>
+    </div></div>`;}
+  if(g.military){html+=`<div class="newsgrp"><div class="gt">⚔ MILITARY ACTIVITY<span class="ln"></span></div><div class="mtl">`+g.military.map(m=>{const lc=m[2]==="HIGH"?"var(--red)":m[2]==="MED"?"var(--amber)":"var(--cyan)";return `<div class="mtli"><span class="mdot" style="background:${lc};box-shadow:0 0 7px ${lc}"></span><div class="mi"><b>${m[1]}</b><small>${m[0]} · ${m[3]}</small></div><span class="mres" style="background:${lc.replace('var(--','rgba(').replace(')',',.15)')};color:${lc}">${m[2]}</span></div>`;}).join("")+`</div><div style="margin-top:9px;font-size:10.5px;color:var(--muted)">Escalation trend: <b style="color:${g.mil>=60?'var(--red)':g.mil>=35?'var(--amber)':'var(--green)'}">${g.mil>=60?"RISING":g.mil>=35?"ELEVATED":"DE-ESCALATING"}</b></div></div>`;}
+  html+=`<div class="newsgrp"><div class="gt">◨ MARKET EXPOSURE<span class="ln"></span></div>`+g.exposure.map(x=>`<div class="expo"><img src="${logoURL(x[0])}" onerror="this.style.visibility='hidden'"><div class="ei"><b>${x[0]}</b><div class="ex">${x[1]}</div></div><div class="ep"><div class="pr" data-ex="${x[0]}-pr">—</div><div class="pc" data-ex="${x[0]}-pc"></div></div></div>`).join("")+`</div>`;
+  html+=`<div class="newsgrp"><div class="gt">◷ LIVE NEWS<span class="ln"></span></div></div>`;
   for(const [grp,items] of Object.entries(c.news)){
     html+=`<div class="newsgrp"><div class="gt">${grp.toUpperCase()}<span class="ln"></span></div>`;
     html+=items.map(it=>nxCard(it[0],it[1],c)).join("");
     html+=`</div>`;
   }
+  const m=g.markets, mr=(k,a)=>`<div class="mkrow"><span class="mk">${k}</span><span class="mv ${a[1]}">${a[0]}</span></div>`;
+  html+=`<div class="aibox" style="margin-top:14px"><div class="t">✦ WHAT DOES THIS MEAN FOR MARKETS?</div>
+    <div class="mkimp">${mr("Stocks",m.stocks)}${mr("Crude Oil",m.oil)}${mr("Gold",m.gold)}${mr("Nat Gas",m.gas)}${mr("Currencies",m.fx)}${mr("Bonds",m.bonds)}${mr("Crypto",m.crypto)}</div>
+    <p style="margin-top:11px;font-size:11.5px;line-height:1.55"><b style="color:var(--green)">Beneficiaries:</b> ${m.benefit}. <b style="color:var(--red)">Downside risk:</b> ${m.risk}.</p>
+    <p style="margin-top:7px;font-size:10.5px;color:var(--muted)">▸ Historical parallel: ${m.hist}</p></div>
+    <div class="disc" style="margin-top:12px">Scores, energy figures and geopolitical context are curated estimates · news, prices and oil quotes are live via FMP · not investment advice.</div>`;
   $("#dBody").innerHTML=html;
   $("#detail").classList.add("open");
   $("#aibtn").style.display="none";
   hideHover();
-  // spin globe to country
+  const oilEl=$("#cicOil"); if(oilEl){const b=TICKERS.find(t=>t.k==="BRENT CRUDE"); if(b) oilEl.textContent="$"+b.v.toFixed(0)+" / $"+(b.v-4).toFixed(0);}
+  fetchExpo(g.exposure.map(x=>x[0]));
   if(window.__globe){ window.__globe.pointOfView({lat:c.lat,lng:c.lng,altitude:1.8},900); }
 }
 function closeDetail(){$("#detail").classList.remove("open");$("#aibtn").style.display="";}
