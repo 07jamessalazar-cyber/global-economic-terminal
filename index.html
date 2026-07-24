@@ -96,6 +96,9 @@ body{
 .ev{border:1px solid var(--stroke);border-radius:11px;padding:10px 11px;background:var(--panel2);cursor:pointer;transition:.15s;position:relative}
 .ev:hover{border-color:var(--stroke2);background:rgba(30,42,70,0.78);transform:translateX(-2px)}
 .ev .aihint{position:absolute;right:9px;bottom:8px;font-size:8px;font-weight:800;letter-spacing:.5px;color:#b7a6ff;opacity:.65}
+.ev .src{font-size:9px;font-weight:700;letter-spacing:.5px;color:var(--cyan);text-transform:uppercase;max-width:135px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.readmore{display:inline-block;margin:2px 0 14px;font-size:12px;font-weight:600;color:var(--cyan);text-decoration:none;border:1px solid rgba(63,224,255,.3);padding:7px 12px;border-radius:9px}
+.readmore:hover{background:rgba(63,224,255,.1)}
 #newsmodal{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(3,5,10,.6);backdrop-filter:blur(6px)}
 #newsmodal.open{display:flex}
 .ev .top{display:flex;align-items:center;gap:8px;margin-bottom:5px}
@@ -553,46 +556,87 @@ function renderHeat(){
   }).join("");
 }
 
+let NEWS=[], currentNews=[];
+
+function newsCard(n,i){
+  const label = n.site ? `<span class="src">${n.site}</span>` : `<span class="fl">${flag(n.cc)}</span>`;
+  return `<div class="ev" onclick="openNews(${i})">
+    <div class="top">${label}
+      <span class="imp imp-${n.imp}">${n.imp.toUpperCase()}</span>
+      <span class="tm">${n.t}</span></div>
+    <h4>${n.h}</h4>
+    <div class="assets">${n.as.map(a=>`<span class="as">${a}</span>`).join("")}</div>
+    <span class="aihint">✦ INSIGHT</span></div>`;
+}
 function renderFeed(){
-  const card=(f,i)=>`<div class="ev" onclick="openNews(${i})">
-    <div class="top"><span class="fl">${flag(f.cc)}</span>
-      <span class="imp imp-${f.imp}">${f.imp.toUpperCase()}</span>
-      <span class="tm">${f.t}</span></div>
-    <h4>${f.h}</h4>
-    <div class="assets">${f.as.map(a=>`<span class="as">${a}</span>`).join("")}</div>
-    <span class="aihint">✦ AI INSIGHT</span></div>`;
-  const one=FEED.map(card).join("");
+  currentNews = NEWS.length ? NEWS : FEED;
+  const one=currentNews.map((n,i)=>newsCard(n,i)).join("");
   $("#feed").innerHTML=one+one; // duplicate for seamless loop
 }
 
 function openNews(i){
-  const f=FEED[i]; if(!f) return;
+  const f=currentNews[i]; if(!f) return;
   const impColor=f.imp==="high"?"var(--red)":f.imp==="med"?"var(--amber)":"var(--cyan)";
   const bias=f.bias||"MIXED";
   const biasColor=bias==="BULLISH"?"var(--green)":bias==="BEARISH"?"var(--red)":"var(--amber)";
   const biasBg=bias==="BULLISH"?"rgba(24,224,138,.15)":bias==="BEARISH"?"rgba(255,84,104,.15)":"rgba(255,191,60,.15)";
+  const src=f.site?f.site:(f.cc?`${flag(f.cc)} ${f.cc}`:"GLOBAL");
+  const isLive=!!f.text;
+  const boxHdr=isLive?"✦ SUMMARY — WHAT'S HAPPENING":"✦ AI INSIGHT — WHY IT MATTERS";
+  const readmore=f.url?`<a class="readmore" href="${f.url}" target="_blank" rel="noopener noreferrer">Read full article ↗</a>`:"";
   $("#nmTitle").textContent=f.h;
-  $("#nmMeta").innerHTML=`${flag(f.cc)} ${f.cc} · ${f.t} · <span style="color:${impColor};font-weight:700">${f.imp.toUpperCase()} IMPACT</span>`;
+  $("#nmMeta").innerHTML=`${src} · ${f.t} · <span style="color:${impColor};font-weight:700">${f.imp.toUpperCase()} IMPACT</span>`;
   $("#nmBody").innerHTML=`
     <div class="impactrow" style="margin-top:2px">
       <div class="badge" style="background:${f.imp==='high'?'rgba(255,84,104,.15)':f.imp==='med'?'rgba(255,191,60,.15)':'rgba(63,224,255,.12)'};color:${impColor};border:1px solid ${impColor}">MARKET IMPACT · ${f.imp.toUpperCase()}</div>
       <div class="badge" style="background:${biasBg};color:${biasColor};border:1px solid ${biasColor}">${bias}</div>
     </div>
-    <div class="aibox"><div class="t">✦ AI INSIGHT — WHY IT MATTERS</div><p id="nmAI"></p></div>
+    <div class="aibox"><div class="t">${boxHdr}</div><p id="nmAI"></p></div>
     <div class="newsgrp"><div class="gt">AFFECTED ASSETS<span class="ln"></span></div>
       <div class="assets" style="gap:6px">${f.as.map(a=>`<span class="as" style="font-size:11px;padding:3px 8px">${a}</span>`).join("")}</div></div>
-    <div class="disc">Built-in analysis · representative insight · not investment advice</div>`;
+    ${readmore}
+    <div class="disc">${isLive?'Live headline via Financial Modeling Prep':'Built-in analysis'} · sentiment auto-tagged · not investment advice</div>`;
   $("#newsmodal").classList.add("open");
-  // typewriter reveal of the insight
-  const p=$("#nmAI"), full=f.ai||"";
+  const p=$("#nmAI"), full=(f.ai||f.text||"").trim()||"Open the full article for details.";
   clearInterval(window.__nt); let idx=0;
   window.__nt=setInterval(()=>{
     p.innerHTML=full.slice(0,idx)+'<span class="cursor"></span>';
-    idx+=3;
+    idx+=4;
     if(idx>=full.length){p.textContent=full;clearInterval(window.__nt);}
-  },10);
+  },8);
 }
 function closeNews(){$("#newsmodal").classList.remove("open");clearInterval(window.__nt);}
+
+/* ---------- LIVE NEWS (FMP) ---------- */
+function timeOf(s){ if(!s) return ""; const p=String(s).split(" "); return p[1]?p[1].slice(0,5):String(s).slice(0,10); }
+const BULL=/\b(surges?|jumps?|rally|rallies|beats?|gains?|soars?|rises?|record|upgrades?|strong|rebounds?|boosts?|climbs?|higher|outperform|optimism)\b/i;
+const BEAR=/\b(falls?|tumbles?|drops?|slumps?|concerns?|fears?|cuts?|miss(es)?|plunges?|sell-?off|warns?|crash|slides?|lower|weak|worries|sinks?|downgrades?|recession|tariffs?|tensions?)\b/i;
+function biasFrom(s){ const b=BULL.test(s), r=BEAR.test(s); if(b&&!r)return"BULLISH"; if(r&&!b)return"BEARISH"; if(b&&r)return"MIXED"; return"NEUTRAL"; }
+function impactFrom(s){ return /\b(fed|fomc|cpi|inflation|tariffs?|rate hike|rates?|jobs|payroll|oil|crude|war|iran|treasury|yields?|recession|gdp|opec)\b/i.test(s)?"high":"med"; }
+function assetsFrom(t,sym){
+  const a=[]; if(sym) a.push(String(sym).toUpperCase());
+  const m=[[/oil|crude|brent|opec/i,"OIL"],[/gold/i,"GOLD"],[/bitcoin|crypto/i,"BTC"],[/dollar|dxy/i,"USD"],
+    [/treasur|yield|bond/i,"UST"],[/nasdaq|semiconductor|chip|\bai\b|tech/i,"NDX"],[/s&p|equit|stock/i,"SPX"],
+    [/fed|fomc|rate/i,"RATES"],[/tariff|trade/i,"TRADE"]];
+  m.forEach(([re,tag])=>{ if(re.test(t)&&!a.includes(tag)&&a.length<4) a.push(tag); });
+  return a.length?a:["MKTS"];
+}
+async function fetchNews(){
+  if(!hasKey){ renderFeed(); return; }
+  try{
+    const r=await fetch(`https://financialmodelingprep.com/stable/news/general-latest?apikey=${FMP_KEY}`);
+    const d=await r.json();
+    if(Array.isArray(d)&&d.length){
+      NEWS=d.filter(a=>a&&a.title).slice(0,18).map(a=>{
+        const s=(a.title||"")+" "+(a.text||"");
+        return { site:(a.publisher||a.site||"WIRE").toUpperCase(), t:timeOf(a.publishedDate), h:a.title,
+          imp:impactFrom(s), bias:biasFrom(s), as:assetsFrom(s,a.symbol), text:a.text||"", url:a.url };
+      });
+      renderFeed();
+      const live=document.querySelector("#right .hd small"); if(live) live.textContent="● LIVE · FMP";
+    }
+  }catch(e){ if(!NEWS.length) renderFeed(); }
+}
 
 function renderTimeline(){
   const now=new Date();
@@ -826,7 +870,9 @@ async function fetchLive(){
 renderTickers(); renderHeat(); renderFeed(); renderTimeline();
 initGlobe();
 fetchLive();
+fetchNews();
 setInterval(fetchLive, 60000);
+setInterval(fetchNews, 300000);
 </script>
 </body>
 </html>
