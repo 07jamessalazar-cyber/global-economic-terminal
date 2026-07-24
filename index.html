@@ -48,7 +48,8 @@ body{
 .brand span{display:block;font-size:9px;letter-spacing:2.5px;color:var(--muted);font-weight:600}
 .tickers{flex:1;display:flex;align-items:center;overflow:hidden;position:relative}
 .tickers .track{display:flex;gap:26px;padding:0 18px;align-items:center;white-space:nowrap}
-.tk{display:flex;flex-direction:column;line-height:1.15;font-family:var(--mono)}
+.tk{display:flex;flex-direction:column;line-height:1.15;font-family:var(--mono);cursor:pointer;padding:6px 8px;border-radius:9px;transition:background .15s}
+.tk:hover{background:rgba(63,224,255,.08)}
 .tk .lab{font-size:9.5px;letter-spacing:1.5px;color:var(--muted);font-weight:600}
 .tk .row{display:flex;align-items:baseline;gap:7px}
 .tk .val{font-size:15px;font-weight:700}
@@ -281,6 +282,76 @@ body{
 .reactcard .rr:first-of-type{border-top:none}
 .reactcard .rr span{color:var(--muted)}
 .reactcard .rr b{font-family:var(--mono);font-weight:700}
+/* ===== market detail dropdown ===== */
+#mktpanel{position:fixed;z-index:38;top:70px;left:20px;width:min(700px,calc(100vw - 24px));max-height:calc(100vh - 150px);overflow-y:auto;
+  background:rgba(14,20,34,0.9);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(63,224,255,.28);border-radius:16px;opacity:0;transform:translateY(-12px);pointer-events:none;
+  transition:opacity .3s ease,transform .3s cubic-bezier(.2,.9,.3,1);box-shadow:0 22px 64px rgba(0,0,0,.6),0 0 34px rgba(63,224,255,.15)}
+#mktpanel.open{opacity:1;transform:translateY(0);pointer-events:auto}
+#mktpanel::-webkit-scrollbar{width:7px}#mktpanel::-webkit-scrollbar-thumb{background:var(--stroke2);border-radius:6px}
+.mph{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:15px 18px;border-bottom:1px solid var(--stroke);background:rgba(12,17,30,.94);backdrop-filter:blur(12px);border-radius:16px 16px 0 0}
+.mph .mpname{flex:1;min-width:0}
+.mph .mpname b{font-size:15px;font-weight:700;letter-spacing:.3px;display:block}
+.mph .mpname small{font-size:9px;letter-spacing:1.5px;color:var(--muted);font-weight:600}
+.mph .mpval{text-align:right;font-family:var(--mono)}
+.mph .mpval .p{font-size:17px;font-weight:800}
+.mph .mpval .ch{font-size:12px;font-weight:700}
+.mph .mpx{width:28px;height:28px;border-radius:8px;border:1px solid var(--stroke2);background:var(--panel2);color:var(--text);cursor:pointer;font-size:14px;flex-shrink:0}
+.mph .mpx:hover{background:rgba(255,84,104,.15);border-color:var(--red)}
+.mpb{padding:6px 18px 22px}
+.msec{padding:15px 0;border-top:1px solid rgba(120,150,220,.1)}
+.msec:first-child{border-top:none}
+#mktpanel.open .msec{animation:fadeUp .4s both}
+#mktpanel.open .msec:nth-of-type(1){animation-delay:.03s}
+#mktpanel.open .msec:nth-of-type(2){animation-delay:.08s}
+#mktpanel.open .msec:nth-of-type(3){animation-delay:.13s}
+#mktpanel.open .msec:nth-of-type(4){animation-delay:.18s}
+#mktpanel.open .msec:nth-of-type(5){animation-delay:.23s}
+#mktpanel.open .msec:nth-of-type(6){animation-delay:.28s}
+#mktpanel.open .msec:nth-of-type(7){animation-delay:.33s}
+#mktpanel.open .msec:nth-of-type(8){animation-delay:.38s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.msec .mh{font-size:9.5px;letter-spacing:1.6px;font-weight:800;color:var(--cyan);margin-bottom:11px;display:flex;align-items:center;gap:7px}
+.msec>p{font-size:12.5px;line-height:1.62;color:#dfe4f5}
+.drvgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.drvcard{border:1px solid var(--stroke);border-radius:11px;padding:10px 11px;background:rgba(12,18,34,.5);transition:transform .15s,box-shadow .15s,border-color .15s}
+.drvcard:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.32);border-color:rgba(63,224,255,.3)}
+.drvcard .dt{font-size:11.5px;font-weight:700;margin-bottom:3px}
+.drvcard .dx{font-size:10px;color:var(--muted);line-height:1.42;margin-bottom:8px}
+.drvcard .db{display:flex;align-items:center;gap:8px}
+.drvcard .dbar{flex:1;height:5px;border-radius:4px;background:rgba(120,150,220,.15);overflow:hidden}
+.drvcard .dbar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#3fe0ff,#4d7bff);transition:width .9s cubic-bezier(.3,.8,.4,1)}
+#mktpanel.open .dbar i{width:var(--w)}
+.drvcard .dc{font-family:var(--mono);font-size:10px;font-weight:800;color:var(--cyan);width:30px;text-align:right}
+.nimp{display:flex;gap:10px;padding:10px 0;border-top:1px dashed rgba(120,150,220,.1)}
+.nimp:first-of-type{border-top:none}
+.nimp .nlvl{font-size:8px;font-weight:800;letter-spacing:.5px;padding:2px 6px;border-radius:5px;height:fit-content;margin-top:2px;flex-shrink:0}
+.nimp .nc h5{font-size:11.5px;font-weight:650;line-height:1.35;margin:0}
+.nimp .nc .nt{font-size:8.5px;color:var(--dim);font-family:var(--mono);margin:3px 0 4px}
+.nimp .nc p{font-size:10.5px;color:var(--muted);line-height:1.42}
+.corrgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px}
+.corr{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;padding:5px 0;border-bottom:1px dashed rgba(120,150,220,.09)}
+.corr .ck{color:#dfe4f5;font-weight:600}
+.corr .cv{font-family:var(--mono);font-size:12px;font-weight:800}
+.corr .cv.up{color:var(--green)}.corr .cv.down{color:var(--red)}.corr .cv.neutral{color:var(--muted)}
+.watchlist{display:flex;flex-direction:column;gap:8px}
+.watchcard{display:flex;align-items:center;gap:12px;border:1px solid var(--stroke);border-radius:11px;padding:10px 12px;background:rgba(12,18,34,.5);transition:transform .15s,box-shadow .15s}
+.watchcard:hover{transform:translateY(-2px);box-shadow:0 7px 18px rgba(0,0,0,.3)}
+.watchcard .ww{font-family:var(--mono);font-size:9px;color:var(--cyan);font-weight:800;width:58px;flex-shrink:0;letter-spacing:.3px}
+.watchcard .we{flex:1;min-width:0}
+.watchcard .we b{font-size:11.5px;font-weight:650;display:block}
+.watchcard .we small{font-size:8.5px;color:var(--muted);font-family:var(--mono)}
+.watchcard .wi{font-size:8px;font-weight:800;padding:2px 7px;border-radius:5px;flex-shrink:0}
+.outbox{background:linear-gradient(135deg,rgba(139,109,255,.13),rgba(63,224,255,.05));border:1px solid rgba(139,109,255,.35);border-radius:12px;padding:14px}
+.outtop{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+.outtop .ol{font-size:8.5px;letter-spacing:1.5px;color:#b7a6ff;font-weight:800}
+.outbias{font-size:16px;font-weight:800}
+.outconf{margin-left:auto;font-family:var(--mono);font-size:19px;font-weight:800}
+.outbar{height:7px;border-radius:6px;background:rgba(120,150,220,.15);overflow:hidden;margin-bottom:11px}
+.outbar i{display:block;height:100%;width:0;border-radius:6px;transition:width 1s cubic-bezier(.3,.8,.4,1)}
+#mktpanel.open .outbar i{width:var(--w)}
+.outbox p{font-size:11.5px;line-height:1.55;color:#dfe4f5}
+.chip.link:hover{background:rgba(63,224,255,.22);border-color:var(--cyan)}
 
 /* ---------- bottom timeline ---------- */
 #timeline{position:fixed;z-index:15;left:16px;right:16px;bottom:16px;height:104px;display:flex;flex-direction:column}
@@ -370,6 +441,9 @@ body{
     <div class="riskpill" id="riskPill">— —</div>
   </div>
 </div>
+
+<!-- MARKET DETAIL DROPDOWN -->
+<div id="mktpanel"></div>
 
 <!-- LEFT: HEATMAP -->
 <div class="side glass" id="left">
@@ -645,7 +719,7 @@ function renderTickers(){
   t.innerHTML=TICKERS.map(x=>{
     const c=col(x.c);
     const val=(x.pfx||"")+Number(x.v).toLocaleString("en-US",{maximumFractionDigits:x.v<100?2:0});
-    return `<div class="tk"><div class="lab">${x.k}</div><div class="row">
+    return `<div class="tk" data-k="${x.k}" onclick="openMarket('${x.k}',this)"><div class="lab">${x.k}</div><div class="row">
       <span class="val">${val}</span><span class="chg ${c}">${sgn(x.c)}${x.c.toFixed(2)}%</span></div></div>`;
   }).join("");
   // global sentiment from tickers + country scores
@@ -1026,6 +1100,172 @@ function nxCard(title,time,c){
   </div>`;
 }
 function toggleSub(head){head.parentElement.classList.toggle("open");}
+
+/* ================= MARKET DETAIL DROPDOWN ================= */
+const ASSET={
+"VIX":{name:"VIX · Volatility Index",re:/vix|volatility|fear|hedg|selloff|sell-off|plunge|crash|risk-off/i,
+ up:"Volatility is climbing as investors pay up for downside protection — a classic sign of rising fear. Equities are usually under pressure when the VIX spikes like this, and cross-asset hedging demand tends to broaden.",
+ down:"The VIX is easing as markets calm and demand for hedges fades, generally a risk-on signal that supports equities and higher-beta assets.",
+ drivers:[["Equity Selloff","Falling stocks lift demand for put protection.",88],["Macro Uncertainty","Rate-path and data risk keep hedging bid.",80],["Geopolitical Risk","Conflict headlines add a fear premium.",72],["Event Risk","Upcoming Fed and CPI events raise implied vol.",76]],
+ corr:[["S&P 500","down"],["Nasdaq","down"],["Gold","up"],["Dollar Index","up"],["Bitcoin","down"],["Treasury Yields","down"]],
+ watch:[["Wed","FOMC Minutes","HIGH",78],["Fri","Nonfarm Payrolls","HIGH",72],["Next Fri","Monthly OpEx","MEDIUM",55]],
+ related:["S&P 500","Nasdaq","Gold","VVIX","SPX Puts"],
+ reason:"Elevated hedging demand and event risk into the Fed keep volatility supported; a calmer tape would need softer data and steadier yields."},
+"DOLLAR IDX":{name:"Dollar Index · DXY",re:/dollar|dxy|greenback|\bfed\b|yield|treasur|inflation|\bcpi\b|rate/i,
+ up:"The U.S. Dollar Index is trading higher after firmer inflation data reduced expectations for near-term rate cuts. Treasury yields moved up, increasing the dollar's carry advantage and demand for the greenback.",
+ down:"The dollar is softer as easing inflation and falling yields revive rate-cut bets, eroding its yield advantage versus peers.",
+ drivers:[["Federal Reserve","Markets expect rates to stay elevated longer.",92],["Inflation Data","Firm core CPI reduces near-term cut odds.",90],["Treasury Yields","Higher yields boost dollar carry.",85],["Haven Demand","Risk-off flows favor the dollar.",70]],
+ corr:[["Treasury Yields","up"],["Gold","down"],["S&P 500","down"],["Bitcoin","down"],["EUR/USD","down"],["Oil","neutral"]],
+ watch:[["Tomorrow","PPI Inflation","HIGH",70],["Wed","FOMC Minutes","HIGH",74],["Fri","Nonfarm Payrolls","HIGH",80]],
+ related:["US10Y","EUR/USD","Gold","USD/JPY","DXY Futures"],
+ reason:"Strong inflation, elevated Treasury yields and improving data favor continued dollar strength unless upcoming releases shift rate expectations."},
+"GOLD":{name:"Gold · Spot",re:/gold|bullion|safe.?haven|real yield|precious/i,
+ up:"Gold is firmer as haven demand and hedging against uncertainty outweigh the drag from yields. Geopolitical risk and eventual rate-cut hopes are underpinning the bid.",
+ down:"Gold is under pressure as firmer real yields and a stronger dollar raise the opportunity cost of holding a non-yielding asset.",
+ drivers:[["Real Yields","Higher real rates weigh on gold.",84],["US Dollar","A stronger dollar caps upside.",80],["Haven Demand","Geopolitical risk lifts safe-haven bids.",78],["Central-Bank Buying","Structural reserve demand underpins price.",70]],
+ corr:[["Dollar Index","down"],["Treasury Yields","down"],["Silver","up"],["S&P 500","neutral"],["Bitcoin","neutral"]],
+ watch:[["Tomorrow","PPI Inflation","MEDIUM",55],["Wed","FOMC Minutes","HIGH",68],["Fri","Nonfarm Payrolls","HIGH",64]],
+ related:["Silver","US10Y","Dollar Index","Mining Stocks"],
+ reason:"Direction hinges on real yields and the dollar; sustained haven demand and eventual cuts skew the medium-term bias higher."},
+"BRENT CRUDE":{name:"Brent Crude · Oil",re:/oil|crude|brent|\bwti\b|opec|energy|barrel|supply|refin/i,
+ up:"Crude is rising on supply-side risk — OPEC+ production discipline and geopolitical tension in key producing regions are adding a risk premium to prices.",
+ down:"Crude is softer on demand concerns, with slowing global growth and ample supply weighing on the complex.",
+ drivers:[["OPEC+ Policy","Production discipline tightens supply.",86],["Geopolitical Risk","Conflict threatens key supply routes.",82],["Global Demand","China's recovery drives the demand outlook.",75],["Inventories","Weekly draws or builds shift the balance.",68]],
+ corr:[["Energy Sector","up"],["CAD","up"],["S&P 500","neutral"],["Dollar Index","neutral"],["Gold","up"]],
+ watch:[["Wed","EIA Inventories","HIGH",70],["Thu","OPEC+ Commentary","MEDIUM",62],["Fri","Baker Hughes Rigs","LOW",40]],
+ related:["WTI","Brent","Energy Sector","Natural Gas"],
+ reason:"Supply discipline and geopolitical risk support prices, but a softer demand outlook from China is the key downside swing factor."},
+"BITCOIN":{name:"Bitcoin · BTC",re:/bitcoin|\bbtc\b|crypto|ether|digital asset|coin|blockchain/i,
+ up:"Bitcoin is higher as risk appetite improves and flows into digital assets pick up. Softer yields and a weaker dollar are supportive tailwinds for the highest-beta risk asset.",
+ down:"Bitcoin is lower, trading as a high-beta risk asset — a stronger dollar, higher yields and risk-off equity flows are weighing on it.",
+ drivers:[["Risk Sentiment","Trades as high-beta risk; tracks equities.",82],["Dollar & Yields","A firm dollar and higher yields pressure BTC.",78],["ETF Flows","Spot-ETF demand drives the marginal bid.",80],["Global Liquidity","Liquidity conditions set the broad tone.",70]],
+ corr:[["Nasdaq","up"],["Dollar Index","down"],["Gold","neutral"],["S&P 500","up"],["Treasury Yields","down"]],
+ watch:[["Tomorrow","PPI Inflation","MEDIUM",60],["Wed","FOMC Minutes","HIGH",72],["Ongoing","Spot-ETF Flows","MEDIUM",58]],
+ related:["Ethereum","Nasdaq","Dollar Index","Crypto ETFs"],
+ reason:"As a high-beta risk proxy, BTC needs calmer yields and steadier equities to sustain upside; a hawkish rate shift is the main risk."},
+"S&P 500":{name:"S&P 500 · US Large Cap",re:/s&p|\bspx\b|equit|stocks|wall street|earnings|large.?cap/i,
+ up:"The S&P 500 is higher as risk appetite improves — softer yields, resilient earnings and easing macro fears are supporting broad equities.",
+ down:"The S&P 500 is lower as rising Treasury yields and macro caution pressure valuations, with mega-cap weakness dragging the index.",
+ drivers:[["Treasury Yields","Higher yields pressure equity valuations.",85],["Corporate Earnings","Results drive the forward earnings outlook.",83],["Fed Policy","Rate-path expectations set risk appetite.",88],["Mega-Cap Tech","Index-heavy names dominate direction.",80]],
+ corr:[["Nasdaq","up"],["VIX","down"],["Treasury Yields","down"],["Dollar Index","down"],["Bitcoin","up"]],
+ watch:[["Wed","FOMC Minutes","HIGH",74],["Fri","Nonfarm Payrolls","HIGH",78],["Next Wk","Big-Tech Earnings","HIGH",80]],
+ related:["Nasdaq","Dow Jones","VIX","US10Y"],
+ reason:"Equities remain hostage to the rate path; a softer inflation trajectory and steady earnings support upside, while yield spikes are the key risk."},
+"NASDAQ":{name:"Nasdaq · US Tech",re:/nasdaq|\bndx\b|tech|chip|semiconductor|\bai\b|mega.?cap/i,
+ up:"The Nasdaq is higher on improving risk appetite and strength in mega-cap tech and semiconductors, helped by softer Treasury yields.",
+ down:"The Nasdaq is lower as rising yields hit long-duration growth stocks first, with mega-cap tech and chips leading the decline.",
+ drivers:[["Treasury Yields","Long-duration growth is highly yield-sensitive.",88],["Semiconductors","The AI and chip cycle drives sentiment.",84],["Mega-Cap Tech","A handful of names dominate the index.",86],["Fed Policy","Rate expectations set the discount rate.",82]],
+ corr:[["S&P 500","up"],["VIX","down"],["Treasury Yields","down"],["Bitcoin","up"],["Dollar Index","down"]],
+ watch:[["Wed","FOMC Minutes","HIGH",76],["Next Wk","Big-Tech Earnings","HIGH",84],["Fri","Nonfarm Payrolls","MEDIUM",64]],
+ related:["S&P 500","SOX","Bitcoin","US10Y"],
+ reason:"Tech is the most rate-sensitive corner of the market; falling yields and a strong AI-earnings narrative favor upside, but yield spikes are an outsized risk."},
+"DOW":{name:"Dow Jones · US Blue Chip",re:/dow|djia|blue.?chip|industrial|bank/i,
+ up:"The Dow is higher as cyclical and value sectors gain on improving risk sentiment and steadier yields.",
+ down:"The Dow is lower amid broad risk-off pressure, with cyclicals and financials leading the decline.",
+ drivers:[["Economic Data","Cyclicals track the growth outlook closely.",82],["Treasury Yields","Financials benefit from higher yields.",78],["Fed Policy","Rate path shapes cyclical demand.",80],["Blue-Chip Earnings","Results anchor the price-weighted index.",76]],
+ corr:[["S&P 500","up"],["VIX","down"],["Dollar Index","neutral"],["Treasury Yields","up"],["Oil","up"]],
+ watch:[["Fri","Nonfarm Payrolls","HIGH",72],["Next Wk","Bank Earnings","HIGH",70],["Wed","FOMC Minutes","MEDIUM",60]],
+ related:["S&P 500","Nasdaq","Financials","US10Y"],
+ reason:"The value-tilted Dow is less rate-sensitive than tech; steady growth data and a healthy yield curve favor the cyclicals that anchor it."}
+};
+const CHIP2KEY={"S&P 500":"S&P 500","Nasdaq":"NASDAQ","Dow Jones":"DOW","Gold":"GOLD","Dollar Index":"DOLLAR IDX","VIX":"VIX","Bitcoin":"BITCOIN","Brent":"BRENT CRUDE","WTI":"BRENT CRUDE","Oil":"BRENT CRUDE"};
+function fmtN(n){const a=Math.abs(n);return Number(n).toLocaleString("en-US",{maximumFractionDigits:a<10?2:a<1000?1:0});}
+function techOf(t){
+  const p=t.v,c=t.c;
+  const hi=t.hi||p*1.18, lo=t.lo||p*0.82, a50=t.a50||p*(c<0?1.01:0.99), a200=t.a200||p*(c<0?1.05:0.96);
+  const dl=t.dl||p*0.994, dh=t.dh||p*1.006;
+  const trend=(p>=a50&&p>=a200)?"Bullish":(p<a50&&p<a200)?"Bearish":"Neutral";
+  const mom=Math.abs(c)>1.5?"Strong":Math.abs(c)>0.6?"Moderate":"Weak";
+  const vol=Math.abs(c)>2?"High":Math.abs(c)>0.8?"Medium":"Low";
+  return {trend,mom,vol,support:Math.min(dl,a50),resistance:Math.max(dh,a200),hi,lo};
+}
+function outlookOf(t){
+  const c=t.c; let bias,conf;
+  if(c>0.4){bias="Bullish";conf=71+Math.min(21,Math.round(Math.abs(c)*4));}
+  else if(c<-0.4){bias="Bearish";conf=71+Math.min(21,Math.round(Math.abs(c)*4));}
+  else{bias="Neutral";conf=62+Math.round(Math.abs(c)*12);}
+  return {bias,conf:Math.min(94,conf)};
+}
+function newsForMkt(re){
+  const src=NEWS.length?NEWS:FEED;
+  let hits=src.filter(n=>re.test(n.h+" "+(n.text||"")));
+  if(hits.length<2) hits=hits.concat(src.filter(n=>!hits.includes(n)).slice(0,2-hits.length));
+  return hits.slice(0,3);
+}
+function arrow(rel){return rel==="up"?"↑":rel==="down"?"↓":"→";}
+function buildMarketPanel(key){
+  const t=TICKERS.find(x=>x.k===key)||{k:key,v:0,c:0}; const a=ASSET[key]||ASSET["S&P 500"];
+  const tech=techOf(t), out=outlookOf(t);
+  const price=(t.pfx||"")+fmtN(t.v), chgCls=col(t.c), chg=sgn(t.c)+t.c.toFixed(2)+"%";
+  const ov=(t.c>=0?a.up:a.down);
+  const overview=`${a.name.split(" · ")[0]} is at ${price} (<span class="${chgCls}">${chg}</span> today). ${ov}`;
+  // drivers
+  const drv=`<div class="drvgrid">`+a.drivers.map(d=>`<div class="drvcard"><div class="dt">${d[0]}</div><div class="dx">${d[1]}</div><div class="db"><div class="dbar"><i style="--w:${d[2]}%"></i></div><span class="dc" data-count="${d[2]}" data-suf="%">0%</span></div></div>`).join("")+`</div>`;
+  // news
+  const nw=newsForMkt(a.re);
+  const news=nw.length?nw.map(n=>{const lv=(n.imp||"med").toUpperCase()==="HIGH"?"high":(n.imp||"med").toLowerCase()==="low"?"low":"med";
+    const why=(n.text||"").split(/[.!?]/)[0]; return `<div class="nimp"><span class="nlvl imp-${lv==='high'?'High':lv==='low'?'Low':'Medium'}">${lv.toUpperCase()}</span><div class="nc"><h5>${n.h}</h5><div class="nt">${n.t||""}${n.site?" · "+n.site:""}</div><p>${why||"Relevant macro or market development for this asset."}.</p></div></div>`;}).join(""):`<p style="color:var(--muted);font-size:11px">No directly related headlines in the current feed.</p>`;
+  // correlations
+  const corr=`<div class="corrgrid">`+a.corr.map(x=>`<div class="corr"><span class="ck">${x[0]}</span><span class="cv ${x[1]}">${arrow(x[1])}</span></div>`).join("")+`</div>`;
+  // technical
+  const tCol=v=>v==="Bullish"||v==="Strong"||v==="Low"?"var(--green)":v==="Bearish"||v==="High"?"var(--red)":v==="Moderate"||v==="Medium"||v==="Neutral"||v==="Weak"?"var(--amber)":"var(--text)";
+  const tech2=`<div class="statbar" style="grid-template-columns:repeat(3,1fr);margin-bottom:8px">
+    <div class="s"><div class="k">TREND</div><div class="v" style="color:${tCol(tech.trend)}">${tech.trend}</div></div>
+    <div class="s"><div class="k">MOMENTUM</div><div class="v" style="color:${tCol(tech.mom)}">${tech.mom}</div></div>
+    <div class="s"><div class="k">VOLATILITY</div><div class="v" style="color:${tCol(tech.vol)}">${tech.vol}</div></div></div>
+    <div class="statbar" style="grid-template-columns:repeat(2,1fr)">
+    <div class="s"><div class="k">SUPPORT</div><div class="v">${(t.pfx||"")+fmtN(tech.support)}</div></div>
+    <div class="s"><div class="k">RESISTANCE</div><div class="v">${(t.pfx||"")+fmtN(tech.resistance)}</div></div>
+    <div class="s"><div class="k">52W HIGH</div><div class="v">${(t.pfx||"")+fmtN(tech.hi)}</div></div>
+    <div class="s"><div class="k">52W LOW</div><div class="v">${(t.pfx||"")+fmtN(tech.lo)}</div></div></div>`;
+  // watch
+  const watch=`<div class="watchlist">`+a.watch.map(w=>{const wc=w[2]==="HIGH"?"imp-High":w[2]==="LOW"?"imp-Low":"imp-Medium";return `<div class="watchcard"><div class="ww">${w[0]}</div><div class="we"><b>${w[1]}</b><small>Est. volatility ${w[3]}/100</small></div><span class="wi ${wc}">${w[2]}</span></div>`;}).join("")+`</div>`;
+  // outlook
+  const oCol=out.bias==="Bullish"?"var(--green)":out.bias==="Bearish"?"var(--red)":"var(--amber)";
+  const outlook=`<div class="outbox"><div class="outtop"><span class="ol">AI OUTLOOK</span><span class="outbias" style="color:${oCol}">${out.bias}</span><span class="outconf" style="color:${oCol}" data-count="${out.conf}" data-suf="%">0%</span></div><div class="outbar"><i style="--w:${out.conf}%;background:${oCol}"></i></div><p>${a.reason}</p></div>`;
+  // related chips
+  const chips=`<div class="nxchips">`+a.related.map(r=>{const k=CHIP2KEY[r];return k?`<span class="chip link" onclick="event.stopPropagation();openMarket('${k}')">${r}</span>`:`<span class="chip">${r}</span>`;}).join("")+`</div>`;
+
+  return `<div class="mph">
+    <div class="mpname"><b>${a.name}</b><small>LIVE MARKET INTELLIGENCE</small></div>
+    <div class="mpval"><div class="p">${price}</div><div class="ch ${chgCls}">${chg}</div></div>
+    <button class="mpx" onclick="closeMarket()">✕</button>
+  </div>
+  <div class="mpb">
+    <div class="msec"><div class="mh">◈ OVERVIEW</div><p>${overview}</p></div>
+    <div class="msec"><div class="mh">◧ PRIMARY DRIVERS</div>${drv}</div>
+    <div class="msec"><div class="mh">◷ NEWS IMPACT</div>${news}</div>
+    <div class="msec"><div class="mh">⇄ CROSS-ASSET CORRELATIONS</div>${corr}</div>
+    <div class="msec"><div class="mh">▤ TECHNICAL PICTURE</div>${tech2}</div>
+    <div class="msec"><div class="mh">➤ WHAT TO WATCH NEXT</div>${watch}</div>
+    <div class="msec"><div class="mh">✦ AI MARKET OUTLOOK</div>${outlook}</div>
+    <div class="msec"><div class="mh">⋯ RELATED MARKETS</div>${chips}</div>
+  </div>`;
+}
+let openMktKey=null;
+function openMarket(key,anchorEl){
+  const panel=$("#mktpanel");
+  if(openMktKey===key && panel.classList.contains("open")){closeMarket();return;}
+  panel.innerHTML=buildMarketPanel(key);
+  const w=Math.min(700,window.innerWidth-24);
+  if(anchorEl){const r=anchorEl.getBoundingClientRect();panel.style.left=Math.max(12,Math.min(r.left-20,window.innerWidth-w-12))+"px";}
+  panel.scrollTop=0;
+  panel.classList.add("open");
+  openMktKey=key;
+  requestAnimationFrame(()=>animateCounts(panel));
+}
+function closeMarket(){$("#mktpanel").classList.remove("open");openMktKey=null;}
+function animateCounts(root){
+  root.querySelectorAll("[data-count]").forEach(el=>{
+    const target=+el.getAttribute("data-count"),suf=el.getAttribute("data-suf")||"";
+    const t0=performance.now(),dur=700;
+    (function step(now){const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e)+suf;if(p<1)requestAnimationFrame(step);else el.textContent=target+suf;})(performance.now());
+  });
+}
+document.addEventListener("click",e=>{
+  if(openMktKey && !e.target.closest("#mktpanel") && !e.target.closest(".tk")) closeMarket();
+});
+window.addEventListener("resize",()=>{if(openMktKey)closeMarket();});
 function toggleNx(head){
   const card=head.parentElement, wasOpen=card.classList.contains("open");
   $("#dBody").querySelectorAll(".nx.open").forEach(n=>n.classList.remove("open"));
@@ -1182,7 +1422,8 @@ async function fetchLive(){
     try{
       const r=await fetch(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(t.sym)}&apikey=${FMP_KEY}`);
       const d=await r.json(); const row=Array.isArray(d)?d[0]:d;
-      if(row&&typeof row.price==="number"){t.v=row.price;t.c=row.changePercentage??t.c;}
+      if(row&&typeof row.price==="number"){t.v=row.price;t.c=row.changePercentage??t.c;
+        t.hi=row.yearHigh;t.lo=row.yearLow;t.a50=row.priceAvg50;t.a200=row.priceAvg200;t.dl=row.dayLow;t.dh=row.dayHigh;}
     }catch(e){}
   }));
   renderTickers();
