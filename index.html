@@ -2226,6 +2226,8 @@ setInterval(fetchNews, 60000);
 </script>
 
 
+
+
 <!-- ===== ATLAS WELCOME BACK OVERLAY (injected) ===== -->
 <style id="wb-style">
 #wb-root{
@@ -2450,14 +2452,14 @@ function startLoops(){alive=true;initStars();drawStars();initGlobe();drawGlobe()
 function startClock(){updateClock();if(!clockTimer)clockTimer=setInterval(updateClock,1000);}
 window.wbDismiss=function(){root.classList.add('wb-dismiss');alive=false;if(clockTimer){clearInterval(clockTimer);clockTimer=null;}document.getElementById('wbLauncher').style.display='flex';};
 window.wbNever=function(){try{localStorage.setItem('wbHide','1');}catch(e){}window.wbDismiss();};
-window.wbReopen=function(){document.getElementById('wbLauncher').style.display='none';root.classList.remove('wb-dismiss');startClock();startLoops();fetchLive();var rf=$('#wbRisk');if(rf)rf.style.width='74%';};
+window.wbReopen=function(){document.getElementById('wbLauncher').style.display='none';root.classList.remove('wb-dismiss');startClock();startLoops();setTimeout(fetchLive,1250);var rf=$('#wbRisk');if(rf)rf.style.width='74%';};
 function hideInstant(){root.style.transition='none';root.classList.add('wb-dismiss');requestAnimationFrame(function(){root.style.transition='';});alive=false;document.getElementById('wbLauncher').style.display='flex';}
 
 /* build content once */
 renderSnap();renderEvents();renderWatch();renderHot();renderCal();
 var hidden=false;try{hidden=localStorage.getItem('wbHide')==='1';}catch(e){}
 if(hidden){hideInstant();}
-else{startClock();startLoops();fetchLive();setTimeout(function(){var rf=$('#wbRisk');if(rf)rf.style.width='74%';},700);}
+else{startClock();startLoops();setTimeout(fetchLive,1250);setTimeout(function(){var rf=$('#wbRisk');if(rf)rf.style.width='74%';},700);}
 addEventListener('resize',function(){if(!alive)return;initStars();initGlobe();});
 addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#wbPanel')&&$('#wbPanel').classList.contains('show'))window.wbClosePanel();else if(!root.classList.contains('wb-dismiss'))window.wbDismiss();}});
 })();
