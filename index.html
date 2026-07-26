@@ -2230,6 +2230,8 @@ setInterval(fetchNews, 60000);
 
 
 
+
+
 <!-- ===== ATLAS WELCOME BACK OVERLAY (injected) ===== -->
 <style id="wb-style">
 #wb-root{
@@ -2452,10 +2454,10 @@ gc.addEventListener('mousemove',function(e){var hit=false;for(var i=0;i<hotScree
 
 function startLoops(){alive=true;initStars();drawStars();initGlobe();drawGlobe();}
 function startClock(){updateClock();if(!clockTimer)clockTimer=setInterval(updateClock,1000);}
-window.wbDismiss=function(){root.classList.add('wb-dismiss');alive=false;if(clockTimer){clearInterval(clockTimer);clockTimer=null;}document.getElementById('wbLauncher').style.display='flex';};
+window.wbDismiss=function(){root.classList.add('wb-dismiss');alive=false;gc.style.pointerEvents='none';if(clockTimer){clearInterval(clockTimer);clockTimer=null;}document.getElementById('wbLauncher').style.display='flex';};
 window.wbNever=function(){try{localStorage.setItem('wbHide','1');}catch(e){}window.wbDismiss();};
-window.wbReopen=function(){document.getElementById('wbLauncher').style.display='none';root.classList.remove('wb-dismiss');startClock();startLoops();setTimeout(fetchLive,1250);var rf=$('#wbRisk');if(rf)rf.style.width='74%';};
-function hideInstant(){root.style.transition='none';root.classList.add('wb-dismiss');requestAnimationFrame(function(){root.style.transition='';});alive=false;document.getElementById('wbLauncher').style.display='flex';}
+window.wbReopen=function(){document.getElementById('wbLauncher').style.display='none';root.classList.remove('wb-dismiss');gc.style.pointerEvents='auto';startClock();startLoops();setTimeout(fetchLive,1250);var rf=$('#wbRisk');if(rf)rf.style.width='74%';};
+function hideInstant(){root.style.transition='none';root.classList.add('wb-dismiss');requestAnimationFrame(function(){root.style.transition='';});alive=false;gc.style.pointerEvents='none';document.getElementById('wbLauncher').style.display='flex';}
 
 /* build content once */
 renderSnap();renderEvents();renderWatch();renderHot();renderCal();
