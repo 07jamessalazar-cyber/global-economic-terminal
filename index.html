@@ -2224,5 +2224,221 @@ fetchNews();
 setInterval(fetchLive, 60000);
 setInterval(fetchNews, 60000);
 </script>
+<!-- ===== ATLAS WELCOME BACK OVERLAY (injected) ===== -->
+<style id="wb-style">
+#wb-root{
+  --bg0:#04070d;--cyan:#22d3ee;--teal:#2dd4bf;--amber:#f5b942;--red:#f0616d;--green:#34d39a;
+  --wbtext:#e9f2f8;--muted:#8598ab;--glass:rgba(255,255,255,0.035);
+  --stroke:rgba(120,200,230,0.14);--stroke2:rgba(120,200,230,0.08);
+  position:fixed;inset:0;z-index:99999;color:var(--wbtext);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;transition:opacity .9s ease,transform .9s ease}
+#wb-root.wb-dismiss{opacity:0;transform:scale(1.02) translateY(-14px);pointer-events:none}
+#wb-root *{box-sizing:border-box}
+#wb-root .mono{font-family:"SF Mono",ui-monospace,"Roboto Mono",Menlo,Consolas,monospace;font-variant-numeric:tabular-nums}
+#wb-root .wb-back{position:absolute;inset:0;background:rgba(4,7,13,.55);backdrop-filter:blur(15px) saturate(.9);-webkit-backdrop-filter:blur(15px) saturate(.9)}
+#wb-root canvas.wbcv{position:absolute;inset:0;pointer-events:none}
+#wb-root #wbGlobe{pointer-events:auto}
+#wb-root .vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 70% 40%,transparent 40%,rgba(2,5,10,.72) 100%)}
+#wb-root .scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden}
+#wb-root .wrap{max-width:1180px;margin:0 auto;padding:46px 30px 40px}
+#wb-root .fade{opacity:0;transform:translateY(16px);animation:wbfade .9s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes wbfade{to{opacity:1;transform:none}}
+#wb-root header{margin-bottom:30px}
+#wb-root .brand{display:flex;align-items:center;gap:11px;margin-bottom:24px;letter-spacing:.32em;font-size:12px;color:var(--muted)}
+#wb-root .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan)}
+#wb-root h1{font-size:44px;font-weight:650;letter-spacing:-.5px;line-height:1.05;margin:0}
+#wb-root h1 span{background:linear-gradient(90deg,#fff,var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+#wb-root .sub{color:var(--muted);font-size:17px;margin-top:9px}
+#wb-root .statusrow{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px}
+#wb-root .pill{display:flex;align-items:center;gap:9px;padding:10px 15px;border:1px solid var(--stroke);border-radius:12px;background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);font-size:13px}
+#wb-root .pill .lab{color:var(--muted);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
+#wb-root .pill .val{font-weight:600}
+#wb-root .live{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:wbblink 1.8s infinite}
+#wb-root .live.closed{background:var(--red);box-shadow:0 0 10px var(--red)}
+@keyframes wbblink{50%{opacity:.35}}
+#wb-root .card{border:1px solid var(--stroke);border-radius:18px;background:var(--glass);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px -30px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.04);padding:22px}
+#wb-root .card h2{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);font-weight:600;margin:0 0 16px;display:flex;align-items:center;gap:9px}
+#wb-root .card h2 .ic{width:6px;height:16px;border-radius:3px;background:linear-gradient(var(--cyan),var(--teal));box-shadow:0 0 12px rgba(34,211,238,.5)}
+#wb-root .grid{display:grid;gap:18px}
+#wb-root .g2{grid-template-columns:1.35fr .9fr}
+@media(max-width:900px){#wb-root .g2{grid-template-columns:1fr}}
+#wb-root .snap{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+@media(max-width:620px){#wb-root .snap{grid-template-columns:repeat(2,1fr)}}
+#wb-root .tk{padding:13px 13px 11px;border:1px solid var(--stroke2);border-radius:13px;background:rgba(9,19,32,.5);transition:.25s}
+#wb-root .tk:hover{border-color:var(--stroke);transform:translateY(-2px);background:rgba(12,26,44,.7)}
+#wb-root .tk .nm{font-size:11px;color:var(--muted);letter-spacing:.05em;display:flex;justify-content:space-between}
+#wb-root .tk .px{font-size:19px;font-weight:600;margin-top:5px}
+#wb-root .tk .row{display:flex;align-items:flex-end;justify-content:space-between;margin-top:3px}
+#wb-root .tk .chg{font-size:12.5px;font-weight:600}
+#wb-root .up{color:var(--green)}#wb-root .dn{color:var(--red)}
+#wb-root .spark{width:64px;height:22px;opacity:.9}
+#wb-root .arrow{font-size:10px}
+#wb-root .events{display:flex;flex-direction:column;gap:12px}
+#wb-root .ev{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start;padding:15px;border:1px solid var(--stroke2);border-radius:14px;background:rgba(9,19,32,.5);cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+#wb-root .ev:hover{border-color:var(--cyan);background:rgba(13,27,46,.75);transform:translateY(-2px)}
+#wb-root .ev .barL{position:absolute;left:0;top:0;bottom:0;width:3px}
+#wb-root .ev.high .barL{background:linear-gradient(var(--red),#b3313c)}
+#wb-root .ev.med .barL{background:linear-gradient(var(--amber),#b8862a)}
+#wb-root .flag{font-size:26px;line-height:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+#wb-root .evb .top{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:5px}
+#wb-root .tag{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:6px;font-weight:600}
+#wb-root .tag.high{background:rgba(240,97,109,.16);color:var(--red);border:1px solid rgba(240,97,109,.3)}
+#wb-root .tag.med{background:rgba(245,185,66,.15);color:var(--amber);border:1px solid rgba(245,185,66,.3)}
+#wb-root .tag.cat{background:rgba(34,211,238,.12);color:var(--cyan);border:1px solid rgba(34,211,238,.25)}
+#wb-root .evb .hl{font-size:15.5px;font-weight:600;line-height:1.25}
+#wb-root .evb .ai{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+#wb-root .impact{text-align:right;min-width:78px}
+#wb-root .impact .k{font-size:9px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+#wb-root .impact .v{font-size:13px;font-weight:600;margin-top:2px}
+#wb-root .chev{color:var(--muted);font-size:18px;align-self:center}
+#wb-root .ai-card{background:linear-gradient(155deg,rgba(20,42,64,.6),rgba(9,19,32,.5));position:relative;overflow:hidden}
+#wb-root .ai-card::before{content:"";position:absolute;top:-40%;right:-20%;width:340px;height:340px;background:radial-gradient(circle,rgba(34,211,238,.18),transparent 65%);pointer-events:none}
+#wb-root .ai-badge{display:inline-flex;align-items:center;gap:7px;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);border:1px solid rgba(34,211,238,.3);border-radius:20px;padding:5px 11px;margin-bottom:14px}
+#wb-root .ai-badge .g{width:6px;height:6px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan);animation:wbblink 1.6s infinite}
+#wb-root .ai-text{font-size:15px;line-height:1.72;color:#dce9f1}
+#wb-root .ai-text b{color:#fff;font-weight:600}#wb-root .ai-text .em{color:var(--cyan)}
+#wb-root .risk{margin-top:16px;display:flex;align-items:center;gap:12px;font-size:12px}
+#wb-root .riskbar{flex:1;height:7px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden}
+#wb-root .riskbar i{display:block;height:100%;width:0;border-radius:6px;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));transition:width 1.4s ease}
+#wb-root .wl{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--stroke2);border-radius:12px;overflow:hidden}
+@media(max-width:520px){#wb-root .wl{grid-template-columns:1fr}}
+#wb-root .wl div{background:rgba(9,19,32,.6);padding:12px 13px}
+#wb-root .wl .k{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+#wb-root .wl .v{font-size:14px;font-weight:600;margin-top:3px;display:flex;align-items:center;gap:6px}
+#wb-root .cal{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+@media(max-width:760px){#wb-root .cal{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){#wb-root .cal{grid-template-columns:1fr}}
+#wb-root .cev{border:1px solid var(--stroke2);border-radius:12px;background:rgba(9,19,32,.5);padding:13px;transition:.2s}
+#wb-root .cev:hover{border-color:var(--stroke)}
+#wb-root .cev .t{font-size:12px;font-weight:600;font-family:"SF Mono",ui-monospace,monospace;color:var(--cyan)}
+#wb-root .cev .h{font-size:13.5px;font-weight:600;margin-top:4px}
+#wb-root .cev .m{font-size:11px;color:var(--muted);margin-top:3px}
+#wb-root .hs{display:flex;flex-wrap:wrap;gap:9px;margin-top:4px}
+#wb-root .hs .h{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--stroke2);border-radius:11px;background:rgba(9,19,32,.5);cursor:pointer;font-size:13px;transition:.2s}
+#wb-root .hs .h:hover{border-color:var(--cyan);background:rgba(13,27,46,.8);transform:translateY(-2px)}
+#wb-root .hs .h .d{width:7px;height:7px;border-radius:50%;box-shadow:0 0 9px currentColor}
+#wb-root .actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:6px}
+#wb-root .btn{flex:1;min-width:170px;padding:16px 18px;border-radius:14px;border:1px solid var(--stroke);background:var(--glass);backdrop-filter:blur(14px);color:var(--wbtext);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:.22s}
+#wb-root .btn:hover{border-color:var(--cyan);background:rgba(34,211,238,.1);transform:translateY(-2px);box-shadow:0 12px 30px -14px rgba(34,211,238,.5)}
+#wb-root .btn.primary{background:linear-gradient(135deg,rgba(34,211,238,.9),rgba(45,212,191,.85));color:#04121a;border:none}
+#wb-root .btn.primary:hover{filter:brightness(1.08);box-shadow:0 14px 34px -12px rgba(34,211,238,.7)}
+#wb-root .sec{margin-top:22px}
+#wb-root .footnote{text-align:center;color:var(--muted);font-size:11px;margin-top:26px;letter-spacing:.03em}
+#wb-root #wbPanel{position:absolute;inset:0;z-index:6;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(2,5,10,.6);backdrop-filter:blur(6px)}
+#wb-root #wbPanel.show{display:flex;animation:wbfade .4s forwards}
+#wb-root .pcard{max-width:560px;width:100%;border:1px solid var(--stroke);border-radius:20px;padding:28px;background:linear-gradient(160deg,rgba(16,34,54,.96),rgba(8,17,29,.97));box-shadow:0 40px 100px -30px #000;position:relative}
+#wb-root .pcard .x{position:absolute;top:16px;right:18px;color:var(--muted);cursor:pointer;font-size:22px;line-height:1}
+#wb-root .pcard h3{font-size:22px;font-weight:650;margin:6px 0 4px;padding-right:30px}
+#wb-root .pcard .meter{margin:18px 0}
+#wb-root .pcard .meter .b{height:8px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden}
+#wb-root .pcard .meter .b i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--teal));border-radius:6px}
+#wb-root .pcard p{font-size:14px;line-height:1.7;color:#cfe0ea;margin-top:10px}
+#wb-root .pcard .lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-top:16px}
+</style>
+
+<div id="wb-root">
+  <div class="wb-back"></div>
+  <canvas id="wbStars" class="wbcv"></canvas>
+  <canvas id="wbGlobe" class="wbcv"></canvas>
+  <div class="vig"></div>
+  <div class="scroll"><div class="wrap">
+    <header>
+      <div class="brand fade" style="animation-delay:.05s"><span class="dot"></span>ATLAS · GLOBAL MARKET INTELLIGENCE</div>
+      <h1 class="fade" style="animation-delay:.15s">Welcome back, <span>James.</span></h1>
+      <div class="sub fade" style="animation-delay:.28s">Here's what's moving the markets today.</div>
+      <div class="statusrow fade" style="animation-delay:.4s">
+        <div class="pill"><span class="lab">Date</span><span class="val" id="wbDate">—</span></div>
+        <div class="pill"><span class="lab">Time</span><span class="val mono" id="wbTime">—</span></div>
+        <div class="pill"><span class="live" id="wbLive"></span><span class="lab">Market</span><span class="val" id="wbStatus">—</span></div>
+        <div class="pill"><span class="lab" id="wbCdLab">Opens in</span><span class="val mono" id="wbCd">—</span></div>
+      </div>
+    </header>
+    <div class="grid g2 sec">
+      <div class="card fade" style="animation-delay:.5s"><h2><span class="ic"></span>Today's Market Snapshot</h2><div class="snap" id="wbSnap"></div></div>
+      <div class="card ai-card fade" style="animation-delay:.6s">
+        <div class="ai-badge"><span class="g"></span>Atlas Morning Intelligence</div>
+        <div class="ai-text"><b>Good morning, James.</b> Today's focus is the <span class="em">Federal Reserve decision</span> — and for the first time this cycle, markets are leaning toward a <span class="em">hike, not a cut</span>. Crude sits <span class="em">near $100</span> on renewed Middle East tensions, keeping supply-side inflation in play that the Fed can't easily ease away. After the close this week, <b>Microsoft, Meta, Apple and Amazon</b> report — with the market now scrutinizing AI capex and free cash flow, not just growth.</div>
+        <div class="risk"><span style="color:var(--muted)">Overall risk</span><div class="riskbar"><i id="wbRisk"></i></div><span style="color:var(--amber);font-weight:600">Elevated</span></div>
+      </div>
+    </div>
+    <div class="card sec fade" style="animation-delay:.66s"><h2><span class="ic"></span>Highest Impact Events Today</h2><div class="events" id="wbEvents"></div></div>
+    <div class="grid g2 sec">
+      <div class="card fade" style="animation-delay:.72s"><h2><span class="ic"></span>Today's Watchlist</h2><div class="wl" id="wbWl"></div></div>
+      <div class="card fade" style="animation-delay:.78s"><h2><span class="ic"></span>Global Hotspots</h2><div style="font-size:12.5px;color:var(--muted);margin-bottom:10px">Countries with major events today — click to open its intelligence center.</div><div class="hs" id="wbHot"></div></div>
+    </div>
+    <div class="card sec fade" style="animation-delay:.84s"><h2><span class="ic"></span>Today's Calendar</h2><div class="cal" id="wbCal"></div></div>
+    <div class="actions sec fade" style="animation-delay:.9s">
+      <button class="btn primary" onclick="wbDismiss()">◱ Open Dashboard</button>
+      <button class="btn" onclick="wbDismiss('cal')">Economic Calendar</button>
+      <button class="btn" onclick="wbDismiss('earn')">Earnings Calendar</button>
+      <button class="btn" onclick="wbDismiss()">Global Intelligence</button>
+      <button class="btn" onclick="wbDismiss()">Continue where I left off ↩</button>
+    </div>
+    <div class="footnote fade" style="animation-delay:.95s">Illustrative demo data · Connect your data provider for live markets · Atlas answers one question before you trade: <b style="color:#cfe0ea">what do I absolutely need to know right now?</b></div>
+  </div></div>
+  <div id="wbPanel"><div class="pcard"><span class="x" onclick="wbClosePanel()">✕</span><div id="wbPbody"></div></div></div>
+</div>
+
+<script>
+(function(){
+if(document.getElementById('wb-root')._init)return; document.getElementById('wb-root')._init=1;
+var alive=true, clockTimer=null;
+var TICKERS=[
+ {n:"S&P 500 Fut",px:6318.50,chg:-0.42,dec:2},{n:"Nasdaq Fut",px:23048.0,chg:-0.71,dec:1},
+ {n:"Dow Fut",px:44615,chg:-0.24,dec:0},{n:"Russell 2000",px:2241.8,chg:-0.55,dec:1},
+ {n:"VIX",px:19.84,chg:6.30,dec:2},{n:"US Dollar (DXY)",px:104.22,chg:0.31,dec:2},
+ {n:"Gold",px:3482.4,chg:0.54,dec:1},{n:"Silver",px:42.68,chg:0.83,dec:2},
+ {n:"WTI Crude",px:96.20,chg:1.92,dec:2},{n:"Brent Crude",px:99.75,chg:1.74,dec:2},
+ {n:"Natural Gas",px:3.86,chg:2.10,dec:2},{n:"Bitcoin",px:64280,chg:-1.22,dec:0},{n:"Ethereum",px:3178,chg:-1.55,dec:0}];
+var EVENTS=[
+ {imp:"high",cat:"Monetary Policy",flag:"🇺🇸",hl:"Federal Reserve rate decision — hikes back on the table",ai:"Markets now price up to two hikes as energy-driven inflation refuses to cool. A hawkish surprise pressures long-duration growth hardest.",impact:"Very High",score:96,full:"The Fed's decision is the week's fulcrum. Persistent, energy-led inflation has flipped the narrative from cuts to potential hikes. A higher risk-free rate discounts future earnings harder, and the longest-duration assets — mega-cap tech — fall the most. Watch the language on inflation more than the decision itself."},
+ {imp:"high",cat:"Geopolitics",flag:"🇮🇷",hl:"Middle East tensions keep a risk premium in crude",ai:"Disruptions near the Strait of Hormuz and Red Sea threaten exports while inventories sit depleted and Iran talks stall.",impact:"High",score:88,full:"Conflict near a chokepoint prices in the possibility of lost supply before a single barrel is disrupted. This premium can appear and vanish within hours, making crude the most headline-sensitive asset on the board and a live input into every inflation print."},
+ {imp:"high",cat:"Commodities",flag:"🛎️",hl:"Brent near $100 on supply concerns",ai:"Energy led markets last week. With crude bid, the second-order effect — sticky inflation feeding higher yields — is the real driver.",impact:"High",score:84,full:"Brent approaching triple digits matters far beyond energy equities. It lifts input costs across the economy, reinforces the hawkish rate case, and rotates flows out of growth and into real assets. If crude holds here, yields — not earnings — set the tone."},
+ {imp:"high",cat:"Earnings",flag:"🇺🇸",hl:"Microsoft, Meta, Apple & Amazon report this week",ai:"With AI capex ballooning, focus shifts from 'how big is AI' to free cash flow and who is funding it with debt.",impact:"High",score:80,full:"Four of the largest index components report within days. Given mega-cap concentration, their guidance moves the whole tape. Investors now want a margin of safety on the capital being borrowed to fund AI infrastructure."},
+ {imp:"med",cat:"Economic Data",flag:"🇺🇸",hl:"Q2 GDP & Core PCE on deck",ai:"PCE is the Fed's preferred inflation gauge. A hot print reinforces the hawkish case and lifts yields.",impact:"Medium",score:64,full:"Core PCE is the single most important inflation read for the Fed. Paired with Q2 GDP, it frames whether the economy can absorb higher-for-longer rates. A hot PCE with resilient GDP is the 'good news is bad news' setup that pressures equities."},
+ {imp:"med",cat:"Global",flag:"🇨🇳",hl:"China activity data in focus",ai:"China is a swing consumer of oil and industrial metals. Soft data shows up in commodities before it shows up in GDP.",impact:"Medium",score:58,full:"China's demand is a real-time gauge of global growth. Weakness pressures crude and metals and ripples into EM currencies; strength does the opposite."}];
+var WATCH=[["Top economic event","Fed rate decision"],["Most important earnings","MSFT · META · AAPL · AMZN"],["Highest-risk country","Iran"],["Commodity to watch","Brent crude"],["Strongest sector","Energy"],["Weakest sector","Semiconductors"],["Most active currency","US Dollar (DXY)"],["Most active index","Nasdaq"],["Fed speaker to watch","Fed Chair"]];
+var HOTSPOTS=[{n:"United States",lat:39,lon:-98,col:"#f0616d"},{n:"China",lat:35,lon:104,col:"#f5b942"},{n:"Iran",lat:32,lon:53,col:"#f0616d"},{n:"Russia",lat:61,lon:90,col:"#f5b942"},{n:"Ukraine",lat:49,lon:31,col:"#f0616d"},{n:"Saudi Arabia",lat:24,lon:45,col:"#f5b942"},{n:"Japan",lat:36,lon:138,col:"#22d3ee"}];
+var HOTINFO={"United States":"FOMC decision, Q2 GDP, Core PCE and four mega-cap earnings converge — the epicenter of this week's risk.","China":"Activity data in focus; a swing consumer for oil and metals whose demand signal leads global growth.","Iran":"Elevated tensions near key shipping chokepoints keep a geopolitical risk premium embedded in crude.","Russia":"Energy exports and sanctions dynamics remain a swing factor for commodity supply.","Ukraine":"Ongoing conflict feeds the energy and grain risk premium and safe-haven flows.","Saudi Arabia":"OPEC+ policy and proposed nuclear cooperation talks shape the marginal barrel of oil.","Japan":"BOJ policy and yen moves ripple through global carry trades and rate differentials."};
+var CAL=[{t:"2:00 PM ET",h:"FOMC Rate Decision",m:"Monetary policy · very high impact"},{t:"2:30 PM ET",h:"Fed Chair Press Conference",m:"Guidance on the inflation path"},{t:"8:30 AM ET",h:"Q2 GDP (Advance)",m:"Growth read into a hawkish Fed"},{t:"8:30 AM ET",h:"Core PCE Inflation",m:"Fed's preferred gauge"},{t:"After close",h:"MSFT · META Earnings",m:"Mega-cap index movers"},{t:"11:30 AM ET",h:"7-Year Treasury Auction",m:"Demand gauge for duration"}];
+
+var $=function(s){return document.querySelector(s);};
+function fmt(v,d){return v.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});}
+function spark(chg){var up=chg>=0,pts=24,arr=[],v=50,i;for(i=0;i<pts;i++){v+=(Math.random()-.5)*10+(up?.55:-.55);arr.push(v);}var mn=Math.min.apply(0,arr),mx=Math.max.apply(0,arr),rng=(mx-mn)||1,w=64,h=22;var d=arr.map(function(y,i){return (i/(pts-1)*w).toFixed(1)+','+(h-((y-mn)/rng)*(h-4)-2).toFixed(1);}).join(' ');var col=up?'#34d39a':'#f0616d',id='g'+Math.random().toString(36).slice(2,7);return '<svg class="spark" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="'+id+'" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="'+col+'" stop-opacity=".9"/><stop offset="1" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs><polyline points="'+d+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round"/><polyline points="0,'+h+' '+d+' '+w+','+h+'" fill="url(#'+id+')" stroke="none" opacity=".25"/></svg>';}
+function animNum(el,target,dec){var dur=1100,t0=performance.now();function step(t){var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(target*e,dec);if(p<1)requestAnimationFrame(step);else el.textContent=fmt(target,dec);}requestAnimationFrame(step);}
+
+function renderSnap(){var c=$('#wbSnap');TICKERS.forEach(function(t,i){var rise=t.chg>=0,cls=rise?'up':'dn',ar=rise?'▲':'▼';var el=document.createElement('div');el.className='tk';el.innerHTML='<div class="nm"><span>'+t.n+'</span></div><div class="px mono" id="wbpx'+i+'">0</div><div class="row"><div class="chg '+cls+'"><span class="arrow">'+ar+'</span> '+(rise?'+':'')+t.chg.toFixed(2)+'%</div>'+spark(t.chg)+'</div>';c.appendChild(el);animNum(el.querySelector('#wbpx'+i),t.px,t.dec);});}
+function renderEvents(){var c=$('#wbEvents');EVENTS.forEach(function(e){var el=document.createElement('div');el.className='ev '+e.imp;el.innerHTML='<div class="barL"></div><div class="flag">'+e.flag+'</div><div class="evb"><div class="top"><span class="tag '+e.imp+'">'+(e.imp==='high'?'High Impact':'Medium')+'</span><span class="tag cat">'+e.cat+'</span></div><div class="hl">'+e.hl+'</div><div class="ai">▪ '+e.ai+'</div></div><div class="impact"><div class="k">Est. Impact</div><div class="v '+(e.imp==='high'?'dn':'')+'">'+e.impact+'</div><div class="chev">›</div></div>';el.onclick=function(){openPanel(e.hl,e.cat+' · '+e.impact+' estimated impact',e.score,e.full);};c.appendChild(el);});}
+function renderWatch(){var c=$('#wbWl');WATCH.forEach(function(a){var d=document.createElement('div');d.innerHTML='<div class="k">'+a[0]+'</div><div class="v">'+a[1]+'</div>';c.appendChild(d);});}
+function renderHot(){var c=$('#wbHot');HOTSPOTS.forEach(function(h){var el=document.createElement('div');el.className='h';el.innerHTML='<span class="d" style="color:'+h.col+'"></span>'+h.n;el.onclick=function(){openPanel(h.n+' — Intelligence Center','Country intelligence · active event today',78,HOTINFO[h.n]||'');};c.appendChild(el);});}
+function renderCal(){var c=$('#wbCal');CAL.forEach(function(e){var d=document.createElement('div');d.className='cev';d.innerHTML='<div class="t">'+e.t+'</div><div class="h">'+e.h+'</div><div class="m">'+e.m+'</div>';c.appendChild(d);});}
+
+function openPanel(title,sub,score,body){$('#wbPbody').innerHTML='<div class="lab">'+sub+'</div><h3>'+title+'</h3><div class="meter"><div class="b"><i style="width:0%"></i></div></div><p>'+body+'</p><div class="lab">Atlas opens the full intelligence panel here</div>';$('#wbPanel').classList.add('show');setTimeout(function(){var i=$('#wbPanel .meter i');if(i){i.style.transition='width 1s ease';i.style.width=score+'%';}},60);}
+window.wbClosePanel=function(){$('#wbPanel').classList.remove('show');};
+$('#wbPanel').addEventListener('click',function(e){if(e.target.id==='wbPanel')window.wbClosePanel();});
+
+function etParts(){var f=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour12:false,weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});var p={};f.formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});return p;}
+var DOW={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+function updateClock(){var p=etParts();var h=+p.hour,m=+p.minute,s=+p.second,dow=DOW[p.weekday];$('#wbDate').textContent=p.weekday+', '+p.month+' '+p.day;$('#wbTime').textContent=p.hour+':'+p.minute+':'+p.second+' ET';var nowSec=h*3600+m*60+s,open=9*3600+1800,close=16*3600,weekday=dow>=1&&dow<=5,status,cd,cdLab,closed=false;if(weekday&&nowSec>=open&&nowSec<close){status='Open';cdLab='Closes in';cd=close-nowSec;}else if(weekday&&nowSec<open){status='Pre-Market';cdLab='Opens in';cd=open-nowSec;closed=true;}else{status='Closed';cdLab='Opens in';closed=true;var addDays=1;if(dow===5&&nowSec>=close)addDays=3;else if(dow===6)addDays=2;else if(dow===0)addDays=1;else if(weekday&&nowSec>=close)addDays=1;cd=open+(addDays*86400-nowSec);}$('#wbStatus').textContent=status;$('#wbCdLab').textContent=cdLab;var hh=Math.floor(cd/3600),mm=Math.floor((cd%3600)/60),ss=cd%60;function pad(x){return String(x).padStart(2,'0');}$('#wbCd').textContent=pad(hh)+':'+pad(mm)+':'+pad(ss);$('#wbLive').className='live'+(closed?' closed':'');}
+
+var sc=$('#wbStars'),sx=sc.getContext('2d'),SW,SH,parts;
+function initStars(){SW=sc.width=innerWidth;SH=sc.height=innerHeight;parts=[];var N=Math.min(110,innerWidth/14),i;for(i=0;i<N;i++)parts.push({x:Math.random()*SW,y:Math.random()*SH,r:Math.random()*1.4+.3,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,a:Math.random()*.5+.2});}
+function drawStars(){if(!alive)return;sx.clearRect(0,0,SW,SH);parts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;if(p.x<0)p.x=SW;if(p.x>SW)p.x=0;if(p.y<0)p.y=SH;if(p.y>SH)p.y=0;sx.beginPath();sx.arc(p.x,p.y,p.r,0,7);sx.fillStyle='rgba(120,200,230,'+p.a+')';sx.fill();});requestAnimationFrame(drawStars);}
+
+var gc=$('#wbGlobe'),gx=gc.getContext('2d'),GW,GH,GR,GCX,GCY,rot=0,hotScreen=[];
+function initGlobe(){GW=gc.width=innerWidth;GH=gc.height=innerHeight;GR=Math.min(GW,GH)*0.42;GCX=GW*0.74;GCY=GH*0.52;}
+function proj(lat,lon){var la=lat*Math.PI/180,lo=lon*Math.PI/180+rot,x=Math.cos(la)*Math.sin(lo),y=Math.sin(la),z=Math.cos(la)*Math.cos(lo);return{x:GCX+x*GR,y:GCY-y*GR,z:z};}
+function drawGlobe(){if(!alive)return;gx.clearRect(0,0,GW,GH);rot+=0.0016;hotScreen=[];var g=gx.createRadialGradient(GCX,GCY,GR*0.2,GCX,GCY,GR*1.25);g.addColorStop(0,'rgba(30,70,100,0.20)');g.addColorStop(1,'rgba(4,7,13,0)');gx.fillStyle=g;gx.beginPath();gx.arc(GCX,GCY,GR*1.25,0,7);gx.fill();gx.strokeStyle='rgba(90,180,215,0.22)';gx.lineWidth=1;var lat,lon,p,st;for(lat=-60;lat<=60;lat+=30){gx.beginPath();st=false;for(lon=-180;lon<=180;lon+=6){p=proj(lat,lon);if(p.z<0){st=false;continue;}if(!st){gx.moveTo(p.x,p.y);st=true;}else gx.lineTo(p.x,p.y);}gx.stroke();}for(lon=0;lon<180;lon+=30){gx.beginPath();st=false;for(lat=-90;lat<=90;lat+=6){p=proj(lat,lon);if(p.z<0){st=false;continue;}if(!st){gx.moveTo(p.x,p.y);st=true;}else gx.lineTo(p.x,p.y);}gx.stroke();}gx.strokeStyle='rgba(120,210,240,0.35)';gx.lineWidth=1.4;gx.beginPath();gx.arc(GCX,GCY,GR,0,7);gx.stroke();HOTSPOTS.forEach(function(h){var p=proj(h.lat,h.lon);if(p.z<0)return;var pulse=1+Math.sin(Date.now()/500+h.lon)*0.35;gx.beginPath();gx.arc(p.x,p.y,7*pulse,0,7);gx.fillStyle=h.col+'22';gx.fill();gx.beginPath();gx.arc(p.x,p.y,3.2,0,7);gx.fillStyle=h.col;gx.shadowColor=h.col;gx.shadowBlur=14;gx.fill();gx.shadowBlur=0;hotScreen.push({x:p.x,y:p.y,n:h.n});});requestAnimationFrame(drawGlobe);}
+gc.addEventListener('click',function(e){for(var i=0;i<hotScreen.length;i++){var h=hotScreen[i];if(Math.hypot(e.clientX-h.x,e.clientY-h.y)<16){openPanel(h.n+' — Intelligence Center','Country intelligence · active event today',78,HOTINFO[h.n]||'');return;}}});
+gc.addEventListener('mousemove',function(e){var hit=false;for(var i=0;i<hotScreen.length;i++){var h=hotScreen[i];if(Math.hypot(e.clientX-h.x,e.clientY-h.y)<16){hit=true;break;}}gc.style.cursor=hit?'pointer':'default';});
+
+window.wbDismiss=function(){var r=document.getElementById('wb-root');if(!r)return;r.classList.add('wb-dismiss');alive=false;if(clockTimer)clearInterval(clockTimer);setTimeout(function(){if(r&&r.parentNode)r.parentNode.removeChild(r);},900);};
+
+renderSnap();renderEvents();renderWatch();renderHot();renderCal();updateClock();clockTimer=setInterval(updateClock,1000);initStars();drawStars();initGlobe();drawGlobe();setTimeout(function(){var rf=$('#wbRisk');if(rf)rf.style.width='74%';},700);addEventListener('resize',function(){if(!alive)return;initStars();initGlobe();});addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#wbPanel')&&$('#wbPanel').classList.contains('show'))window.wbClosePanel();else window.wbDismiss();}});
+})();
+</script>
+<!-- ===== END ATLAS WELCOME BACK OVERLAY ===== -->
+
 </body>
 </html>
