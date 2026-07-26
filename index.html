@@ -2232,6 +2232,8 @@ setInterval(fetchNews, 60000);
 
 
 
+
+
 <!-- ===== ATLAS WELCOME BACK OVERLAY (injected) ===== -->
 <style id="wb-style">
 #wb-root{
@@ -2383,10 +2385,10 @@ setInterval(fetchNews, 60000);
     </div>
     <div class="card sec fade" style="animation-delay:.84s"><h2><span class="ic"></span>Today's Calendar</h2><div class="cal" id="wbCal"></div></div>
     <div class="actions sec fade" style="animation-delay:.9s">
-      <button class="btn primary" onclick="wbDismiss()">◱ Open Dashboard</button>
-      <button class="btn" onclick="wbDismiss()">Economic Calendar</button>
-      <button class="btn" onclick="wbDismiss()">Earnings Calendar</button>
-      <button class="btn" onclick="wbDismiss()">Global Intelligence</button>
+      <button class="btn primary" onclick="wbGo('globe')">◱ Open Dashboard</button>
+      <button class="btn" onclick="wbGo('globe')">Economic Calendar</button>
+      <button class="btn" onclick="wbGo('earn')">Earnings Calendar</button>
+      <button class="btn" onclick="wbGo('globe')">Global Intelligence</button>
       <button class="btn" onclick="wbDismiss()">Continue where I left off ↩</button>
     </div>
     <div class="optout fade" style="animation-delay:.93s"><a onclick="wbNever()">Don't show this on startup</a></div>
@@ -2456,6 +2458,7 @@ function startLoops(){alive=true;initStars();drawStars();initGlobe();drawGlobe()
 function startClock(){updateClock();if(!clockTimer)clockTimer=setInterval(updateClock,1000);}
 window.wbDismiss=function(){root.classList.add('wb-dismiss');alive=false;gc.style.pointerEvents='none';if(clockTimer){clearInterval(clockTimer);clockTimer=null;}document.getElementById('wbLauncher').style.display='flex';};
 window.wbNever=function(){try{localStorage.setItem('wbHide','1');}catch(e){}window.wbDismiss();};
+window.wbGo=function(v){window.wbDismiss();try{if(typeof setView==='function')setView(v);}catch(e){}};
 window.wbReopen=function(){document.getElementById('wbLauncher').style.display='none';root.classList.remove('wb-dismiss');gc.style.pointerEvents='auto';startClock();startLoops();setTimeout(fetchLive,1250);var rf=$('#wbRisk');if(rf)rf.style.width='74%';};
 function hideInstant(){root.style.transition='none';root.classList.add('wb-dismiss');requestAnimationFrame(function(){root.style.transition='';});alive=false;gc.style.pointerEvents='none';document.getElementById('wbLauncher').style.display='flex';}
 
