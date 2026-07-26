@@ -2224,6 +2224,8 @@ fetchNews();
 setInterval(fetchLive, 60000);
 setInterval(fetchNews, 60000);
 </script>
+
+
 <!-- ===== ATLAS WELCOME BACK OVERLAY (injected) ===== -->
 <style id="wb-style">
 #wb-root{
@@ -2324,7 +2326,10 @@ setInterval(fetchNews, 60000);
 #wb-root .btn.primary{background:linear-gradient(135deg,rgba(34,211,238,.9),rgba(45,212,191,.85));color:#04121a;border:none}
 #wb-root .btn.primary:hover{filter:brightness(1.08);box-shadow:0 14px 34px -12px rgba(34,211,238,.7)}
 #wb-root .sec{margin-top:22px}
-#wb-root .footnote{text-align:center;color:var(--muted);font-size:11px;margin-top:26px;letter-spacing:.03em}
+#wb-root .optout{text-align:center;margin-top:16px}
+#wb-root .optout a{cursor:pointer;color:var(--muted);font-size:12px;border-bottom:1px dotted var(--muted)}
+#wb-root .optout a:hover{color:var(--cyan);border-color:var(--cyan)}
+#wb-root .footnote{text-align:center;color:var(--muted);font-size:11px;margin-top:14px;letter-spacing:.03em}
 #wb-root #wbPanel{position:absolute;inset:0;z-index:6;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(2,5,10,.6);backdrop-filter:blur(6px)}
 #wb-root #wbPanel.show{display:flex;animation:wbfade .4s forwards}
 #wb-root .pcard{max-width:560px;width:100%;border:1px solid var(--stroke);border-radius:20px;padding:28px;background:linear-gradient(160deg,rgba(16,34,54,.96),rgba(8,17,29,.97));box-shadow:0 40px 100px -30px #000;position:relative}
@@ -2335,6 +2340,9 @@ setInterval(fetchNews, 60000);
 #wb-root .pcard .meter .b i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--teal));border-radius:6px}
 #wb-root .pcard p{font-size:14px;line-height:1.7;color:#cfe0ea;margin-top:10px}
 #wb-root .pcard .lab{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-top:16px}
+#wbLauncher{position:fixed;left:16px;bottom:16px;z-index:99998;display:none;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid rgba(120,200,230,.28);background:rgba(10,22,38,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:#e9f2f8;font:600 13px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;cursor:pointer;box-shadow:0 12px 34px -14px rgba(0,0,0,.8)}
+#wbLauncher:hover{border-color:#22d3ee;color:#22d3ee;transform:translateY(-2px)}
+#wbLauncher .d{width:7px;height:7px;border-radius:50%;background:#22d3ee;box-shadow:0 0 10px #22d3ee}
 </style>
 
 <div id="wb-root">
@@ -2370,27 +2378,31 @@ setInterval(fetchNews, 60000);
     <div class="card sec fade" style="animation-delay:.84s"><h2><span class="ic"></span>Today's Calendar</h2><div class="cal" id="wbCal"></div></div>
     <div class="actions sec fade" style="animation-delay:.9s">
       <button class="btn primary" onclick="wbDismiss()">◱ Open Dashboard</button>
-      <button class="btn" onclick="wbDismiss('cal')">Economic Calendar</button>
-      <button class="btn" onclick="wbDismiss('earn')">Earnings Calendar</button>
+      <button class="btn" onclick="wbDismiss()">Economic Calendar</button>
+      <button class="btn" onclick="wbDismiss()">Earnings Calendar</button>
       <button class="btn" onclick="wbDismiss()">Global Intelligence</button>
       <button class="btn" onclick="wbDismiss()">Continue where I left off ↩</button>
     </div>
-    <div class="footnote fade" style="animation-delay:.95s">Illustrative demo data · Connect your data provider for live markets · Atlas answers one question before you trade: <b style="color:#cfe0ea">what do I absolutely need to know right now?</b></div>
+    <div class="optout fade" style="animation-delay:.93s"><a onclick="wbNever()">Don't show this on startup</a></div>
+    <div class="footnote fade" id="wbFoot" style="animation-delay:.95s">Loading live market data · Atlas answers one question before you trade: <b style="color:#cfe0ea">what do I absolutely need to know right now?</b></div>
   </div></div>
   <div id="wbPanel"><div class="pcard"><span class="x" onclick="wbClosePanel()">✕</span><div id="wbPbody"></div></div></div>
 </div>
+<button id="wbLauncher" onclick="wbReopen()"><span class="d"></span>Morning Brief</button>
 
 <script>
 (function(){
-if(document.getElementById('wb-root')._init)return; document.getElementById('wb-root')._init=1;
-var alive=true, clockTimer=null;
+var root=document.getElementById('wb-root');
+if(root._init)return; root._init=1;
+var alive=false, clockTimer=null, liveOK=false;
+var WBKEY=(typeof FMP_KEY!=='undefined'&&FMP_KEY)?FMP_KEY:"RJkai4EjUWOvAxF10W9P4jqIehIzxrZn";
 var TICKERS=[
- {n:"S&P 500 Fut",px:6318.50,chg:-0.42,dec:2},{n:"Nasdaq Fut",px:23048.0,chg:-0.71,dec:1},
- {n:"Dow Fut",px:44615,chg:-0.24,dec:0},{n:"Russell 2000",px:2241.8,chg:-0.55,dec:1},
- {n:"VIX",px:19.84,chg:6.30,dec:2},{n:"US Dollar (DXY)",px:104.22,chg:0.31,dec:2},
- {n:"Gold",px:3482.4,chg:0.54,dec:1},{n:"Silver",px:42.68,chg:0.83,dec:2},
- {n:"WTI Crude",px:96.20,chg:1.92,dec:2},{n:"Brent Crude",px:99.75,chg:1.74,dec:2},
- {n:"Natural Gas",px:3.86,chg:2.10,dec:2},{n:"Bitcoin",px:64280,chg:-1.22,dec:0},{n:"Ethereum",px:3178,chg:-1.55,dec:0}];
+ {n:"S&P 500",sym:"^GSPC",px:6318.50,chg:-0.42,dec:2},{n:"Nasdaq",sym:"^IXIC",px:23048.0,chg:-0.71,dec:1},
+ {n:"Dow",sym:"^DJI",px:44615,chg:-0.24,dec:0},{n:"Russell 2000",sym:"^RUT",px:2241.8,chg:-0.55,dec:1},
+ {n:"VIX",sym:"^VIX",px:19.84,chg:6.30,dec:2},{n:"US Dollar (DXY)",sym:"^DXY",px:104.22,chg:0.31,dec:2},
+ {n:"Gold",sym:"GCUSD",px:3482.4,chg:0.54,dec:1},{n:"Silver",sym:"SIUSD",px:42.68,chg:0.83,dec:2},
+ {n:"WTI Crude",sym:"CLUSD",px:96.20,chg:1.92,dec:2},{n:"Brent Crude",sym:"BZUSD",px:99.75,chg:1.74,dec:2},
+ {n:"Natural Gas",sym:"NGUSD",px:3.86,chg:2.10,dec:2},{n:"Bitcoin",sym:"BTCUSD",px:64280,chg:-1.22,dec:0},{n:"Ethereum",sym:"ETHUSD",px:3178,chg:-1.55,dec:0}];
 var EVENTS=[
  {imp:"high",cat:"Monetary Policy",flag:"🇺🇸",hl:"Federal Reserve rate decision — hikes back on the table",ai:"Markets now price up to two hikes as energy-driven inflation refuses to cool. A hawkish surprise pressures long-duration growth hardest.",impact:"Very High",score:96,full:"The Fed's decision is the week's fulcrum. Persistent, energy-led inflation has flipped the narrative from cuts to potential hikes. A higher risk-free rate discounts future earnings harder, and the longest-duration assets — mega-cap tech — fall the most. Watch the language on inflation more than the decision itself."},
  {imp:"high",cat:"Geopolitics",flag:"🇮🇷",hl:"Middle East tensions keep a risk premium in crude",ai:"Disruptions near the Strait of Hormuz and Red Sea threaten exports while inventories sit depleted and Iran talks stall.",impact:"High",score:88,full:"Conflict near a chokepoint prices in the possibility of lost supply before a single barrel is disrupted. This premium can appear and vanish within hours, making crude the most headline-sensitive asset on the board and a live input into every inflation print."},
@@ -2408,11 +2420,12 @@ function fmt(v,d){return v.toLocaleString('en-US',{minimumFractionDigits:d,maxim
 function spark(chg){var up=chg>=0,pts=24,arr=[],v=50,i;for(i=0;i<pts;i++){v+=(Math.random()-.5)*10+(up?.55:-.55);arr.push(v);}var mn=Math.min.apply(0,arr),mx=Math.max.apply(0,arr),rng=(mx-mn)||1,w=64,h=22;var d=arr.map(function(y,i){return (i/(pts-1)*w).toFixed(1)+','+(h-((y-mn)/rng)*(h-4)-2).toFixed(1);}).join(' ');var col=up?'#34d39a':'#f0616d',id='g'+Math.random().toString(36).slice(2,7);return '<svg class="spark" viewBox="0 0 '+w+' '+h+'"><defs><linearGradient id="'+id+'" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="'+col+'" stop-opacity=".9"/><stop offset="1" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs><polyline points="'+d+'" fill="none" stroke="'+col+'" stroke-width="1.5" stroke-linejoin="round"/><polyline points="0,'+h+' '+d+' '+w+','+h+'" fill="url(#'+id+')" stroke="none" opacity=".25"/></svg>';}
 function animNum(el,target,dec){var dur=1100,t0=performance.now();function step(t){var p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=fmt(target*e,dec);if(p<1)requestAnimationFrame(step);else el.textContent=fmt(target,dec);}requestAnimationFrame(step);}
 
-function renderSnap(){var c=$('#wbSnap');TICKERS.forEach(function(t,i){var rise=t.chg>=0,cls=rise?'up':'dn',ar=rise?'▲':'▼';var el=document.createElement('div');el.className='tk';el.innerHTML='<div class="nm"><span>'+t.n+'</span></div><div class="px mono" id="wbpx'+i+'">0</div><div class="row"><div class="chg '+cls+'"><span class="arrow">'+ar+'</span> '+(rise?'+':'')+t.chg.toFixed(2)+'%</div>'+spark(t.chg)+'</div>';c.appendChild(el);animNum(el.querySelector('#wbpx'+i),t.px,t.dec);});}
-function renderEvents(){var c=$('#wbEvents');EVENTS.forEach(function(e){var el=document.createElement('div');el.className='ev '+e.imp;el.innerHTML='<div class="barL"></div><div class="flag">'+e.flag+'</div><div class="evb"><div class="top"><span class="tag '+e.imp+'">'+(e.imp==='high'?'High Impact':'Medium')+'</span><span class="tag cat">'+e.cat+'</span></div><div class="hl">'+e.hl+'</div><div class="ai">▪ '+e.ai+'</div></div><div class="impact"><div class="k">Est. Impact</div><div class="v '+(e.imp==='high'?'dn':'')+'">'+e.impact+'</div><div class="chev">›</div></div>';el.onclick=function(){openPanel(e.hl,e.cat+' · '+e.impact+' estimated impact',e.score,e.full);};c.appendChild(el);});}
-function renderWatch(){var c=$('#wbWl');WATCH.forEach(function(a){var d=document.createElement('div');d.innerHTML='<div class="k">'+a[0]+'</div><div class="v">'+a[1]+'</div>';c.appendChild(d);});}
-function renderHot(){var c=$('#wbHot');HOTSPOTS.forEach(function(h){var el=document.createElement('div');el.className='h';el.innerHTML='<span class="d" style="color:'+h.col+'"></span>'+h.n;el.onclick=function(){openPanel(h.n+' — Intelligence Center','Country intelligence · active event today',78,HOTINFO[h.n]||'');};c.appendChild(el);});}
-function renderCal(){var c=$('#wbCal');CAL.forEach(function(e){var d=document.createElement('div');d.className='cev';d.innerHTML='<div class="t">'+e.t+'</div><div class="h">'+e.h+'</div><div class="m">'+e.m+'</div>';c.appendChild(d);});}
+function renderSnap(){var c=$('#wbSnap');c.innerHTML='';TICKERS.forEach(function(t,i){var rise=t.chg>=0,cls=rise?'up':'dn',ar=rise?'▲':'▼';var el=document.createElement('div');el.className='tk';el.innerHTML='<div class="nm"><span>'+t.n+'</span></div><div class="px mono" id="wbpx'+i+'">0</div><div class="row"><div class="chg '+cls+'" id="wbchg'+i+'"><span class="arrow">'+ar+'</span> '+(rise?'+':'')+t.chg.toFixed(2)+'%</div>'+spark(t.chg)+'</div>';c.appendChild(el);animNum(el.querySelector('#wbpx'+i),t.px,t.dec);});}
+function fetchLive(){TICKERS.forEach(function(t,i){if(!t.sym)return;fetch('https://financialmodelingprep.com/stable/quote?symbol='+encodeURIComponent(t.sym)+'&apikey='+WBKEY).then(function(r){return r.json();}).then(function(d){var row=Array.isArray(d)?d[0]:d;if(row&&typeof row.price==='number'){var px=$('#wbpx'+i),cg=$('#wbchg'+i),c=(typeof row.changePercentage==='number')?row.changePercentage:0,rise=c>=0;if(px)px.textContent=fmt(row.price,t.dec);if(cg){cg.className='chg '+(rise?'up':'dn');cg.innerHTML='<span class="arrow">'+(rise?'▲':'▼')+'</span> '+(rise?'+':'')+c.toFixed(2)+'%';}liveOK=true;var f=$('#wbFoot');if(f)f.innerHTML='<span style="color:var(--green)">●</span> Live market data · Atlas answers one question before you trade: <b style="color:#cfe0ea">what do I absolutely need to know right now?</b>';}}).catch(function(){});});}
+function renderEvents(){var c=$('#wbEvents');c.innerHTML='';EVENTS.forEach(function(e){var el=document.createElement('div');el.className='ev '+e.imp;el.innerHTML='<div class="barL"></div><div class="flag">'+e.flag+'</div><div class="evb"><div class="top"><span class="tag '+e.imp+'">'+(e.imp==='high'?'High Impact':'Medium')+'</span><span class="tag cat">'+e.cat+'</span></div><div class="hl">'+e.hl+'</div><div class="ai">▪ '+e.ai+'</div></div><div class="impact"><div class="k">Est. Impact</div><div class="v '+(e.imp==='high'?'dn':'')+'">'+e.impact+'</div><div class="chev">›</div></div>';el.onclick=function(){openPanel(e.hl,e.cat+' · '+e.impact+' estimated impact',e.score,e.full);};c.appendChild(el);});}
+function renderWatch(){var c=$('#wbWl');c.innerHTML='';WATCH.forEach(function(a){var d=document.createElement('div');d.innerHTML='<div class="k">'+a[0]+'</div><div class="v">'+a[1]+'</div>';c.appendChild(d);});}
+function renderHot(){var c=$('#wbHot');c.innerHTML='';HOTSPOTS.forEach(function(h){var el=document.createElement('div');el.className='h';el.innerHTML='<span class="d" style="color:'+h.col+'"></span>'+h.n;el.onclick=function(){openPanel(h.n+' — Intelligence Center','Country intelligence · active event today',78,HOTINFO[h.n]||'');};c.appendChild(el);});}
+function renderCal(){var c=$('#wbCal');c.innerHTML='';CAL.forEach(function(e){var d=document.createElement('div');d.className='cev';d.innerHTML='<div class="t">'+e.t+'</div><div class="h">'+e.h+'</div><div class="m">'+e.m+'</div>';c.appendChild(d);});}
 
 function openPanel(title,sub,score,body){$('#wbPbody').innerHTML='<div class="lab">'+sub+'</div><h3>'+title+'</h3><div class="meter"><div class="b"><i style="width:0%"></i></div></div><p>'+body+'</p><div class="lab">Atlas opens the full intelligence panel here</div>';$('#wbPanel').classList.add('show');setTimeout(function(){var i=$('#wbPanel .meter i');if(i){i.style.transition='width 1s ease';i.style.width=score+'%';}},60);}
 window.wbClosePanel=function(){$('#wbPanel').classList.remove('show');};
@@ -2433,9 +2446,20 @@ function drawGlobe(){if(!alive)return;gx.clearRect(0,0,GW,GH);rot+=0.0016;hotScr
 gc.addEventListener('click',function(e){for(var i=0;i<hotScreen.length;i++){var h=hotScreen[i];if(Math.hypot(e.clientX-h.x,e.clientY-h.y)<16){openPanel(h.n+' — Intelligence Center','Country intelligence · active event today',78,HOTINFO[h.n]||'');return;}}});
 gc.addEventListener('mousemove',function(e){var hit=false;for(var i=0;i<hotScreen.length;i++){var h=hotScreen[i];if(Math.hypot(e.clientX-h.x,e.clientY-h.y)<16){hit=true;break;}}gc.style.cursor=hit?'pointer':'default';});
 
-window.wbDismiss=function(){var r=document.getElementById('wb-root');if(!r)return;r.classList.add('wb-dismiss');alive=false;if(clockTimer)clearInterval(clockTimer);setTimeout(function(){if(r&&r.parentNode)r.parentNode.removeChild(r);},900);};
+function startLoops(){alive=true;initStars();drawStars();initGlobe();drawGlobe();}
+function startClock(){updateClock();if(!clockTimer)clockTimer=setInterval(updateClock,1000);}
+window.wbDismiss=function(){root.classList.add('wb-dismiss');alive=false;if(clockTimer){clearInterval(clockTimer);clockTimer=null;}document.getElementById('wbLauncher').style.display='flex';};
+window.wbNever=function(){try{localStorage.setItem('wbHide','1');}catch(e){}window.wbDismiss();};
+window.wbReopen=function(){document.getElementById('wbLauncher').style.display='none';root.classList.remove('wb-dismiss');startClock();startLoops();fetchLive();var rf=$('#wbRisk');if(rf)rf.style.width='74%';};
+function hideInstant(){root.style.transition='none';root.classList.add('wb-dismiss');requestAnimationFrame(function(){root.style.transition='';});alive=false;document.getElementById('wbLauncher').style.display='flex';}
 
-renderSnap();renderEvents();renderWatch();renderHot();renderCal();updateClock();clockTimer=setInterval(updateClock,1000);initStars();drawStars();initGlobe();drawGlobe();setTimeout(function(){var rf=$('#wbRisk');if(rf)rf.style.width='74%';},700);addEventListener('resize',function(){if(!alive)return;initStars();initGlobe();});addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#wbPanel')&&$('#wbPanel').classList.contains('show'))window.wbClosePanel();else window.wbDismiss();}});
+/* build content once */
+renderSnap();renderEvents();renderWatch();renderHot();renderCal();
+var hidden=false;try{hidden=localStorage.getItem('wbHide')==='1';}catch(e){}
+if(hidden){hideInstant();}
+else{startClock();startLoops();fetchLive();setTimeout(function(){var rf=$('#wbRisk');if(rf)rf.style.width='74%';},700);}
+addEventListener('resize',function(){if(!alive)return;initStars();initGlobe();});
+addEventListener('keydown',function(e){if(e.key==='Escape'){if($('#wbPanel')&&$('#wbPanel').classList.contains('show'))window.wbClosePanel();else if(!root.classList.contains('wb-dismiss'))window.wbDismiss();}});
 })();
 </script>
 <!-- ===== END ATLAS WELCOME BACK OVERLAY ===== -->
