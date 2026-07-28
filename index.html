@@ -759,7 +759,7 @@ body{
    ATLAS — Global Market Intelligence Terminal
    Live tickers via FMP (paste key below); country data is demo.
    ============================================================ */
-const FMP_KEY = "RJkai4EjUWOvAxF10W9P4jqIehIzxrZn";
+const FMP_KEY = "PASTE_YOUR_FMP_API_KEY_HERE";
 const hasKey = FMP_KEY && !/^PASTE/.test(FMP_KEY);
 
 /* ---------- helpers ---------- */
@@ -2403,7 +2403,7 @@ setInterval(fetchNews, 60000);
 var root=document.getElementById('wb-root');
 if(root._init)return; root._init=1;
 var alive=false, clockTimer=null, liveOK=false;
-var WBKEY=(typeof FMP_KEY!=='undefined'&&FMP_KEY)?FMP_KEY:"RJkai4EjUWOvAxF10W9P4jqIehIzxrZn";
+var WBKEY=(typeof FMP_KEY!=='undefined'&&FMP_KEY)?FMP_KEY:"PASTE_YOUR_FMP_API_KEY_HERE";
 var TICKERS=[
  {n:"S&P 500",sym:"^GSPC",px:6318.50,chg:-0.42,dec:2},{n:"Nasdaq",sym:"^IXIC",px:23048.0,chg:-0.71,dec:1},
  {n:"Dow",sym:"^DJI",px:44615,chg:-0.24,dec:0},{n:"Russell 2000",sym:"^RUT",px:2241.8,chg:-0.55,dec:1},
